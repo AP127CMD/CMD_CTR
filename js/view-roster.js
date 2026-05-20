@@ -201,6 +201,7 @@ function RosterBoard() {
         <div style={{flex:1}}/>
         <FocusControls/>
         <div className="mono uc" style={{ fontSize:9,color:'var(--ink-3)' }}>{keys.length} {groupBy==='instructor'?'INSTRUCTORS':groupBy==='batch'?'BATCHES':'STUDENTS'}</div>
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 

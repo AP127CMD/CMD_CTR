@@ -272,6 +272,7 @@ function SummaryBoard() {
         <div style={{flex:1}}/>
         <FocusControls/>
         <span className="mono uc" style={{ fontSize:9, color:'var(--ink-3)' }}>{all.length} FLT</span>
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 

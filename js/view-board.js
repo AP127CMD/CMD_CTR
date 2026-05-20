@@ -71,6 +71,7 @@ function OpsBoard() {
         <div style={{flex:1}}/>
         <FocusControls/>
         <div className="mono uc" style={{ fontSize:9, color:'var(--ink-3)' }}>{FLIGHTS.length} FLIGHTS</div>
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 
@@ -91,7 +92,10 @@ function OpsBoard() {
 
       {/* Date + filter */}
       <div style={{ padding: isMobile?'0 8px 4px':'0 10px 4px', display:'flex', flexDirection:'column', gap:4, flexShrink:0 }}>
-        <DateStrip/>
+        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+          <DateCalendarTrigger/>
+          <span className="mono uc" style={{ fontSize:9, color:'var(--ink-3)' }}>SELECT DATE</span>
+        </div>
         <FilterBar/>
       </div>
 

@@ -303,6 +303,7 @@ function DailyBoard() {
         </div>
         <div style={{ flex: 1 }}/>
         <div className="mono uc" style={{ fontSize: 9, color: 'var(--ink-3)' }}>{flights.length} FLTS · {FLIGHTS.length} TOTAL</div>
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 
@@ -310,28 +311,12 @@ function DailyBoard() {
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
         <div style={{ padding: isMobile ? '8px' : '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-          {/* Date hero + DateStrip */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flexWrap: 'wrap' }}>
-            <div style={{
-              padding: '8px 14px', background: 'var(--surface)',
-              border: `1px solid ${isCurrentDay ? 'var(--col-pending)' : 'var(--line)'}`,
-              borderRadius: 8, display: 'flex', alignItems: 'baseline', gap: 8,
-              boxShadow: isCurrentDay ? '0 0 0 1px var(--col-pending), 0 0 18px color-mix(in oklch,var(--col-pending) 25%,transparent)' : 'none',
-            }}>
-              <div className="num" style={{
-                fontSize: isMobile ? 34 : 46, fontWeight: 800, lineHeight: 1,
-                letterSpacing: '-0.02em', color: 'var(--ink)',
-              }}>{String(day).padStart(2, '0')}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div className="mono uc" style={{ fontSize: 13, color: 'var(--ink-2)', fontWeight: 600 }}>{mo} {y}</div>
-                <div className="mono uc" style={{ fontSize: 10, color: isCurrentDay ? 'var(--col-pending)' : 'var(--ink-3)' }}>
-                  {wd}{isCurrentDay ? ' · TODAY' : ''}
-                </div>
-              </div>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <DateStrip compact/>
-            </div>
+          {/* Date hero — click to open calendar picker */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <DateCalendarTrigger/>
+            {isCurrentDay && (
+              <span className="mono uc" style={{ fontSize:9, color:'var(--col-pending)', padding:'2px 7px', border:'1px solid var(--col-pending)', borderRadius:3 }}>TODAY</span>
+            )}
           </div>
 
           {/* Hero KPI strip — School performance */}

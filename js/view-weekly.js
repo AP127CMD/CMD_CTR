@@ -39,11 +39,14 @@ function WeeklyBoard() {
     return FLIGHTS.filter(f=>{
       if (!app.tweaks.showSim     && f.isSim)     return false;
       if (!app.tweaks.showStandby && f.isStandby) return false;
-      if (app.filters.batch      !== 'ALL' && f.batch      !== app.filters.batch)      return false;
-      if (app.filters.instructor !== 'ALL' && f.instructor !== app.filters.instructor) return false;
-      if (app.filters.tail       !== 'ALL' && f.tail       !== app.filters.tail)       return false;
-      if (app.filters.status === 'Standby') { if (!f.isStandby) return false; }
-      else if (app.filters.status !== 'ALL' && f.status !== app.filters.status)        return false;
+      if (app.filters.batches     && !app.filters.batches.includes(f.batch))         return false;
+      if (app.filters.instructors && !app.filters.instructors.includes(f.instructor)) return false;
+      if (app.filters.tails       && !app.filters.tails.includes(f.tail))             return false;
+      if (app.filters.statuses) {
+        const matchStatus = app.filters.statuses.includes(f.status);
+        const matchStby   = app.filters.statuses.includes('Standby') && f.isStandby;
+        if (!matchStatus && !matchStby) return false;
+      }
       if (app.hideOthers && app.highlightAP127 && f.batch !== HIGHLIGHT_BATCH)         return false;
       if (app.filters.search) {
         const q = app.filters.search.toLowerCase();
@@ -99,6 +102,7 @@ function WeeklyBoard() {
         <div style={{flex:1}}/>
         <FocusControls/>
         <div className="mono uc" style={{ fontSize:9,color:'var(--ink-3)' }}>{weeks.length} WKS</div>
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 

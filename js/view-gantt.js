@@ -24,9 +24,6 @@ function GanttBoard() {
     return Object.entries(map)
       .map(([k,v])=>({ key:k, flights:v.sort((a,b)=>(minutesOf(a.start)||0)-(minutesOf(b.start)||0)) }))
       .sort((a,b)=>{
-        const ah=a.flights.some(f=>f.batch===HIGHLIGHT_BATCH);
-        const bh=b.flights.some(f=>f.batch===HIGHLIGHT_BATCH);
-        if(ah!==bh) return ah?-1:1;
         // Tail focus: sort by aircraft type first, then tail number alphabetically
         if (groupBy === 'tail') {
           const aType = a.flights[0]?.type || '';
@@ -68,12 +65,16 @@ function GanttBoard() {
         <div style={{flex:1}}/>
         <FocusControls/>
         {!isMobile && <div className="mono num" style={{ fontSize:11,color:'var(--ink-3)' }}>{String(day).padStart(2,'0')} {mo} · {wd}</div>}
+        <RefreshButton/>
         <LastUpdate/>
       </div>
 
       {/* Date + filter */}
       <div style={{ padding:'4px 8px', display:'flex', flexDirection:'column', gap:4, flexShrink:0 }}>
-        <DateStrip/>
+        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+          <DateCalendarTrigger/>
+          <span className="mono uc" style={{ fontSize:9, color:'var(--ink-3)' }}>SELECT DATE</span>
+        </div>
         <FilterBar/>
       </div>
 
