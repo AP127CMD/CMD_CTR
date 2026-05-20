@@ -93,7 +93,7 @@ Central state provided by `<AppProvider>` in `index.html`:
 |-----|------|-------------|
 | `date` | string | Selected date (YYYY-MM-DD) |
 | `setDate` | fn | Change selected date |
-| `filters` | object | `{ batch, instructor, tail, status, search }` |
+| `filters` | object | `{ batches, instructors, tails, statuses, search }` — each key is `null` (all shown) or `string[]` (subset) |
 | `setFilters` | fn | |
 | `drawer` | string\|null | Flight ID shown in slide-over Drawer |
 | `setDrawer` | fn | |
@@ -292,9 +292,9 @@ Color space: `oklch()` + `color-mix(in oklch, ...)` throughout.
 
 ### 0 — DAY GLANCE (`view-daily.js`)
 Comprehensive single-day dashboard — the default landing view. Summarizes every
-aspect of one date (defaults to today via `localToday()`, changeable via `DateStrip`).
-- **Top bar**: always shows "AP127 COMMAND CENTER" title + "DAY AT A GLANCE" sub-label
-- **Date hero**: large day number + month/year/weekday, amber-glow border when viewing today
+aspect of one date (defaults to today via `localToday()`, changeable via calendar popup).
+- **Top bar**: always shows "AP127 COMMAND CENTER" title + "DAY AT A GLANCE" sub-label + `RefreshButton`
+- **Date hero**: compact `DateCalendarTrigger` button ("WED 20 MAY ▾") opens floating calendar; TODAY badge shown when viewing today
 - **Hero KPI strip**: TOTAL · COMPLETED (+rate) · PENDING (+standby) · CANCELED · HOURS (flown/planned) · SIM · A/C USED · INSTR · ◆ AP-127
 - **Schedule Pulse** (SVG, 06–18): Catmull-Rom smooth curves; filled area per batch using `--batch-ap*` colors; fluorescent-green total line `oklch(0.88 0.30 130)`; grey horizontal axis; tight padding — chart fills full container width; every-hour labels (6, 7, … 18) with edge labels left/right-aligned. Includes AP-124/126/127/128/129.
 - **Batch Breakdown** (side-by-side with Pulse): bar chart grouped into **AP / HP / OTHER** sections; each bar colored with `--batch-ap*`; shows flight count + hours
@@ -308,8 +308,8 @@ aspect of one date (defaults to today via `localToday()`, changeable via `DateSt
 Sortable table of all flights for selected date.
 - Columns: STATUS · BATCH · STUDENT · INSTRUCTOR · LESSON · START · DUR · END · A/C · TAIL
 - Stat hero tiles: TOTAL · PENDING · COMPLETED · CANCELED · AP-127 · STANDBY · SIM
-- DateStrip + FilterBar above table
-- FocusControls (◆ AP-127 + **ONLY**) in header top-right
+- `DateCalendarTrigger` + `FilterBar` above table
+- FocusControls (◆ AP-127 + **ONLY**) + `RefreshButton` in header top-right
 
 ### B — GANTT (`view-gantt.js`)
 Timeline bars for selected date, grouped by INSTRUCTOR / TAIL / BATCH.
@@ -319,7 +319,7 @@ Timeline bars for selected date, grouped by INSTRUCTOR / TAIL / BATCH.
 - **Single scroll viewport** (`overflow:auto`, both axes): the hour ruler is `position:sticky top:0` and the label column is `position:sticky left:0` (mobile only — desktop keeps the transparent row background). On mobile the inner content has `min-width:720` so the timeline isn't cramped — swipe sideways to reach all hours.
 - Track widths responsive: 190/180px desktop → 90/64px mobile
 - Right column: DUTY PERIOD (instructor) or FLT HRS (tail/batch)
-- TAIL focus sorts rows by aircraft type first, then alphabetically by tail number
+- Rows sorted **purely alphabetically** for all groupBy modes (TAIL still secondarily by aircraft type then alpha)
 - Clicking a bar opens Drawer
 
 ### C — WEEKLY (`view-weekly.js`)
@@ -365,8 +365,10 @@ Aggregate stats with date-range filter (default: last 7 days → today).
 |-----------|-------------|
 | `ThemeStyle` | Injects CSS custom-property theme rules |
 | `ArtboardShell` | Wrapper div: `position:relative; width/height:100%` |
-| `DateStrip` | Horizontal date pill selector; collapsible (collapsed by default on mobile) |
-| `FilterBar` | SEARCH + BATCH + INSTRUCTOR + AIRCRAFT + STATUS dropdowns |
+| `DateCalendarTrigger` | Compact button showing current date ("WED 20 MAY ▾"); click opens `DateCalendarPopup` |
+| `DateCalendarPopup` | Floating month-grid calendar; only `ALL_DATES` dates are selectable; prev/next month nav; today + selected date highlighted |
+| `RefreshButton` | "⟳ SYNC" button in every view header; calls `window.location.reload(true)` to bypass browser cache |
+| `FilterBar` | Collapsible checkbox-style filter panel — SEARCH input + FILTERS toggle button; sections: BATCH · STATUS · AIRCRAFT (grouped by type, DA40TDI first) · INSTRUCTOR; each item has checkbox + ONLY button; items sorted alphabetically; active-count badge; CLEAR ALL button |
 | `FocusControls` | Compact `◆ AP-127` + `ONLY` chips — used in every view header (top-right). `ONLY` shows exclusively AP-127 flights. |
 | `LastUpdate` | Data-freshness chip (`● UPDATED DD MON HH:MM` in Bangkok time) — in every view header; self-hides on mobile unless `showOnMobile` (MobileTopBar passes that). Replaced the old sidebar-footer block. |
 | `ViewIcon` | SVG icon per view id: `daily` · `board` · `gantt` · `weekly` · `summary` · `roster` |
@@ -560,6 +562,8 @@ python3 scripts/generate_flight_data.py
 | 14 | **Bug fix**: blank white page caused by accidental extra `</div>` in JSX from Round 13 edit, which mismatched the outer container and caused Babel parse failure. |
 | 15 | **Batch color system** (`--batch-ap124/126/127/128/129` CSS vars added to all themes): AP124=Blue · AP126=Green · AP127=Magenta · AP128=Orange · AP129=Mustard. `--highlight` updated to magenta (316°). `--col-sim` changed to purple/indigo to avoid clash. **DAY GLANCE**: AP-128 added to Schedule Pulse; Pulse improvements (every-hour labels 6–18, tight margins, total vs axis distinct colors); Batch Breakdown grouped AP/HP/Other; Instructor Load bar color by % load; Aircraft Fleet grouped by type (DA40TDI/DA40CS first); AP-127 Spotlight "VS SCHOOL" section removed; SIM removed from Status Mix donut. **FocusControls**: "HIDE" → "ONLY". **Page title**: sidebar/mobile wordmark updated to "AP127 COMMAND CENTER" (full form, was "AP127 CMD CN"). |
 | 16 | **DAY GLANCE**: Schedule Pulse total line → fluorescent green `oklch(0.88 0.30 130)`; axis line → grey; chart fills full container (side padding removed, SVG `overflow=visible`); Instructor Load bars now represent hours (not flight count), sorted by hours. Page title updated to **"AP127 COMMAND CENTER"** in both top bar and sidebar/mobile wordmark. **ANALYTICS**: default breakdown mode → HOURS; all breakdowns show Completed ✓ / Canceled ✗ counts separately; Student breakdown excludes anonymous "—" entries. |
+| 17 | **Maintenance & leave badges** across all 6 views: aircraft in maintenance show red **GND** chip + red tail name; instructors/students on leave show blue **LEAVE** chip. `isTailMaint(tail)` helper (Set-based, O(1)); `leavesOnDate(date)` helper (cached `name→reason` map). Both exported from `app-shared.js` and used in Daily, Board, Gantt, Weekly, Roster. |
+| 18 | **⟳ SYNC refresh button** added to all 6 view headers — calls `window.location.reload(true)` to force full reload bypassing browser cache. **Calendar date picker**: replaced horizontal `DateStrip` pills with `DateCalendarTrigger` (compact "WED 20 MAY ▾" button) + `DateCalendarPopup` (floating month grid, Mon–Sun, only scheduled dates selectable, prev/next month nav); consistent across DAY GLANCE, BOARD, GANTT. **Checkbox FilterBar**: collapsible panel with SEARCH input + per-item checkbox + ONLY button; all items alphabetically sorted; AIRCRAFT grouped by type (DA40TDI → DA40CS → OTHER); filter state migrated from singular strings (`batch:'ALL'`) to plural arrays (`batches:null` = all, `batches:string[]` = subset). **Gantt row sort**: pure alphabetical (AP-127-first priority removed). Cache token → `r18`. |
 | — | **Fetch reliability**: Playwright browser cached in CI (saves ~2 min/run); Python script retries up to 3× with backoff; `git pull --rebase` before push prevents concurrent-run conflicts; failure opens a GitHub Issue (`fetch-failure` label). |
 | — | **Workflow bug fixes**: (1) Playwright cache-hit path ran `install-deps` only — binary was never placed, causing "Executable doesn't exist" crash. Fixed by always running `playwright install chromium --with-deps` unconditionally (fast when cached, full install when cold). (2) Issue reporter got 403 because `issues: write` was missing from the workflow permissions block. |
 | — | **Historical data preservation**: `fetch_schedule.py` now merges new data into existing `flight_schedule.json` instead of overwriting — dates outside the source's rolling window are kept. Rolling backup written to `flight_schedule.backup.json` before each save. `rebuild_history.py` reconstructed the full history from 111 git commits (11 dates/260 entries → 15 dates/382 entries, recovering May 5–8). |
