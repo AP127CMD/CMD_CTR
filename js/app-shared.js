@@ -789,6 +789,20 @@ function ViewIcon({ id, size=13, color='currentColor' }) {
       <line x1="3.7" y1="10.3" x2="2.3" y2="11.7"/>
     </svg>
   );
+  if (id === 'slotfinder') return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke={color} strokeWidth="1.2">
+      {/* Calendar */}
+      <rect x="1.5" y="3" width="9" height="8.5" rx="1"/>
+      <line x1="1.5" y1="5.8" x2="10.5" y2="5.8"/>
+      <line x1="4"   y1="1.5" x2="4"   y2="3.5"/>
+      <line x1="8"   y1="1.5" x2="8"   y2="3.5"/>
+      {/* Magnifying glass (bottom-right, overlapping) */}
+      <circle cx="10.5" cy="10.5" r="2.6"/>
+      <line x1="12.4" y1="12.4" x2="13.5" y2="13.5" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Checkmark inside lens */}
+      <path d="M9.4 10.5 L10.2 11.4 L11.7 9.6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+    </svg>
+  );
   if (id === 'roster') return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill={color}>
       <rect x="1"   y="4.5" width="3.5" height="2"   rx=".4" opacity=".9"/>
