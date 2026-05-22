@@ -1,80 +1,108 @@
-// SLOT FINDER — find open time windows for an additional flight
-// Checks: FI availability (leave + conflict + 7-h duty span)
-//         SP availability (leave + conflict)           [optional]
-//         Aircraft availability (maintenance + conflict)
-//         Gap buffer between consecutive flights of the same resource
+// SLOT FINDER — find open time windows for an additional AP-127 flight
+// Constraints: FI qualification × aircraft type, duty span (7 h),
+//              RWY close period, gap buffer (between-only), SP (optional)
 const { useMemo: useM_sf, useState: useS_sf } = React;
 
-// ─── Constants ───────────────────────────────────────────────────────────
+// ─── AP-127 FI Qualification Map ─────────────────────────────────────────
+// Keys must match the instructor name strings stored in FLIGHTS.instructor
+const SF_AP127_FI_QUALS = {
+  'CHAROENCHAI U.': ['DA40CS', 'DA42TDI'],
+  'EKKAPHOP R.':    ['DA40TDI', 'DA42TDI'],
+  'ITTIPOL P.':     ['DA40TDI', 'DA42TDI'],
+  'KITTICHAI C.':   ['DA40CS', 'DA42TDI'],
+  'KOONPHOL U.':    ['DA40CS', 'DA42TDI'],
+  'NAPATTORN S.':   ['DA40TDI', 'DA42TDI'],
+  'PARINYA B.':     ['DA40CS', 'DA42TDI'],
+  'PHAHOLYUTH P.':  ['DA40CS', 'DA42TDI'],
+  'SANTI PO.':      ['DA40CS', 'DA42TDI'],
+  'SANTI SUK.':     ['DA40CS', 'DA42TDI'],
+  'SOWAN C.':       ['DA40CS', 'DA42TDI'],
+  'THAWATANAN P.':  ['DA40TDI', 'DA42TDI'],
+  'WISANU T.':      ['DA40TDI', 'DA42TDI'],
+  'WUTTHICHAI L.':  ['DA40TDI', 'DA42TDI'],
+};
+// Sorted alphabetically — used for timeline and dropdowns
+const SF_AP127_FI_NAMES = Object.keys(SF_AP127_FI_QUALS).sort();
+
+// ─── Static option arrays (built once outside React) ─────────────────────
+// Duration: 1:00 to 5:00 in 15-min steps
+const SF_DUR_OPTS = (() => {
+  const opts = [];
+  for (let m = 60; m <= 300; m += 15) {
+    const h = Math.floor(m / 60), mm = m % 60;
+    opts.push({ v: m, l: `${h}:${String(mm).padStart(2, '0')}` });
+  }
+  return opts;
+})();
+
+// Buffer: 0 to 60 min in 5-min steps
+const SF_GAP_OPTS = (() => {
+  const opts = [];
+  for (let m = 0; m <= 60; m += 5) {
+    opts.push({ v: m, l: m === 0 ? 'No buffer' : `${m} min` });
+  }
+  return opts;
+})();
+
+// ─── Constants ────────────────────────────────────────────────────────────
 const SF_HOUR_START = 6;
 const SF_HOUR_END   = 18;
-const SF_HOUR_SPAN  = SF_HOUR_END - SF_HOUR_START;  // 12 h
-const SF_MAX_DUTY   = 420;  // 7 hours in minutes
+const SF_HOUR_SPAN  = SF_HOUR_END - SF_HOUR_START; // 12
+const SF_MAX_DUTY   = 420; // 7 h in minutes
 
-// ─── Helpers ─────────────────────────────────────────────────────────────
-const sfMinsToHHMM = m => {
-  if (m == null) return '—';
-  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+// ─── Pure helpers ─────────────────────────────────────────────────────────
+const sfMinsToHHMM = m => m == null
+  ? '—'
+  : `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+
+const sfFmtDur = m => {
+  const h = Math.floor(m / 60), mm = m % 60;
+  return mm ? `${h}h ${mm}m` : `${h}h`;
 };
 
-// Direct overlap check (no gap padding — gap is baked into the busyMap)
+// Overlap test against a sorted array of {start,end} blocks
 function sfHasOverlap(blocks, t, end) {
-  if (!blocks || !blocks.length) return false;
+  if (!blocks?.length) return false;
   for (let i = 0; i < blocks.length; i++) {
     if (t < blocks[i].end && end > blocks[i].start) return true;
   }
   return false;
 }
 
-// Duty span check: adding [t, end] must not push the FI's span over 7 h
+// Adding [t,end] must not push the FI's duty span past 7 h
 function sfDutyOk(duty, t, end) {
-  if (!duty) return true;  // no existing flights → always ok
-  const newFirst = Math.min(duty.first, t);
-  const newLast  = Math.max(duty.last,  end);
-  return (newLast - newFirst) <= SF_MAX_DUTY;
+  if (!duty) return true;
+  return (Math.max(duty.last, end) - Math.min(duty.first, t)) <= SF_MAX_DUTY;
 }
 
-// Build busy-block maps from all non-Canceled flights on a given date.
-// Gap padding uses "between only": pad right side of flight i only if there
-// is a subsequent flight; pad left side only if there is a preceding flight.
-// This means the first flight's left edge and last flight's right edge are
-// never padded — only transitions between adjacent flights carry the buffer.
+// Build padded busy-block maps from all non-Canceled flights on the date.
+// "Between-only" gap: left-pad a flight only if there is a prior flight for
+// that resource; right-pad only if there is a later one.
 function sfBuildBusyMap(dateFlights, gapMin) {
-  // Collect raw intervals per resource key
-  const rawFI   = {};  // name  → [{s,e}] sorted by s
-  const rawSP   = {};  // name  → [{s,e}]
-  const rawTail = {};  // tail  → [{s,e}]
-  const fiDuty  = {};  // name  → {first,last}
+  const rawFI = {}, rawSP = {}, rawTail = {};
+  const fiDuty = {};
 
   dateFlights.forEach(f => {
     const s = minutesOf(f.start), e = minutesOf(f.end);
     if (s == null || e == null) return;
-
-    const push = (map, key) => {
-      if (!key) return;
-      (map[key] = map[key] || []).push({ s, e });
-    };
+    const push = (map, key) => { if (key) (map[key] = map[key] || []).push({ s, e }); };
     push(rawFI,   f.instructor);
     push(rawSP,   f.student);
     push(rawTail, f.tail);
-
     if (f.instructor) {
-      if (!fiDuty[f.instructor]) fiDuty[f.instructor] = { first: s, last: e };
-      else {
-        fiDuty[f.instructor].first = Math.min(fiDuty[f.instructor].first, s);
-        fiDuty[f.instructor].last  = Math.max(fiDuty[f.instructor].last,  e);
-      }
+      const d = fiDuty[f.instructor];
+      if (!d) fiDuty[f.instructor] = { first: s, last: e };
+      else { d.first = Math.min(d.first, s); d.last = Math.max(d.last, e); }
     }
   });
 
-  // Convert raw intervals to gap-padded busy blocks ("between only" logic)
-  const toBusy = (rawMap) => {
+  const toBusy = rawMap => {
     const out = {};
     Object.entries(rawMap).forEach(([key, arr]) => {
       const sorted = [...arr].sort((a, b) => a.s - b.s);
       out[key] = sorted.map(({ s, e }, i) => ({
         start: s - (i > 0               ? gapMin : 0),
-        end:   e + (i < sorted.length-1 ? gapMin : 0),
+        end:   e + (i < sorted.length - 1 ? gapMin : 0),
       }));
     });
     return out;
@@ -85,45 +113,63 @@ function sfBuildBusyMap(dateFlights, gapMin) {
     spBusy:   toBusy(rawSP),
     tailBusy: toBusy(rawTail),
     fiDuty,
-    rawFI,     // kept for timeline rendering (un-padded intervals)
-    rawSP,
+    rawFI,   // un-padded, used for timeline rendering
     rawTail,
   };
 }
 
-// Sweep 15-min increments and collect valid slots
-function sfRunFinder({ windowStart, windowEnd, durationMin, spName },
-                     { fiBusy, spBusy, tailBusy, fiDuty },
-                     { candFIs, candTails, candSPs }) {
+// Sweep in 15-min steps; emit valid (FI × tail) pairs per slot.
+// A pair is valid when: FI free, tail free, FI qualified on tail's type,
+// duty span ok, RWY not closed, SP free (if constrained).
+function sfRunFinder(
+  { windowStart, windowEnd, durationMin, spName, rwyStart, rwyEnd },
+  { fiBusy, spBusy, tailBusy, fiDuty },
+  { candFIs, candTails, tailTypeMap }
+) {
   const results = [];
   for (let t = windowStart; t <= windowEnd - durationMin; t += 15) {
     const end = t + durationMin;
-    const avFIs   = candFIs.filter(fi =>
+    // RWY close
+    if (rwyStart != null && rwyEnd != null && t < rwyEnd && end > rwyStart) continue;
+    // SP constraint
+    if (spName && spName !== 'any' && sfHasOverlap(spBusy[spName], t, end)) continue;
+
+    const freeFIs   = candFIs.filter(fi =>
       !sfHasOverlap(fiBusy[fi], t, end) && sfDutyOk(fiDuty[fi], t, end)
     );
-    const avTails = candTails.filter(tail =>
-      !sfHasOverlap(tailBusy[tail], t, end)
-    );
-    if (!avFIs.length || !avTails.length) continue;
+    const freeTails = candTails.filter(tail => !sfHasOverlap(tailBusy[tail], t, end));
+    if (!freeFIs.length || !freeTails.length) continue;
 
-    let avSPs = null;
-    if (spName && spName !== 'any') {
-      if (sfHasOverlap(spBusy[spName], t, end)) continue;
-      avSPs = [spName];
+    const pairs = [];
+    for (const fi of freeFIs) {
+      const quals = SF_AP127_FI_QUALS[fi] || [];
+      for (const tail of freeTails) {
+        if (quals.includes(tailTypeMap[tail])) pairs.push({ fi, tail });
+      }
     }
-    results.push({ t, end, avFIs, avTails, avSPs });
+    if (!pairs.length) continue;
+    results.push({ t, end, pairs, spName: (spName !== 'any' ? spName : null) });
   }
   return results;
 }
 
-// Merge consecutive 15-min slots that share the exact same FI + tail sets
-// into a single wider window. Adjacent = slot.t === prev.end.
+// Merge consecutive 15-min slots that have the same (avFIs set, avTails set).
+// Pairs shown = all valid pairs for ANY of the merged 15-min slots — the
+// key is based on unique FIs + unique tails so the card reflects full option
+// space while still grouping predictable "same resource block" windows.
 function sfMergeSlots(rawSlots) {
   if (!rawSlots.length) return [];
+
+  const makeKey = slot => {
+    const fis   = [...new Set(slot.pairs.map(p => p.fi))].sort().join('|');
+    const tails = [...new Set(slot.pairs.map(p => p.tail))].sort().join('|');
+    return `${fis}##${tails}`;
+  };
+
   const windows = [];
   let cur = null;
   rawSlots.forEach(slot => {
-    const key = [...slot.avFIs].sort().join('|') + '##' + [...slot.avTails].sort().join('|');
+    const key = makeKey(slot);
     if (cur && cur._key === key && slot.t === cur.end) {
       cur.end = slot.end;
     } else {
@@ -135,9 +181,7 @@ function sfMergeSlots(rawSlots) {
   return windows.map(({ _key, ...w }) => w);
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────
-
-// Inline label + select (matches FilterBar style)
+// ─── Tiny reusable controls ────────────────────────────────────────────────
 function SfSel({ label, value, onChange, opts, minWidth }) {
   return (
     <label style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -155,60 +199,63 @@ function SfSel({ label, value, onChange, opts, minWidth }) {
   );
 }
 
-// Chip row
-function SfChips({ items, color }) {
-  if (!items || !items.length)
-    return <span className="mono" style={{ fontSize: 9, color: 'var(--ink-3)' }}>—</span>;
+function SfTimeInput({ label, value, onChange, accent }) {
   return (
-    <>
-      {items.map(item => (
-        <span key={item} className="mono" style={{
-          fontSize: 9, padding: '2px 7px', borderRadius: 4, flexShrink: 0,
-          background: `color-mix(in oklch,${color} 12%,transparent)`,
-          border: `1px solid color-mix(in oklch,${color} 30%,transparent)`,
-          color,
-        }}>{item}</span>
-      ))}
-    </>
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {label && (
+        <span className="mono uc" style={{ fontSize: 9, color: accent || 'var(--ink-3)' }}>
+          {label}
+        </span>
+      )}
+      <input type="time" value={value} onChange={e => onChange(e.target.value)}
+        className="mono"
+        style={{
+          background: 'var(--surface)', color: 'var(--ink)',
+          border: `1px solid ${accent ? `color-mix(in oklch,${accent} 40%,var(--line))` : 'var(--line)'}`,
+          borderRadius: 4, padding: '4px 8px', fontSize: 11, outline: 'none',
+          fontFamily: 'inherit', width: 80,
+        }} />
+    </label>
   );
 }
 
-// One result card
+// ─── Slot card ─────────────────────────────────────────────────────────────
 function SfSlotCard({ slot }) {
-  const tight = slot.avFIs.length === 1 || slot.avTails.length === 1;
-  const veryTight = slot.avFIs.length === 1 && slot.avTails.length === 1;
-  const accent = veryTight
-    ? 'var(--col-cancel)'
-    : tight
-      ? 'var(--col-pending)'
-      : 'var(--col-done)';
-  const badge = veryTight ? 'TIGHT' : tight ? 'LIMITED' : 'OPEN';
+  // Group pairs by FI, each FI's aircraft sorted alphabetically
+  const byFI = {};
+  slot.pairs.forEach(({ fi, tail }) => { (byFI[fi] = byFI[fi] || []).push(tail); });
+  const fiEntries = Object.entries(byFI).sort(([a], [b]) => a.localeCompare(b));
 
-  const startLbl = sfMinsToHHMM(slot.t);
-  const endLbl   = sfMinsToHHMM(slot.end);
-  const durH     = Math.floor((slot.end - slot.t) / 60);
-  const durM     = (slot.end - slot.t) % 60;
-  const durLbl   = durH > 0 ? `${durH}h${durM > 0 ? durM + 'm' : ''}` : `${durM}m`;
+  const nCombos   = slot.pairs.length;
+  const nFIs      = fiEntries.length;
+  const nTails    = new Set(slot.pairs.map(p => p.tail)).size;
+  const durMins   = slot.end - slot.t;
+  const accent = nCombos >= 6 ? 'var(--col-done)' : nCombos >= 3 ? 'var(--col-pending)' : 'var(--col-cancel)';
+  const badge  = nCombos >= 6 ? 'OPEN' : nCombos >= 3 ? 'LIMITED' : 'TIGHT';
 
   return (
     <div style={{
       background: 'var(--surface)',
-      border: `1px solid color-mix(in oklch,${accent} 25%,var(--line))`,
+      border: `1px solid color-mix(in oklch,${accent} 22%,var(--line))`,
       borderLeft: `3px solid ${accent}`,
       borderRadius: 6, padding: '9px 12px',
-      display: 'flex', flexDirection: 'column', gap: 6,
+      display: 'flex', flexDirection: 'column', gap: 7,
     }}>
-      {/* Header */}
+      {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <span className="mono num" style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
-          {startLbl} – {endLbl}
+          {sfMinsToHHMM(slot.t)} – {sfMinsToHHMM(slot.end)}
         </span>
-        <span className="mono" style={{ fontSize: 9, color: 'var(--ink-3)' }}>{durLbl}</span>
-        <span className="mono uc" style={{ fontSize: 9, color: 'var(--ink-3)' }}>
-          · {slot.avFIs.length} FI{slot.avFIs.length > 1 ? 's' : ''}
-          &nbsp;· {slot.avTails.length} A/C
+        <span className="mono" style={{ fontSize: 9, color: 'var(--ink-3)' }}>
+          {sfFmtDur(durMins)}
+        </span>
+        <span className="mono" style={{ fontSize: 9, color: 'var(--ink-3)' }}>
+          · {nFIs} FI{nFIs > 1 ? 's' : ''} · {nTails} A/C
         </span>
         <span style={{ flex: 1 }} />
+        <span className="mono" style={{ fontSize: 11, fontWeight: 700, color: accent }}>
+          {nCombos}&thinsp;COMBO{nCombos > 1 ? 'S' : ''}
+        </span>
         <span className="mono uc" style={{
           fontSize: 8, padding: '2px 7px', borderRadius: 999,
           background: `color-mix(in oklch,${accent} 14%,transparent)`,
@@ -216,50 +263,77 @@ function SfSlotCard({ slot }) {
           color: accent,
         }}>{badge}</span>
       </div>
-      {/* FIs */}
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-        <span className="mono uc" style={{ fontSize: 8, color: 'var(--ink-3)', width: 22 }}>FI</span>
-        <SfChips items={slot.avFIs} color="var(--col-pending)" />
+
+      {/* ── FI × Aircraft pairs table ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {fiEntries.map(([fi, tails]) => (
+          <div key={fi} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap' }}>
+            {/* FI name */}
+            <span style={{
+              fontSize: 10, color: 'var(--ink-2)',
+              minWidth: 138, flexShrink: 0, paddingTop: 2,
+            }}>{fi}</span>
+            {/* Aircraft chips */}
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', flex: 1 }}>
+              {[...tails].sort().map(tail => {
+                const res = RESOURCES.find(r => r.tail === tail);
+                return (
+                  <span key={tail} className="mono" style={{
+                    fontSize: 9, padding: '2px 8px', borderRadius: 4,
+                    background: 'color-mix(in oklch,var(--col-done) 10%,transparent)',
+                    border: '1px solid color-mix(in oklch,var(--col-done) 28%,transparent)',
+                    color: 'var(--col-done)',
+                  }}>
+                    {tail}{res?.acType ? ` · ${res.acType}` : ''}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
-      {/* Aircraft */}
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-        <span className="mono uc" style={{ fontSize: 8, color: 'var(--ink-3)', width: 22 }}>A/C</span>
-        <SfChips
-          items={slot.avTails.map(t => {
-            const r = RESOURCES.find(x => x.tail === t);
-            return r ? `${t} (${r.acType})` : t;
-          })}
-          color="var(--col-done)"
-        />
-      </div>
-      {/* SP */}
-      {slot.avSPs && (
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-          <span className="mono uc" style={{ fontSize: 8, color: 'var(--ink-3)', width: 22 }}>SP</span>
-          <SfChips items={slot.avSPs} color="var(--col-sim, oklch(0.72 0.15 280))" />
+
+      {/* ── SP chip (when constrained) ── */}
+      {slot.spName && (
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <span className="mono uc" style={{ fontSize: 8, color: 'var(--ink-3)', minWidth: 22 }}>SP</span>
+          <span className="mono" style={{
+            fontSize: 9, padding: '2px 8px', borderRadius: 4,
+            background: 'color-mix(in oklch,oklch(0.72 0.15 280) 12%,transparent)',
+            border: '1px solid color-mix(in oklch,oklch(0.72 0.15 280) 30%,transparent)',
+            color: 'oklch(0.72 0.15 280)',
+          }}>{slot.spName}</span>
         </div>
       )}
     </div>
   );
 }
 
-// ─── Resource Timeline ────────────────────────────────────────────────────
-function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo, leavesMap, durationMin }) {
-  const LABEL_W  = 150;
+// ─── Resource timeline ─────────────────────────────────────────────────────
+function SfTimeline({
+  busyMap, allFIs, candFIs, allTails, candTails,
+  results, windowFrom, windowTo, leavesMap, rwyStart, rwyEnd,
+}) {
+  const LABEL_W  = 152;
   const BASE_MIN = SF_HOUR_START * 60;
   const SPAN_MIN = SF_HOUR_SPAN  * 60;
 
   const pct  = m  => `${Math.max(0, Math.min(100, ((m - BASE_MIN) / SPAN_MIN) * 100))}%`;
   const wpct = dm => `${Math.max(0, (dm / SPAN_MIN) * 100)}%`;
 
-  const wStart = minutesOf(windowFrom) || BASE_MIN;
-  const wEnd   = minutesOf(windowTo)   || (BASE_MIN + SPAN_MIN);
+  const wStart = minutesOf(windowFrom) ?? BASE_MIN;
+  const wEnd   = minutesOf(windowTo)   ?? (BASE_MIN + SPAN_MIN);
 
   const { rawFI, rawTail } = busyMap;
 
+  // Pre-compute per-resource availability sets from results
+  const avFISet   = new Set(results.flatMap(s => s.pairs.map(p => p.fi)));
+  const avTailSet = new Set(results.flatMap(s => s.pairs.map(p => p.tail)));
+
+  // Sections: FIs (alphabetical), then aircraft (alphabetical by tail)
   const sections = [
-    { label: 'FLIGHT INSTRUCTORS', rows: candFIs,   raw: rawFI   },
-    { label: 'AIRCRAFT',           rows: candTails, raw: rawTail },
+    { label: 'FLIGHT INSTRUCTORS', rows: [...allFIs].sort(),   raw: rawFI,   avSet: avFISet,   candSet: new Set(candFIs) },
+    { label: 'AIRCRAFT',           rows: [...allTails].sort(), raw: rawTail, avSet: avTailSet, candSet: new Set(candTails) },
   ];
 
   return (
@@ -267,7 +341,7 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
       border: '1px solid var(--line)', borderRadius: 6,
       overflow: 'hidden', background: 'var(--surface)', flexShrink: 0,
     }}>
-      {/* Hour ruler */}
+      {/* ── Hour ruler ── */}
       <div style={{
         display: 'grid', gridTemplateColumns: `${LABEL_W}px 1fr`,
         background: 'var(--bg-2)', borderBottom: '1px solid var(--line)', height: 26,
@@ -277,15 +351,27 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
           display: 'flex', alignItems: 'center',
         }}>TIMELINE</div>
         <div style={{ position: 'relative' }}>
-          {/* Window shading */}
+          {/* Search window shading */}
           <div style={{
             position: 'absolute',
             left: pct(Math.max(BASE_MIN, wStart)),
             width: wpct(Math.min(BASE_MIN + SPAN_MIN, wEnd) - Math.max(BASE_MIN, wStart)),
             top: 0, bottom: 0,
             background: 'color-mix(in oklch,var(--col-pending) 8%,transparent)',
-            pointerEvents: 'none',
           }} />
+          {/* RWY close band */}
+          {rwyStart != null && rwyEnd != null && (
+            <div style={{
+              position: 'absolute',
+              left: pct(Math.max(BASE_MIN, rwyStart)),
+              width: wpct(Math.min(BASE_MIN + SPAN_MIN, rwyEnd) - Math.max(BASE_MIN, rwyStart)),
+              top: 0, bottom: 0,
+              background: 'color-mix(in oklch,var(--col-cancel) 15%,transparent)',
+              borderLeft: '1px solid color-mix(in oklch,var(--col-cancel) 40%,transparent)',
+              borderRight: '1px solid color-mix(in oklch,var(--col-cancel) 40%,transparent)',
+            }} />
+          )}
+          {/* Hour ticks */}
           {Array.from({ length: SF_HOUR_SPAN + 1 }, (_, i) => {
             const h = SF_HOUR_START + i;
             return (
@@ -300,9 +386,9 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
         </div>
       </div>
 
-      {/* Resource rows */}
-      <div style={{ maxHeight: 290, overflowY: 'auto' }}>
-        {sections.map(({ label, rows, raw }) => (
+      {/* ── Resource rows ── */}
+      <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+        {sections.map(({ label, rows, raw, avSet, candSet }) => (
           <React.Fragment key={label}>
             {/* Section header */}
             <div className="mono uc" style={{
@@ -312,33 +398,39 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
             }}>{label}</div>
 
             {rows.map((rowKey, ri) => {
-              const flights = raw[rowKey] || [];
-              const isLeave = leavesMap && leavesMap[rowKey];
+              const flights  = raw[rowKey] || [];
+              const isLeave  = leavesMap?.[rowKey];
+              const isInCand = candSet.has(rowKey);
+              const hasSlots = avSet.has(rowKey);
+              const dimmed   = isLeave || !isInCand;
 
               return (
                 <div key={rowKey} style={{
                   display: 'grid', gridTemplateColumns: `${LABEL_W}px 1fr`,
-                  borderBottom: '1px solid var(--line-soft)', minHeight: 34,
+                  borderBottom: '1px solid var(--line-soft)', minHeight: 32,
                   background: ri % 2
                     ? 'transparent'
                     : 'color-mix(in oklch,var(--ink) 1.5%,transparent)',
-                  opacity: isLeave ? 0.4 : 1,
+                  opacity: dimmed ? 0.28 : 1,
+                  transition: 'opacity .15s',
                 }}>
-                  {/* Label */}
+                  {/* Row label */}
                   <div style={{
                     padding: '0 8px', display: 'flex', alignItems: 'center', gap: 5,
                     borderRight: '1px solid var(--line)', overflow: 'hidden',
                   }}>
                     <span style={{
-                      fontSize: 10, color: 'var(--ink-2)',
+                      fontSize: 10,
+                      color: hasSlots ? 'var(--ink)' : 'var(--ink-2)',
+                      fontWeight: hasSlots ? 600 : 400,
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
                     }}>{rowKey}</span>
                     {isLeave && (
                       <span className="mono uc" style={{
                         fontSize: 7, padding: '1px 4px', borderRadius: 3, flexShrink: 0,
-                        background: 'color-mix(in oklch,var(--col-stby,oklch(0.7 0.14 260)) 15%,transparent)',
-                        border: '1px solid color-mix(in oklch,var(--col-stby,oklch(0.7 0.14 260)) 40%,transparent)',
-                        color: 'var(--col-stby,oklch(0.7 0.14 260))',
+                        background: 'color-mix(in oklch,oklch(0.7 0.14 260) 15%,transparent)',
+                        border: '1px solid color-mix(in oklch,oklch(0.7 0.14 260) 40%,transparent)',
+                        color: 'oklch(0.7 0.14 260)',
                       }}>LEAVE</span>
                     )}
                   </div>
@@ -350,12 +442,12 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
                       <div key={i} style={{
                         position: 'absolute', left: pct((SF_HOUR_START + i) * 60),
                         top: 0, bottom: 0,
-                        borderLeft: '1px solid var(--line-soft)', opacity: 0.4,
+                        borderLeft: '1px solid var(--line-soft)', opacity: 0.35,
                         pointerEvents: 'none',
                       }} />
                     ))}
 
-                    {/* Window shading */}
+                    {/* Search window shading */}
                     <div style={{
                       position: 'absolute',
                       left: pct(Math.max(BASE_MIN, wStart)),
@@ -365,25 +457,37 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
                       pointerEvents: 'none',
                     }} />
 
-                    {/* Existing flights (un-padded, raw) */}
+                    {/* RWY close band on each row */}
+                    {rwyStart != null && rwyEnd != null && (
+                      <div style={{
+                        position: 'absolute',
+                        left: pct(Math.max(BASE_MIN, rwyStart)),
+                        width: wpct(Math.min(BASE_MIN + SPAN_MIN, rwyEnd) - Math.max(BASE_MIN, rwyStart)),
+                        top: 0, bottom: 0,
+                        background: 'color-mix(in oklch,var(--col-cancel) 8%,transparent)',
+                        pointerEvents: 'none',
+                      }} />
+                    )}
+
+                    {/* Existing flights (un-padded) */}
                     {flights.map((fl, fi) => (
                       <div key={fi} style={{
                         position: 'absolute',
                         left: pct(Math.max(BASE_MIN, fl.s)),
                         width: wpct(Math.min(BASE_MIN + SPAN_MIN, fl.e) - Math.max(BASE_MIN, fl.s)),
                         top: 4, bottom: 4,
-                        background: 'color-mix(in oklch,var(--ink-2) 25%,transparent)',
-                        border: '1px solid color-mix(in oklch,var(--ink-2) 40%,transparent)',
+                        background: 'color-mix(in oklch,var(--ink-2) 28%,transparent)',
+                        border: '1px solid color-mix(in oklch,var(--ink-2) 45%,transparent)',
                         borderRadius: 3,
                       }} />
                     ))}
 
-                    {/* Available slot highlights from results */}
-                    {results && results.map((slot, si) => {
-                      const isAv = label === 'FLIGHT INSTRUCTORS'
-                        ? slot.avFIs.includes(rowKey)
-                        : slot.avTails.includes(rowKey);
-                      if (!isAv) return null;
+                    {/* Available slot highlights */}
+                    {results.map((slot, si) => {
+                      const inPairs = label === 'FLIGHT INSTRUCTORS'
+                        ? slot.pairs.some(p => p.fi   === rowKey)
+                        : slot.pairs.some(p => p.tail === rowKey);
+                      if (!inPairs) return null;
                       return (
                         <div key={si} style={{
                           position: 'absolute',
@@ -391,26 +495,11 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
                           width: wpct(slot.end - slot.t),
                           top: 5, bottom: 5,
                           background: 'color-mix(in oklch,var(--col-done) 22%,transparent)',
-                          border: '1px solid color-mix(in oklch,var(--col-done) 50%,transparent)',
-                          borderRadius: 3,
-                          pointerEvents: 'none',
+                          border: '1px solid color-mix(in oklch,var(--col-done) 55%,transparent)',
+                          borderRadius: 3, pointerEvents: 'none',
                         }} />
                       );
                     })}
-
-                    {/* Duration preview bar spanning the search window width */}
-                    {results === null && wEnd > wStart && (
-                      <div style={{
-                        position: 'absolute',
-                        left: pct(Math.max(BASE_MIN, wStart)),
-                        width: wpct(durationMin),
-                        top: 7, bottom: 7,
-                        borderRadius: 3,
-                        background: 'color-mix(in oklch,var(--col-pending) 10%,transparent)',
-                        border: '1px dashed color-mix(in oklch,var(--col-pending) 30%,transparent)',
-                        pointerEvents: 'none',
-                      }} />
-                    )}
                   </div>
                 </div>
               );
@@ -419,19 +508,20 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
         ))}
       </div>
 
-      {/* Legend */}
+      {/* ── Legend ── */}
       <div style={{
-        display: 'flex', gap: 14, padding: '4px 10px',
+        display: 'flex', gap: 14, padding: '4px 10px', flexWrap: 'wrap',
         borderTop: '1px solid var(--line-soft)',
         background: 'color-mix(in oklch,var(--ink) 2%,var(--surface))',
       }}>
         {[
-          ['color-mix(in oklch,var(--ink-2) 25%,transparent)', 'Scheduled'],
+          ['color-mix(in oklch,var(--ink-2) 28%,transparent)',   'Scheduled'],
           ['color-mix(in oklch,var(--col-done) 22%,transparent)', 'Available slot'],
           ['color-mix(in oklch,var(--col-pending) 8%,transparent)', 'Search window'],
+          ['color-mix(in oklch,var(--col-cancel) 15%,transparent)', 'RWY closed'],
         ].map(([bg, lbl]) => (
           <div key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 12, height: 8, borderRadius: 2, background: bg, border: '1px solid rgba(255,255,255,0.15)' }} />
+            <div style={{ width: 12, height: 8, borderRadius: 2, background: bg, border: '1px solid rgba(255,255,255,0.12)' }} />
             <span className="mono" style={{ fontSize: 8, color: 'var(--ink-3)' }}>{lbl}</span>
           </div>
         ))}
@@ -440,34 +530,33 @@ function SfTimeline({ busyMap, candFIs, candTails, results, windowFrom, windowTo
   );
 }
 
-// ─── Root component ───────────────────────────────────────────────────────
+// ─── Root component ────────────────────────────────────────────────────────
 function SlotFinderBoard() {
   const { isMobile } = useApp();
 
-  // ── Search params ──
+  // ── Search params ─────────────────────────────────────────────────────
   const [sfDate,       setSfDate]       = useS_sf(DEFAULT_DATE);
-  const [durationMin,  setDurationMin]  = useS_sf(60);
-  const [gapMin,       setGapMin]       = useS_sf(15);
+  const [durationMin,  setDurationMin]  = useS_sf(60);        // default 1 h
+  const [gapMin,       setGapMin]       = useS_sf(30);        // default 30 min buffer
   const [acTypeFilter, setAcTypeFilter] = useS_sf('Any');
   const [fiFilter,     setFiFilter]     = useS_sf('any');
   const [spFilter,     setSpFilter]     = useS_sf('any');
   const [windowFrom,   setWindowFrom]   = useS_sf('06:00');
   const [windowTo,     setWindowTo]     = useS_sf('18:00');
   const [sortBy,       setSortBy]       = useS_sf('earliest');
+  const [rwyEnabled,   setRwyEnabled]   = useS_sf(true);
+  const [rwyFrom,      setRwyFrom]      = useS_sf('14:00');
+  const [rwyTo,        setRwyTo]        = useS_sf('16:00');
 
-  // ── Dropdown option lists (stable — built once or on date change) ──
+  // ── Static option lists ───────────────────────────────────────────────
   const dateOpts = useM_sf(() =>
-    ALL_DATES.map(d => { const { wd, day, mo } = fmtDay(d); return { v: d, l: `${wd} ${String(day).padStart(2,'0')} ${mo}` }; })
+    ALL_DATES.map(d => {
+      const { wd, day, mo } = fmtDay(d);
+      return { v: d, l: `${wd} ${String(day).padStart(2, '0')} ${mo}` };
+    })
   , []);
 
-  const durOpts = [30, 45, 60, 90, 120].map(m => ({
-    v: m, l: m < 60 ? `${m} min` : m === 60 ? '1 h' : `${m / 60} h`,
-  }));
-
-  const gapOpts = [0, 15, 30].map(m => ({
-    v: m, l: m === 0 ? 'No gap' : `${m} min`,
-  }));
-
+  // Aircraft types available (from RESOURCES, non-SIM)
   const typeOpts = useM_sf(() => {
     const types = [...new Set(
       RESOURCES.filter(r => r.acType && !/SIM|Classroom/i.test(r.acType)).map(r => r.acType)
@@ -475,69 +564,112 @@ function SlotFinderBoard() {
     return [{ v: 'Any', l: 'Any type' }, ...types.map(t => ({ v: t, l: t }))];
   }, []);
 
+  // FI options: only AP127 FIs, filtered by selected type
   const fiOpts = useM_sf(() => {
-    const names = INSTRUCTORS.map(i => i.name).sort();
-    return [{ v: 'any', l: 'Any available' }, ...names.map(n => ({ v: n, l: n }))];
-  }, []);
+    const qualified = acTypeFilter === 'Any'
+      ? SF_AP127_FI_NAMES
+      : SF_AP127_FI_NAMES.filter(n => SF_AP127_FI_QUALS[n]?.includes(acTypeFilter));
+    return [{ v: 'any', l: 'Any available' }, ...qualified.map(n => ({ v: n, l: n }))];
+  }, [acTypeFilter]);
 
-  // ── Date-derived memos ──
+  // ── Date-derived memos ────────────────────────────────────────────────
   const dateFlights = useM_sf(() =>
     FLIGHTS.filter(f => f.date === sfDate && f.status !== 'Canceled')
   , [sfDate]);
 
   const leavesMap = useM_sf(() => leavesOnDate(sfDate), [sfDate]);
 
-  const spOpts = useM_sf(() => {
-    const names = [...new Set(
-      FLIGHTS.filter(f => f.date === sfDate).map(f => f.student).filter(Boolean)
-    )].filter(n => !leavesMap[n]).sort();
-    return [{ v: 'any', l: 'No constraint' }, ...names.map(n => ({ v: n, l: n }))];
-  }, [sfDate, leavesMap]);
+  // AP-127 students from all scheduled flights, sorted alphabetically
+  const ap127Students = useM_sf(() =>
+    [...new Set(
+      FLIGHTS.filter(f => /AP.?127/i.test(f.batch || '') && f.student)
+             .map(f => f.student)
+    )].sort()
+  , []);
 
+  // SP options: AP127 students not on leave today
+  const spOpts = useM_sf(() => {
+    const free = ap127Students.filter(n => !leavesMap[n]);
+    return [{ v: 'any', l: 'No constraint' }, ...free.map(n => ({ v: n, l: n }))];
+  }, [ap127Students, leavesMap]);
+
+  // Busy/duty maps
   const busyMap = useM_sf(() => sfBuildBusyMap(dateFlights, gapMin), [dateFlights, gapMin]);
 
+  // tail → acType lookup
+  const tailTypeMap = useM_sf(() => {
+    const m = {};
+    RESOURCES.forEach(r => { if (r.tail) m[r.tail] = r.acType || ''; });
+    return m;
+  }, []);
+
+  // Candidate FIs (AP127 only, type-qualified, not on leave, respect FI filter)
+  // If a specific FI is selected but not qualified for the chosen type → empty
   const candidates = useM_sf(() => {
+    const typeMatch = fi =>
+      acTypeFilter === 'Any' || (SF_AP127_FI_QUALS[fi]?.includes(acTypeFilter));
+
     const candFIs = fiFilter !== 'any'
-      ? (leavesMap[fiFilter] ? [] : [fiFilter])
-      : INSTRUCTORS.map(i => i.name).filter(n => !leavesMap[n]);
+      ? (typeMatch(fiFilter) && !leavesMap[fiFilter] ? [fiFilter] : [])
+      : SF_AP127_FI_NAMES.filter(n => typeMatch(n) && !leavesMap[n]);
 
     const candTails = RESOURCES.filter(r =>
       r.tail &&
       !r.isMaint &&
       !/SIM|Classroom/i.test(r.acType || '') &&
       (acTypeFilter === 'Any' || r.acType === acTypeFilter)
-    ).map(r => r.tail);
+    ).map(r => r.tail).sort();
 
-    const candSPs = spFilter !== 'any' ? [spFilter] : [];
+    return { candFIs, candTails, tailTypeMap };
+  }, [fiFilter, acTypeFilter, leavesMap, tailTypeMap]);
 
-    return { candFIs, candTails, candSPs };
-  }, [fiFilter, spFilter, acTypeFilter, leavesMap]);
+  // All aircraft rows shown in timeline (filtered by type if selected)
+  const allTailsForTimeline = useM_sf(() =>
+    RESOURCES.filter(r =>
+      r.tail &&
+      !/SIM|Classroom/i.test(r.acType || '') &&
+      (acTypeFilter === 'Any' || r.acType === acTypeFilter)
+    ).map(r => r.tail).sort()
+  , [acTypeFilter]);
 
-  // ── Core search — live auto-update ──
+  // RWY close in minutes
+  const rwyBand = useM_sf(() => {
+    if (!rwyEnabled) return { rwyStart: null, rwyEnd: null };
+    return { rwyStart: minutesOf(rwyFrom) ?? null, rwyEnd: minutesOf(rwyTo) ?? null };
+  }, [rwyEnabled, rwyFrom, rwyTo]);
+
+  // ── Core search (live auto-update) ────────────────────────────────────
   const rawResults = useM_sf(() => {
     const wStart = minutesOf(windowFrom);
     const wEnd   = minutesOf(windowTo);
-    if (!wStart && wStart !== 0) return [];
-    if (!wEnd   && wEnd   !== 0) return [];
+    if (wStart == null || wEnd == null) return [];
     if (wEnd <= wStart + durationMin) return [];
     return sfRunFinder(
-      { windowStart: wStart, windowEnd: wEnd, durationMin, spName: spFilter },
+      { windowStart: wStart, windowEnd: wEnd, durationMin,
+        spName: spFilter, ...rwyBand },
       busyMap,
       candidates,
     );
-  }, [windowFrom, windowTo, durationMin, spFilter, busyMap, candidates]);
+  }, [windowFrom, windowTo, durationMin, spFilter, rwyBand, busyMap, candidates]);
 
   const mergedResults = useM_sf(() => sfMergeSlots(rawResults), [rawResults]);
 
   const sortedResults = useM_sf(() => {
     const arr = [...mergedResults];
-    if (sortBy === 'most-fi') arr.sort((a, b) => b.avFIs.length - a.avFIs.length);
-    if (sortBy === 'most-ac') arr.sort((a, b) => b.avTails.length - a.avTails.length);
+    if (sortBy === 'most-combos') arr.sort((a, b) => b.pairs.length - a.pairs.length);
+    if (sortBy === 'most-fi')
+      arr.sort((a, b) =>
+        new Set(b.pairs.map(p => p.fi)).size - new Set(a.pairs.map(p => p.fi)).size
+      );
+    // 'earliest' → natural order (already time-sorted)
     return arr;
   }, [mergedResults, sortBy]);
 
-  // ── Display date label ──
+  // ── Summary stats ────────────────────────────────────────────────────
   const { wd, day, mo } = fmtDay(sfDate);
+  const totalCombosMax = sortedResults.length
+    ? Math.max(...sortedResults.map(s => s.pairs.length))
+    : 0;
 
   return (
     <ArtboardShell style={{ display: 'flex', flexDirection: 'column' }}>
@@ -573,56 +705,70 @@ function SlotFinderBoard() {
 
       {/* ── Search strip ── */}
       <div style={{
-        padding: '6px 10px',
+        padding: '6px 10px 8px',
         background: 'var(--bg-2)',
         borderBottom: '1px solid var(--line)',
         display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap',
         flexShrink: 0,
       }}>
-        <SfSel label="DATE"     value={sfDate}       onChange={setSfDate}                   opts={dateOpts} minWidth={130} />
-        <SfSel label="DURATION" value={durationMin}  onChange={v => setDurationMin(+v)}     opts={durOpts} />
-        <SfSel label="BUFFER"   value={gapMin}       onChange={v => setGapMin(+v)}          opts={gapOpts} />
-        <SfSel label="TYPE"     value={acTypeFilter} onChange={setAcTypeFilter}             opts={typeOpts} />
-        <SfSel label="FI"       value={fiFilter}     onChange={setFiFilter}                 opts={fiOpts} minWidth={140} />
-        <SfSel label="SP"       value={spFilter}     onChange={setSpFilter}                 opts={spOpts}  minWidth={140} />
+        {/* Row 1: main params */}
+        <SfSel label="DATE"     value={sfDate}       onChange={setSfDate}              opts={dateOpts} minWidth={130} />
+        <SfSel label="DURATION" value={durationMin}  onChange={v => setDurationMin(+v)} opts={SF_DUR_OPTS} minWidth={74} />
+        <SfSel label="BUFFER"   value={gapMin}       onChange={v => setGapMin(+v)}      opts={SF_GAP_OPTS} minWidth={82} />
+        <SfSel label="TYPE"     value={acTypeFilter} onChange={setAcTypeFilter}         opts={typeOpts} />
+        <SfSel label="FI"       value={fiFilter}     onChange={setFiFilter}             opts={fiOpts} minWidth={148} />
+        <SfSel label="SP"       value={spFilter}     onChange={setSpFilter}             opts={spOpts}  minWidth={148} />
+
+        {/* Divider */}
+        <div style={{
+          width: 1, height: 38, background: 'var(--line)',
+          alignSelf: 'flex-end', flexShrink: 0, marginBottom: 1,
+        }} />
+
+        {/* Window + RWY close */}
+        <SfTimeInput label="FROM" value={windowFrom} onChange={setWindowFrom} />
+        <SfTimeInput label="TO"   value={windowTo}   onChange={setWindowTo} />
+
+        {/* RWY close toggle */}
         <label style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <span className="mono uc" style={{ fontSize: 9, color: 'var(--ink-3)' }}>FROM</span>
-          <input type="time" value={windowFrom} onChange={e => setWindowFrom(e.target.value)}
-            className="mono"
+          <span className="mono uc" style={{ fontSize: 9, color: 'var(--col-cancel)' }}>RWY CLOSE</span>
+          <button onClick={() => setRwyEnabled(!rwyEnabled)} className="mono uc"
             style={{
-              background: 'var(--surface)', color: 'var(--ink)',
-              border: '1px solid var(--line)', borderRadius: 4,
-              padding: '4px 8px', fontSize: 11, outline: 'none',
-              fontFamily: 'inherit', width: 80,
-            }} />
+              padding: '4px 9px', borderRadius: 4, fontSize: 10, cursor: 'pointer',
+              border: `1px solid ${rwyEnabled ? 'var(--col-cancel)' : 'var(--line)'}`,
+              background: rwyEnabled
+                ? 'color-mix(in oklch,var(--col-cancel) 14%,transparent)'
+                : 'transparent',
+              color: rwyEnabled ? 'var(--col-cancel)' : 'var(--ink-3)',
+              fontWeight: rwyEnabled ? 600 : 400,
+              height: 28,
+            }}>
+            {rwyEnabled ? 'ON' : 'OFF'}
+          </button>
         </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <span className="mono uc" style={{ fontSize: 9, color: 'var(--ink-3)' }}>TO</span>
-          <input type="time" value={windowTo} onChange={e => setWindowTo(e.target.value)}
-            className="mono"
-            style={{
-              background: 'var(--surface)', color: 'var(--ink)',
-              border: '1px solid var(--line)', borderRadius: 4,
-              padding: '4px 8px', fontSize: 11, outline: 'none',
-              fontFamily: 'inherit', width: 80,
-            }} />
-        </label>
+        {rwyEnabled && (
+          <>
+            <SfTimeInput label="CLOSED FROM" value={rwyFrom} onChange={setRwyFrom} accent="var(--col-cancel)" />
+            <SfTimeInput label="CLOSED TO"   value={rwyTo}   onChange={setRwyTo}   accent="var(--col-cancel)" />
+          </>
+        )}
 
         {/* Live result badge */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginLeft: 'auto' }}>
           <span style={{ fontSize: 9 }}>&nbsp;</span>
           <div className="mono uc" style={{
-            padding: '4px 10px', borderRadius: 4, fontSize: 10, fontWeight: 600,
+            padding: '4px 12px', borderRadius: 4, fontSize: 10, fontWeight: 600,
             border: `1px solid ${sortedResults.length > 0 ? 'var(--col-done)' : 'var(--line)'}`,
             background: sortedResults.length > 0
               ? 'color-mix(in oklch,var(--col-done) 12%,transparent)'
               : 'transparent',
             color: sortedResults.length > 0 ? 'var(--col-done)' : 'var(--ink-3)',
+            height: 28, display: 'flex', alignItems: 'center',
             transition: 'all .15s',
           }}>
             {sortedResults.length > 0
-              ? `${sortedResults.length} SLOT${sortedResults.length > 1 ? 'S' : ''}`
-              : 'NO SLOTS'}
+              ? `${sortedResults.length} SLOT${sortedResults.length > 1 ? 'S' : ''} · UP TO ${totalCombosMax} COMBOS`
+              : 'NO SLOTS FOUND'}
           </div>
         </div>
       </div>
@@ -631,36 +777,39 @@ function SlotFinderBoard() {
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '8px' }}>
 
-          {/* Resource timeline */}
+          {/* Timeline */}
           <SfTimeline
             busyMap={busyMap}
+            allFIs={SF_AP127_FI_NAMES}
             candFIs={candidates.candFIs}
+            allTails={allTailsForTimeline}
             candTails={candidates.candTails}
             results={mergedResults}
             windowFrom={windowFrom}
             windowTo={windowTo}
             leavesMap={leavesMap}
-            durationMin={durationMin}
+            rwyStart={rwyBand.rwyStart}
+            rwyEnd={rwyBand.rwyEnd}
           />
 
-          {/* Results section */}
+          {/* Results */}
           {sortedResults.length === 0 ? (
             <div style={{
               padding: '28px 16px', textAlign: 'center',
               color: 'var(--ink-3)', fontSize: 10,
             }} className="mono uc">
-              No available slots — try wider window, shorter duration, or less buffer
+              No available slots — adjust window, duration, buffer, or filters
             </div>
           ) : (
             <>
-              {/* Results header + sort */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '2px 2px 0' }}>
+              {/* Header + sort */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '2px 2px 0' }}>
                 <div className="mono uc" style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>
-                  {sortedResults.length} AVAILABLE SLOT{sortedResults.length > 1 ? 'S' : ''}
+                  {sortedResults.length} SLOT{sortedResults.length > 1 ? 'S' : ''}
                 </div>
                 <div style={{ flex: 1 }} />
                 <span className="mono uc" style={{ fontSize: 8, color: 'var(--ink-3)' }}>SORT</span>
-                {[['earliest', 'EARLIEST'], ['most-fi', 'MOST FIs'], ['most-ac', 'MOST A/C']].map(([v, lbl]) => (
+                {[['earliest', 'EARLIEST'], ['most-combos', 'MOST COMBOS'], ['most-fi', 'MOST FIs']].map(([v, lbl]) => (
                   <button key={v} onClick={() => setSortBy(v)} className="mono uc"
                     style={{
                       padding: '2px 8px', fontSize: 8, borderRadius: 3, cursor: 'pointer',
