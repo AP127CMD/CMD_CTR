@@ -801,8 +801,9 @@ function AsfTimelineReleaseModal({ act, onRelease, onClose }) {
 }
 
 // ─── Slot button ──────────────────────────────────────────────────────────
-function AsfSlotBtn({ slot, isActive, onRelease, onReservePair, activePair, isHovered, onHoverChange, spName }) {
-  const [pickerOpen, setPickerOpen] = useS_asf(false);
+// onOpenPicker() — called when user clicks RESERVE; caller (AsfStudentCard)
+// lifts the modal to board level so the backdrop is never nested inside this div.
+function AsfSlotBtn({ slot, isActive, onRelease, onReservePair, activePair, isHovered, onHoverChange, spName, onOpenPicker }) {
   const byFI = {};
   slot.pairs.forEach(({ fi, tail }) => { (byFI[fi] = byFI[fi] || []).push(tail); });
   const fiEntries = Object.entries(byFI).sort(([a],[b]) => a.localeCompare(b));
@@ -848,7 +849,7 @@ function AsfSlotBtn({ slot, isActive, onRelease, onReservePair, activePair, isHo
               boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--col-cancel) 55%,transparent)',
               color:'var(--col-cancel)', fontWeight:600 }}>RELEASE ▼</button>
         ) : (
-          <button onClick={e => { e.stopPropagation(); setPickerOpen(true); }} className="mono uc"
+          <button onClick={e => { e.stopPropagation(); onOpenPicker(); }} className="mono uc"
             style={{ padding:'2px 8px', fontSize:8, borderRadius:3, cursor:'pointer',
               background:'color-mix(in oklch,var(--col-done) 12%,transparent)',
               boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--col-done) 55%,transparent)',
@@ -896,14 +897,6 @@ function AsfSlotBtn({ slot, isActive, onRelease, onReservePair, activePair, isHo
         ))}
       </div>
 
-      {pickerOpen && (
-        <AsfAcPickerModal
-          slot={slot}
-          spName={spName}
-          onReserve={onReservePair}
-          onClose={() => setPickerOpen(false)}
-        />
-      )}
     </div>
   );
 }
@@ -964,6 +957,7 @@ function AsfStudentCard({
   windowFrom, windowTo, rwyStart, rwyEnd,
   hoveredSlot, onSlotHover,
   hourEnd,
+  onOpenPicker,
 }) {
   const { student, rank, rankCls, idle, slots, baselineCount } = rec;
   // Cascade feedback: this SP would have `baselineCount` slots if no one had
@@ -1084,6 +1078,7 @@ function AsfStudentCard({
                   onReservePair={(fi, tail) => onActivate(slot, fi, tail)}
                   onHoverChange={onSlotHover}
                   spName={asfShortName(student.name)}
+                  onOpenPicker={() => onOpenPicker(slot, asfShortName(student.name), (fi, tail) => onActivate(slot, fi, tail))}
                 />
               );
             })
@@ -1134,9 +1129,19 @@ function AutoSlotFinderBoard() {
     } catch (_) { /* localStorage unavailable — silently skip */ }
   }, [acTypeFilter, fiFilter, fiMatchSp, windowFrom, windowTo, rwyEnabled, rwyFrom, rwyTo, sortMode, topN, onlyOpen]);
 
-  // Timeline click modals
+  // Modals
+  const [acPickerModal,  setAcPickerModal]  = useS_asf(null); // { slot, spName, onReserve }
   const [tlSlotModal,    setTlSlotModal]    = useS_asf(null); // { slot }
   const [tlReleaseModal, setTlReleaseModal] = useS_asf(null); // act object
+
+  const anyModalOpen = !!(acPickerModal || tlSlotModal || tlReleaseModal || (proposal && proposal.activatedSlot));
+
+  // Open the A/C picker for a specific slot — clears hover first so the timeline
+  // doesn't flicker while the backdrop is up.
+  const openAcPicker = useC_asf((slot, spName, onReserve) => {
+    setHoveredSlot(null);
+    setAcPickerModal({ slot, spName, onReserve });
+  }, []);
 
   // Date change releases all reservations
   const setAsfDate = useC_asf(d => {
@@ -1559,8 +1564,9 @@ function AutoSlotFinderBoard() {
             border:'1px solid var(--line)', background:'transparent', color:'var(--ink-3)' }}>↺ RESET</button>
       </div>
 
-      {/* Scrollable content */}
-      <div style={{ flex:1, minHeight:0, overflowY:'auto' }}>
+      {/* Scrollable content — pointer-events and opacity locked while any modal is open
+           so hover events on timeline/slot buttons can't fire through the backdrop */}
+      <div style={{ flex:1, minHeight:0, overflowY:'auto', pointerEvents: anyModalOpen ? 'none' : 'auto', opacity: anyModalOpen ? 0.45 : 1, transition:'opacity .15s' }}>
         <div style={{ display:'flex', flexDirection:'column', gap:8, padding:'10px' }}>
 
           {rankData && (
@@ -1618,13 +1624,23 @@ function AutoSlotFinderBoard() {
                 hoveredSlot={hoveredSlot}
                 onSlotHover={setHoveredSlot}
                 hourEnd={dynHourEnd}
+                onOpenPicker={openAcPicker}
               />
             );
           })}
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Modals — all rendered at board level so their fixed backdrops are never
+           nested inside interactive content divs (prevents hover-flicker). */}
+      {acPickerModal && (
+        <AsfAcPickerModal
+          slot={acPickerModal.slot}
+          spName={acPickerModal.spName}
+          onReserve={acPickerModal.onReserve}
+          onClose={() => setAcPickerModal(null)}
+        />
+      )}
       {proposal && proposal.activatedSlot && (
         <AsfProposeModal
           student={proposal.student}
