@@ -151,17 +151,27 @@ function asfDutyOk(duty, t, end) {
 }
 
 function asfBuildBusyMap(flights, gapMin) {
+  // SF_AP127_FI_NAMES comes from view-slotfinder.js (loaded first).
+  // Used to detect FAM FI / PPC / proficiency flights where an AP-127 FI
+  // appears in the *student* field — they are unavailable as FI during that time.
+  const _fiSet = new Set(typeof SF_AP127_FI_NAMES !== 'undefined' ? SF_AP127_FI_NAMES : []);
+
   const rawFI = {}, rawSP = {}, rawTail = {}, fiDuty = {};
   flights.forEach(f => {
     const s = minutesOf(f.start), e = minutesOf(f.end);
     if (s == null || e == null) return;
     const push = (map, key) => { if (key) (map[key] = map[key] || []).push({ s, e }); };
     push(rawFI, f.instructor); push(rawSP, f.student); push(rawTail, f.tail);
-    if (f.instructor) {
-      const d = fiDuty[f.instructor];
-      if (!d) fiDuty[f.instructor] = { first: s, last: e };
+    // If an FI appears as the student (e.g. FAM FI, PPC check), block their FI time too
+    if (f.student && _fiSet.has(f.student)) push(rawFI, f.student);
+    const trackDuty = (name) => {
+      if (!name) return;
+      const d = fiDuty[name];
+      if (!d) fiDuty[name] = { first: s, last: e };
       else { d.first = Math.min(d.first, s); d.last = Math.max(d.last, e); }
-    }
+    };
+    trackDuty(f.instructor);
+    if (f.student && _fiSet.has(f.student)) trackDuty(f.student);
   });
   const toBusy = rawMap => {
     const out = {};
