@@ -1002,7 +1002,7 @@ function AsfStudentCard({
   hourEnd,
   onOpenPicker,
 }) {
-  const { student, rank, rankCls, idle, slots, baselineCount, onLeave } = rec;
+  const { student, rank, rankCls, idle, slots, baselineCount, onLeave, hasFlight } = rec;
   // Cascade feedback: this SP would have `baselineCount` slots if no one had
   // reserved yet. If current `slots.length` is lower, other reservations are
   // blocking options. Don't flag SPs that already have their own reservation —
@@ -1061,6 +1061,13 @@ function AsfStudentCard({
               boxShadow:'inset 0 0 0 1px color-mix(in oklch,#3b82f6 55%,transparent)',
               background:'color-mix(in oklch,#3b82f6 14%,transparent)',
               color:'#3b82f6' }}>ON LEAVE</span>
+        )}
+        {!onLeave && hasFlight && (
+          <span className="mono uc" title="Already has a flight scheduled today"
+            style={{ padding:'3px 7px', borderRadius:4, fontSize:8, fontWeight:700,
+              boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--col-done) 55%,transparent)',
+              background:'color-mix(in oklch,var(--col-done) 14%,transparent)',
+              color:'var(--col-done)' }}>SCHEDULED</span>
         )}
         <span className="mono uc" style={{ padding:'3px 9px', borderRadius:4, fontSize:9, fontWeight:600, boxShadow: `inset 0 0 0 1px ${slots.length===0?'var(--line)':'color-mix(in oklch,var(--col-done) 45%,transparent)'}`, background: slots.length===0?'transparent':'color-mix(in oklch,var(--col-done) 12%,transparent)', color: slots.length===0?'var(--ink-3)':'var(--col-done)' }}>{slotBadge}</span>
         {/* Cascade feedback: amber chip when reservations reduced this SP's slot count,
@@ -1301,6 +1308,9 @@ function AutoSlotFinderBoard() {
       // SP on leave → zero slots regardless of other availability
       const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
       if (spOnLeave) { map[spKey] = []; return; }
+      // SP already has a real flight today → no additional slot
+      const spHasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
+      if (spHasFlight) { map[spKey] = []; return; }
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
       const gap   = ovr.gap;
@@ -1317,7 +1327,7 @@ function AutoSlotFinderBoard() {
       map[spKey] = asfMergeSlots(raw);
     });
     return map;
-  }, [ranked, windowFrom, windowTo, rwyBand, augmentedFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp, leavesMap]);
+  }, [ranked, windowFrom, windowTo, rwyBand, augmentedFlights, dateFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp, leavesMap]);
 
   // Baseline = same slot computation but using ONLY dateFlights (no activated cascade).
   // Used to detect "you blocked yourself out by reserving for someone else" — the
@@ -1334,6 +1344,9 @@ function AutoSlotFinderBoard() {
       const spKey = asfShortName(rec.student.name);
       const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
       if (spOnLeave) { map[spKey] = []; return; }
+      // SP already has a real flight today → no additional slot
+      const spHasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
+      if (spHasFlight) { map[spKey] = []; return; }
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
       const gap   = ovr.gap;
@@ -1359,11 +1372,12 @@ function AutoSlotFinderBoard() {
       const baselineSlots = baselineSlotsByStudent[spKey] || [];
       const leaveKey = Object.keys(leavesMap).find(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
       const onLeave = leaveKey ? (leavesMap[leaveKey] || 'On Leave') : null;
-      return { ...rec, slots, baselineCount: baselineSlots.length, onLeave };
+      const hasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
+      return { ...rec, slots, baselineCount: baselineSlots.length, onLeave, hasFlight };
     });
-    // WITH SLOTS ONLY also hides on-leave SPs since they have 0 slots anyway
+    // WITH SLOTS ONLY also hides on-leave / already-scheduled SPs (they have 0 slots)
     return (onlyOpen ? out.filter(r => r.slots.length > 0) : out).slice(0, topN);
-  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap]);
+  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap, dateFlights]);
 
   const stats = useM_asf(() => ({
     openCount:   finalRecords.filter(r => r.slots.length > 0).length,
@@ -1438,9 +1452,11 @@ function AutoSlotFinderBoard() {
 
     for (const rec of finalRecords) {
       const spKey = asfShortName(rec.student.name);
-      // Skip SPs who are on leave
+      // Skip SPs who are on leave or already have a real flight today
       const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
       if (spOnLeave) continue;
+      const spHasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
+      if (spHasFlight) continue;
 
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
