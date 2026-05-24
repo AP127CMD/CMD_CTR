@@ -151,10 +151,16 @@ function asfDutyOk(duty, t, end) {
 }
 
 function asfBuildBusyMap(flights, gapMin) {
-  // SF_AP127_FI_NAMES comes from view-slotfinder.js (loaded first).
-  // Used to detect FAM FI / PPC / proficiency flights where an AP-127 FI
-  // appears in the *student* field — they are unavailable as FI during that time.
-  const _fiSet = new Set(typeof SF_AP127_FI_NAMES !== 'undefined' ? SF_AP127_FI_NAMES : []);
+  // Build the full set of known FI names from every flight in this call's flight list,
+  // then union with SF_AP127_FI_NAMES (AP-127 specific FIs).
+  // This detects ANY flight where a person who also appears as an instructor
+  // (in any batch — FAM FI, PPC, Recurrent…) is listed as a student, so their
+  // time is correctly blocked in fiBusy.
+  const _allInstructors = new Set(flights.map(f => f.instructor).filter(Boolean));
+  const _fiSet = new Set([
+    ..._allInstructors,
+    ...(typeof SF_AP127_FI_NAMES !== 'undefined' ? SF_AP127_FI_NAMES : []),
+  ]);
 
   const rawFI = {}, rawSP = {}, rawTail = {}, fiDuty = {};
   flights.forEach(f => {
@@ -1364,9 +1370,23 @@ function AutoSlotFinderBoard() {
     totalCombos: finalRecords.reduce((sum, r) => sum + r.slots.reduce((s2, sl) => s2 + sl.pairs.length, 0), 0),
   }), [finalRecords]);
 
-  const allTailsForTimeline = useM_asf(() =>
-    RESOURCES.filter(r => r.tail && !/SIM|Classroom/i.test(r.acType||'') && (acTypeFilter === null || acTypeFilter.includes(r.acType))).map(r => r.tail).sort()
-  , [acTypeFilter]);
+  // FI tab: every instructor who has a flight on this date — not limited to SF_AP127_FI_NAMES
+  // so non-AP-127 instructors (AP-124, HP, Recurrent, FAM FI supervisors…) are visible too.
+  const allFIsForTimeline = useM_asf(() =>
+    [...new Set(dateFlights.map(f => f.instructor).filter(Boolean))].sort()
+  , [dateFlights]);
+
+  // A/C tab: every tail that appears in today's flights (non-SIM) ∪ RESOURCES non-SIM tails.
+  // Deriving from dateFlights ensures tails not catalogued in RESOURCES still appear.
+  const allTailsForTimeline = useM_asf(() => {
+    const s = new Set(
+      dateFlights.map(f => f.tail).filter(t => t && !/\(SIM\)/i.test(t))
+    );
+    RESOURCES.filter(r => r.tail && !/SIM|Classroom/i.test(r.acType || '') &&
+      (acTypeFilter === null || acTypeFilter.includes(r.acType))
+    ).forEach(r => s.add(r.tail));
+    return [...s].sort();
+  }, [dateFlights, acTypeFilter]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const toggleExpand  = spKey => setExpanded(prev => { const n = new Set(prev); n.has(spKey) ? n.delete(spKey) : n.add(spKey); return n; });
@@ -1624,7 +1644,7 @@ function AutoSlotFinderBoard() {
           {rankData && (
             <AsfTimeline
               baseMap={baseBusyMap}
-              allFIs={fiAllNames}
+              allFIs={allFIsForTimeline}
               allTails={allTailsForTimeline}
               windowFrom={windowFrom} windowTo={windowTo}
               rwyStart={rwyBand.rwyStart} rwyEnd={rwyBand.rwyEnd}
