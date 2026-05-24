@@ -509,15 +509,15 @@ function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart
   return (
     <div style={{ boxShadow:'inset 0 0 0 1px var(--line)', borderRadius:6, overflow:'hidden', background:'var(--surface)', flexShrink:0 }}>
 
-      {/* Combined header: label + tabs + hour ruler */}
-      <div style={{ display:'grid', gridTemplateColumns:`${LABEL_W}px auto 1fr`, background:'var(--bg-2)', borderBottom:'1px solid var(--line)', height:28, flexShrink:0 }}>
-        <div className="mono uc" style={{ padding:'0 10px', fontSize:8, color:'var(--ink-3)', display:'flex', alignItems:'center', borderRight:'1px solid var(--line-soft)' }}>
-          {actList.length ? `${actList.length} RESERVED` : 'TIMELINE'}
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:3, padding:'0 7px', borderRight:'1px solid var(--line)' }}>
+      {/* Combined header: label+tabs | hour ruler (same 2-col grid as rows so they align) */}
+      <div style={{ display:'grid', gridTemplateColumns:`${LABEL_W}px 1fr`, background:'var(--bg-2)', borderBottom:'1px solid var(--line)', height:28, flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:4, padding:'0 6px', borderRight:'1px solid var(--line)', overflow:'hidden' }}>
+          <span className="mono uc" style={{ fontSize:8, color:'var(--ink-3)', whiteSpace:'nowrap', flexShrink:0, marginRight:2 }}>
+            {actList.length ? `${actList.length} RSRV` : 'TL'}
+          </span>
           {sections.map(s => (
             <button key={s.id} onClick={() => setTimelineTab(s.id)} className="mono uc"
-              style={{ height:18, padding:'0 8px', fontSize:8, borderRadius:3, cursor:'pointer',
+              style={{ height:16, padding:'0 6px', fontSize:8, borderRadius:3, cursor:'pointer', flexShrink:0,
                 border:`1px solid ${timelineTab===s.id?'var(--col-pending)':'var(--line)'}`,
                 background: timelineTab===s.id ? 'color-mix(in oklch,var(--col-pending) 16%,transparent)' : 'transparent',
                 color: timelineTab===s.id ? 'var(--col-pending)' : 'var(--ink-3)',
@@ -1438,6 +1438,10 @@ function AutoSlotFinderBoard() {
 
     for (const rec of finalRecords) {
       const spKey = asfShortName(rec.student.name);
+      // Skip SPs who are on leave
+      const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
+      if (spOnLeave) continue;
+
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
       const gap   = ovr.gap;
@@ -1463,7 +1467,7 @@ function AutoSlotFinderBoard() {
       });
     }
     setActivatedSlots(next);
-  }, [finalRecords, dateFlights, windowFrom, windowTo, spOverrides, candidates, tailTypeMap, fiQuals, fiMatchSp, rwyBand, asfDate]);
+  }, [finalRecords, dateFlights, windowFrom, windowTo, spOverrides, candidates, tailTypeMap, fiQuals, fiMatchSp, rwyBand, asfDate, leavesMap]);
 
   // ── Export all reservations as a single dispatcher message ──────────────
   // Builds the text in finalRecords order so it matches the on-screen list.
