@@ -803,6 +803,16 @@ function ViewIcon({ id, size=13, color='currentColor' }) {
       <path d="M9.4 10.5 L10.2 11.4 L11.7 9.6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
     </svg>
   );
+  if (id === 'autoslotfinder') return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke={color} strokeWidth="1.2">
+      {/* Lightning bolt (auto/instant) */}
+      <path d="M5.4 1.2 L2.6 7 L5.4 7 L4.2 12.8 L9.4 6 L6.4 6 L7.6 1.2 Z"
+            fill={color} stroke="none" opacity=".85"/>
+      {/* Magnifying glass — smaller, top-right */}
+      <circle cx="10.6" cy="3.6" r="2"/>
+      <line x1="12" y1="5.1" x2="13.2" y2="6.3" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
   if (id === 'roster') return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill={color}>
       <rect x="1"   y="4.5" width="3.5" height="2"   rx=".4" opacity=".9"/>

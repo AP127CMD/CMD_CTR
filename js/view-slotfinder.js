@@ -355,9 +355,8 @@ function SfSlotCard({ slot }) {
 
   return (
     <div style={{
-      background:'var(--surface)',
-      border:`1px solid color-mix(in oklch,${accent} 22%,var(--line))`,
-      borderLeft:`3px solid ${accent}`,
+      background:`linear-gradient(to right, ${accent} 3px, var(--surface) 3px)`,
+      boxShadow:`inset 0 0 0 1px color-mix(in oklch,${accent} 22%,var(--line))`,
       borderRadius:6, padding:'9px 12px',
       display:'flex', flexDirection:'column', gap:7,
     }}>

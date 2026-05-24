@@ -39,16 +39,17 @@
 <!-- Shared components and context.
      The ?v= token cache-busts the app JS — bump it whenever a js/ file changes
      so browsers don't serve stale code after a deploy. -->
-<script type="text/babel" src="js/app-shared.js?v=r21"></script>
+<script type="text/babel" src="js/app-shared.js?v=r31"></script>
 
 <!-- Views -->
-<script type="text/babel" src="js/view-daily.js?v=r21"></script>
-<script type="text/babel" src="js/view-board.js?v=r21"></script>
-<script type="text/babel" src="js/view-gantt.js?v=r21"></script>
-<script type="text/babel" src="js/view-weekly.js?v=r21"></script>
-<script type="text/babel" src="js/view-summary.js?v=r21"></script>
-<script type="text/babel" src="js/view-roster.js?v=r21"></script>
-<script type="text/babel" src="js/view-slotfinder.js?v=r21"></script>
+<script type="text/babel" src="js/view-daily.js?v=r31"></script>
+<script type="text/babel" src="js/view-board.js?v=r31"></script>
+<script type="text/babel" src="js/view-gantt.js?v=r31"></script>
+<script type="text/babel" src="js/view-weekly.js?v=r31"></script>
+<script type="text/babel" src="js/view-summary.js?v=r31"></script>
+<script type="text/babel" src="js/view-roster.js?v=r31"></script>
+<script type="text/babel" src="js/view-slotfinder.js?v=r31"></script>
+<script type="text/babel" src="js/view-autoslotfinder.js?v=r31"></script>
 
 <script type="text/babel" data-presets="env,react">
 const VIEWS = [
@@ -57,8 +58,9 @@ const VIEWS = [
   { id:'gantt',   label:'GANTT',     desc:'Timeline bars grouped by instructor, aircraft, or batch' },
   { id:'weekly',  label:'WEEKLY',    desc:'Week-by-week calendar showing scheduled flights per day' },
   { id:'summary', label:'ANALYTICS', desc:'Aggregate stats, AP-127 student progress, and batch breakdowns' },
-  { id:'roster',     label:'ROSTER',      desc:'Instructor workload heat-map — spot over/under-loaded days' },
-  { id:'slotfinder', label:'SLOT FINDER', desc:'Find open slots — check FI, aircraft and SP availability for any date, duration and gap' },
+  { id:'roster',         label:'ROSTER',           desc:'Instructor workload heat-map — spot over/under-loaded days' },
+  { id:'slotfinder',     label:'SLOT FINDER',      desc:'Find open slots — check FI, aircraft and SP availability for any date, duration and gap' },
+  { id:'autoslotfinder', label:'AUTO SLOT FINDER', desc:'Auto-rank AP-127 SPs from the NGT site and propose the best slot for each — pick from FI × A/C options' },
 ];
 
 // Sidebar — uses useApp() so must be rendered inside AppProvider
@@ -140,7 +142,7 @@ function Sidebar({ view, setView, width, mobile=false, onClose }) {
 
 // Compact top bar shown on mobile in place of full sidebar
 function MobileTopBar({ view, onMenuOpen }) {
-  const LABELS = { daily:'DAY GLANCE', board:'BOARD', gantt:'GANTT', weekly:'WEEKLY', summary:'ANALYTICS', roster:'ROSTER', slotfinder:'SLOT FINDER' };
+  const LABELS = { daily:'DAY GLANCE', board:'BOARD', gantt:'GANTT', weekly:'WEEKLY', summary:'ANALYTICS', roster:'ROSTER', slotfinder:'SLOT FINDER', autoslotfinder:'AUTO SLOT FINDER' };
   return (
     <div style={{
       height:46, padding:'0 14px', background:'var(--bg-2)',
@@ -249,8 +251,9 @@ function App() {
             {view==='gantt'   && <GanttBoard/>}
             {view==='weekly'  && <WeeklyBoard/>}
             {view==='summary' && <SummaryBoard/>}
-            {view==='roster'     && <RosterBoard/>}
-            {view==='slotfinder' && <SlotFinderBoard/>}
+            {view==='roster'         && <RosterBoard/>}
+            {view==='slotfinder'     && <SlotFinderBoard/>}
+            {view==='autoslotfinder' && <AutoSlotFinderBoard/>}
           </div>
         </div>
       </div>
