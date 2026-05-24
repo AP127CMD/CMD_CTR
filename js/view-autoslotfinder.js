@@ -116,8 +116,8 @@ const ASF_MAX_DUTY   = 420;
 // (Distinct from ASF_LS_KEY above, which stores the NGT SP rank cache.)
 const ASF_SETTINGS_LS_KEY = 'ap127-asf-settings-v1';
 const ASF_DEFAULTS = {
-  acTypeFilter: [],
-  fiFilter:     [],
+  acTypeFilter: null,   // null=ALL, []=NONE, string[]=subset
+  fiFilter:     null,
   fiMatchSp:    true,
   windowFrom:   '06:30',
   windowTo:     '18:00',
@@ -351,28 +351,34 @@ function AsfInlineSel({ label, value, onChange, opts }) {
 // ─── AsfMultiCheck (mirrors SfMultiCheck from view-slotfinder.js exactly) ─
 // items: [{v, l}]  selected: string[]  onChange: (string[]) => void
 // empty selected = all shown (same convention as SlotFinder's SfMultiCheck)
+// selected model: null = ALL (all items pass), [] = NONE (nothing passes), string[] = explicit subset
 function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
   const [open, setOpen] = useS_asf(false);
   const ac = color || 'var(--col-pending)';
+  const isAll  = selected === null;
+  const isNone = selected !== null && selected.length === 0;
 
   const toggle = v => {
-    if (selected.length === 0) {
-      // ALL mode: unchecking one item = "all except this one"
-      onChange(items.map(i => i.v).filter(x => x !== v));
+    if (isAll) {
+      // ALL mode → uncheck one = "all except this one"
+      const next = items.map(i => i.v).filter(x => x !== v);
+      onChange(next.length === 0 ? [] : next);
     } else {
       const next = selected.includes(v)
         ? selected.filter(x => x !== v)
         : [...selected, v];
-      // Normalize: if every item is checked, reset to [] (= ALL)
-      onChange(next.length === items.length ? [] : next);
+      // Normalize: every item checked → ALL (null); none left → NONE ([])
+      onChange(next.length === items.length ? null : next);
     }
   };
 
-  const displayLabel = selected.length === 0
-    ? allLabel
-    : selected.length === 1
-      ? selected[0]
-      : `${selected.length} selected`;
+  const displayLabel = isAll  ? allLabel
+    : isNone             ? 'None'
+    : selected.length === 1 ? selected[0]
+    :                        `${selected.length} selected`;
+
+  // Trigger button is accented when NOT in ALL mode (i.e. something is filtered)
+  const isFiltered = !isAll;
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:3, position:'relative' }}>
@@ -381,15 +387,16 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
       <button onClick={() => setOpen(o => !o)} className="mono"
         style={{
           display:'flex', alignItems:'center', gap:5,
-          background:'var(--surface)', color: selected.length > 0 ? ac : 'var(--ink-2)',
-          border:`1px solid ${selected.length > 0 ? `color-mix(in oklch,${ac} 55%,transparent)` : 'var(--line)'}`,
+          background:'var(--surface)',
+          color: isNone ? 'var(--col-cancel)' : isFiltered ? ac : 'var(--ink-2)',
+          border:`1px solid ${isNone ? 'color-mix(in oklch,var(--col-cancel) 55%,transparent)' : isFiltered ? `color-mix(in oklch,${ac} 55%,transparent)` : 'var(--line)'}`,
           borderRadius:4, padding:'4px 8px', fontSize:11, outline:'none',
           cursor:'pointer', textAlign:'left', minWidth:148, height:28,
         }}>
         <span style={{ flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
           {displayLabel}
         </span>
-        {selected.length > 0 && (
+        {!isAll && !isNone && selected.length > 0 && (
           <span style={{ background:`color-mix(in oklch,${ac} 20%,transparent)`, color: ac, borderRadius:999, fontSize:8, padding:'0 5px', lineHeight:'16px', flexShrink:0 }}>
             {selected.length}
           </span>
@@ -407,22 +414,28 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
             minWidth:192, maxHeight:300, display:'flex', flexDirection:'column', overflow:'hidden',
           }}>
             <div style={{ padding:'5px 8px', borderBottom:'1px solid var(--line-soft)', display:'flex', alignItems:'center', gap:6 }}>
+              {/* ALL — null → every item passes */}
+              <button onClick={() => { onChange(null); setOpen(false); }} className="mono uc"
+                style={{
+                  flex:1, padding:'3px 0', fontSize:8, borderRadius:3,
+                  border:`1px solid ${isAll ? ac : 'var(--line)'}`,
+                  background: isAll ? `color-mix(in oklch,${ac} 12%,transparent)` : 'transparent',
+                  color: isAll ? ac : 'var(--ink-3)',
+                  fontWeight: isAll ? 600 : 400, cursor:'pointer',
+                }}>ALL</button>
+              {/* NONE — [] → nothing passes; user builds selection from scratch */}
               <button onClick={() => { onChange([]); setOpen(false); }} className="mono uc"
                 style={{
                   flex:1, padding:'3px 0', fontSize:8, borderRadius:3,
-                  border:`1px solid ${selected.length === 0 ? ac : 'var(--line)'}`,
-                  background: selected.length === 0 ? `color-mix(in oklch,${ac} 12%,transparent)` : 'transparent',
-                  color: selected.length === 0 ? ac : 'var(--ink-3)',
-                  fontWeight: selected.length === 0 ? 600 : 400, cursor:'pointer',
-                }}>ALL</button>
-              {selected.length > 0 && (
-                <button onClick={() => onChange([])} className="mono uc"
-                  style={{ padding:'3px 8px', fontSize:8, borderRadius:3, border:'1px solid var(--col-cancel)', background:'color-mix(in oklch,var(--col-cancel) 10%,transparent)', color:'var(--col-cancel)', cursor:'pointer' }}>CLEAR</button>
-              )}
+                  border:`1px solid ${isNone ? 'var(--col-cancel)' : 'var(--line)'}`,
+                  background: isNone ? 'color-mix(in oklch,var(--col-cancel) 12%,transparent)' : 'transparent',
+                  color: isNone ? 'var(--col-cancel)' : 'var(--ink-3)',
+                  fontWeight: isNone ? 600 : 400, cursor:'pointer',
+                }}>NONE</button>
             </div>
             <div style={{ overflowY:'auto', flex:1 }}>
               {items.map(item => {
-                const checked = selected.length === 0 || selected.includes(item.v);
+                const checked = isAll || (!isNone && selected.includes(item.v));
                 return (
                   <label key={item.v} onClick={() => toggle(item.v)}
                     style={{ display:'flex', alignItems:'center', gap:8, padding:'5px 10px', cursor:'pointer', background: checked ? `color-mix(in oklch,${ac} 10%,transparent)` : 'transparent' }}>
@@ -1226,14 +1239,14 @@ function AutoSlotFinderBoard() {
   const fiAllNames = SF_AP127_FI_NAMES;
 
   const candidates = useM_asf(() => {
-    const typeMatch = fi => acTypeFilter.length === 0 || (fiQuals[fi] || []).some(t => acTypeFilter.includes(t));
+    const typeMatch = fi => acTypeFilter === null || (fiQuals[fi] || []).some(t => acTypeFilter.includes(t));
     const candFIs   = fiAllNames.filter(n =>
-      typeMatch(n) && !leavesMap[n] &&
-      (fiFilter.length === 0 || fiFilter.includes(n))
+      typeMatch(n) && !Object.keys(leavesMap).some(k => k.toLowerCase() === n.toLowerCase()) &&
+      (fiFilter === null || fiFilter.includes(n))
     );
     const candTails = RESOURCES.filter(r =>
       r.tail && !r.isMaint && !/SIM|Classroom/i.test(r.acType || '') &&
-      (acTypeFilter.length === 0 || acTypeFilter.includes(r.acType))
+      (acTypeFilter === null || acTypeFilter.includes(r.acType))
     ).map(r => r.tail).sort();
     return { candFIs, candTails };
   }, [acTypeFilter, leavesMap, fiFilter]);
@@ -1342,7 +1355,7 @@ function AutoSlotFinderBoard() {
   }), [finalRecords]);
 
   const allTailsForTimeline = useM_asf(() =>
-    RESOURCES.filter(r => r.tail && !/SIM|Classroom/i.test(r.acType||'') && (acTypeFilter.length === 0 || acTypeFilter.includes(r.acType))).map(r => r.tail).sort()
+    RESOURCES.filter(r => r.tail && !/SIM|Classroom/i.test(r.acType||'') && (acTypeFilter === null || acTypeFilter.includes(r.acType))).map(r => r.tail).sort()
   , [acTypeFilter]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────
