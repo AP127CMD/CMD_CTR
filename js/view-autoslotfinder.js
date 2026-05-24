@@ -429,7 +429,14 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
                     <input type="checkbox" checked={checked} onChange={() => toggle(item.v)}
                       onClick={e => e.stopPropagation()}
                       style={{ accentColor: ac, flexShrink:0, cursor:'pointer' }} />
-                    <span className="mono" style={{ fontSize:10, color:'var(--ink)', userSelect:'none' }}>{item.l}</span>
+                    <span className="mono" style={{ fontSize:10, color: item.badge ? 'var(--ink-3)' : 'var(--ink)', userSelect:'none', flex:1 }}>{item.l}</span>
+                    {item.badge && (
+                      <span className="mono uc" style={{ fontSize:7, padding:'1px 5px', borderRadius:3, fontWeight:600,
+                        background: item.badge==='GND' ? 'color-mix(in oklch,var(--col-cancel) 16%,transparent)' : 'color-mix(in oklch,#3b82f6 16%,transparent)',
+                        color: item.badge==='GND' ? 'var(--col-cancel)' : '#3b82f6',
+                        boxShadow: item.badge==='GND' ? 'inset 0 0 0 1px color-mix(in oklch,var(--col-cancel) 40%,transparent)' : 'inset 0 0 0 1px color-mix(in oklch,#3b82f6 40%,transparent)',
+                      }}>{item.badge}</span>
+                    )}
                   </label>
                 );
               })}
@@ -442,7 +449,7 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
 }
 
 // ─── Main timeline ────────────────────────────────────────────────────────
-function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart, rwyEnd, allResults, activatedSlots, hoveredSlot, onSlotHover, onAvailableSlotClick, onReservedSlotClick, hourEnd }) {
+function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart, rwyEnd, allResults, activatedSlots, hoveredSlot, onSlotHover, onAvailableSlotClick, onReservedSlotClick, hourEnd, leavesMap, maintTailSet }) {
   const [timelineTab, setTimelineTab] = useS_asf('fi');
   const LABEL_W   = 140;
   const HOUR_END  = Math.max(ASF_HOUR_END, hourEnd || ASF_HOUR_END);
@@ -502,17 +509,24 @@ function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart
 
       <div style={{ maxHeight:268, overflowY:'auto' }}>
         {section.rows.map((rowKey, ri) => {
-          const flights   = section.raw[rowKey] || [];
-          const hasSlots  = section.avSet.has(rowKey);
-          const activated = section.getAct(rowKey);
-          const hasAct    = activated.length > 0;
+          const flights     = section.raw[rowKey] || [];
+          const hasSlots    = section.avSet.has(rowKey);
+          const activated   = section.getAct(rowKey);
+          const hasAct      = activated.length > 0;
+          // Per-row status
+          const fiOnLeave   = section.id === 'fi' && !!leavesMap && Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === asfShortName(rowKey).toLowerCase());
+          const acOnMaint   = section.id === 'ac' && !!maintTailSet && maintTailSet.has(rowKey);
+          const rowDisabled = fiOnLeave || acOnMaint;
           return (
             <div key={rowKey} style={{ display:'grid', gridTemplateColumns:`${LABEL_W}px 1fr`, borderBottom:'1px solid var(--line-soft)', minHeight:30,
-              background: hasAct ? 'color-mix(in oklch,var(--highlight) 4%,transparent)' : ri%2 ? 'transparent' : 'color-mix(in oklch,var(--ink) 1.5%,transparent)', transition:'background .15s' }}>
-              <div style={{ padding:'0 8px', display:'flex', alignItems:'center', borderRight:'1px solid var(--line)', overflow:'hidden' }}>
+              background: hasAct ? 'color-mix(in oklch,var(--highlight) 4%,transparent)' : rowDisabled ? 'color-mix(in oklch,var(--ink) 3%,transparent)' : ri%2 ? 'transparent' : 'color-mix(in oklch,var(--ink) 1.5%,transparent)', transition:'background .15s',
+              opacity: rowDisabled ? 0.5 : 1 }}>
+              <div style={{ padding:'0 8px', display:'flex', alignItems:'center', gap:5, borderRight:'1px solid var(--line)', overflow:'hidden' }}>
                 <span style={{ fontSize:9, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', flex:1,
-                  color: hasAct ? 'var(--highlight)' : hasSlots ? 'var(--ink)' : 'var(--ink-3)',
+                  color: hasAct ? 'var(--highlight)' : rowDisabled ? 'var(--ink-3)' : hasSlots ? 'var(--ink)' : 'var(--ink-3)',
                   fontWeight: hasAct || hasSlots ? 600 : 400 }}>{rowKey}</span>
+                {fiOnLeave && <span className="mono uc" style={{ fontSize:6, padding:'1px 4px', borderRadius:2, fontWeight:700, flexShrink:0, background:'color-mix(in oklch,#3b82f6 16%,transparent)', color:'#3b82f6', boxShadow:'inset 0 0 0 1px color-mix(in oklch,#3b82f6 40%,transparent)' }}>LEAVE</span>}
+                {acOnMaint  && <span className="mono uc" style={{ fontSize:6, padding:'1px 4px', borderRadius:2, fontWeight:700, flexShrink:0, background:'color-mix(in oklch,var(--col-cancel) 16%,transparent)', color:'var(--col-cancel)', boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--col-cancel) 40%,transparent)' }}>GND</span>}
               </div>
               <div style={{ position:'relative' }}>
                 {Array.from({ length: HOUR_END - ASF_HOUR_START }, (_,i) => (
@@ -959,7 +973,7 @@ function AsfStudentCard({
   hourEnd,
   onOpenPicker,
 }) {
-  const { student, rank, rankCls, idle, slots, baselineCount } = rec;
+  const { student, rank, rankCls, idle, slots, baselineCount, onLeave } = rec;
   // Cascade feedback: this SP would have `baselineCount` slots if no one had
   // reserved yet. If current `slots.length` is lower, other reservations are
   // blocking options. Don't flag SPs that already have their own reservation —
@@ -1011,6 +1025,13 @@ function AsfStudentCard({
               PROPOSE ▸
             </button>
           </>
+        )}
+        {onLeave && (
+          <span className="mono uc" title={onLeave}
+            style={{ padding:'3px 7px', borderRadius:4, fontSize:8, fontWeight:700,
+              boxShadow:'inset 0 0 0 1px color-mix(in oklch,#3b82f6 55%,transparent)',
+              background:'color-mix(in oklch,#3b82f6 14%,transparent)',
+              color:'#3b82f6' }}>ON LEAVE</span>
         )}
         <span className="mono uc" style={{ padding:'3px 9px', borderRadius:4, fontSize:9, fontWeight:600, boxShadow: `inset 0 0 0 1px ${slots.length===0?'var(--line)':'color-mix(in oklch,var(--col-done) 45%,transparent)'}`, background: slots.length===0?'transparent':'color-mix(in oklch,var(--col-done) 12%,transparent)', color: slots.length===0?'var(--ink-3)':'var(--col-done)' }}>{slotBadge}</span>
         {/* Cascade feedback: amber chip when reservations reduced this SP's slot count,
@@ -1248,6 +1269,9 @@ function AutoSlotFinderBoard() {
     const map = {};
     ranked.forEach(rec => {
       const spKey = asfShortName(rec.student.name);
+      // SP on leave → zero slots regardless of other availability
+      const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
+      if (spOnLeave) { map[spKey] = []; return; }
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
       const gap   = ovr.gap;
@@ -1264,7 +1288,7 @@ function AutoSlotFinderBoard() {
       map[spKey] = asfMergeSlots(raw);
     });
     return map;
-  }, [ranked, windowFrom, windowTo, rwyBand, augmentedFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp]);
+  }, [ranked, windowFrom, windowTo, rwyBand, augmentedFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp, leavesMap]);
 
   // Baseline = same slot computation but using ONLY dateFlights (no activated cascade).
   // Used to detect "you blocked yourself out by reserving for someone else" — the
@@ -1279,6 +1303,8 @@ function AutoSlotFinderBoard() {
     const map = {};
     ranked.forEach(rec => {
       const spKey = asfShortName(rec.student.name);
+      const spOnLeave = Object.keys(leavesMap).some(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
+      if (spOnLeave) { map[spKey] = []; return; }
       const ovr   = asfGetOverride(spKey, rec.student, spOverrides);
       const dur   = ovr.duration;
       const gap   = ovr.gap;
@@ -1295,17 +1321,20 @@ function AutoSlotFinderBoard() {
       map[spKey] = asfMergeSlots(raw);
     });
     return map;
-  }, [ranked, windowFrom, windowTo, rwyBand, dateFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp, activatedSlots, slotsByStudent]);
+  }, [ranked, windowFrom, windowTo, rwyBand, dateFlights, candidates, spOverrides, tailTypeMap, fiQuals, fiMatchSp, activatedSlots, slotsByStudent, leavesMap]);
 
   const finalRecords = useM_asf(() => {
     const out = ranked.map(rec => {
       const spKey = asfShortName(rec.student.name);
       const slots         = slotsByStudent[spKey] || [];
       const baselineSlots = baselineSlotsByStudent[spKey] || [];
-      return { ...rec, slots, baselineCount: baselineSlots.length };
+      const leaveKey = Object.keys(leavesMap).find(k => asfShortName(k).toLowerCase() === spKey.toLowerCase());
+      const onLeave = leaveKey ? (leavesMap[leaveKey] || 'On Leave') : null;
+      return { ...rec, slots, baselineCount: baselineSlots.length, onLeave };
     });
+    // WITH SLOTS ONLY also hides on-leave SPs since they have 0 slots anyway
     return (onlyOpen ? out.filter(r => r.slots.length > 0) : out).slice(0, topN);
-  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN]);
+  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap]);
 
   const stats = useM_asf(() => ({
     openCount:   finalRecords.filter(r => r.slots.length > 0).length,
@@ -1471,7 +1500,7 @@ function AutoSlotFinderBoard() {
         <AsfSel label="DATE" value={asfDate} onChange={setAsfDate} opts={dateOpts} minWidth={130} />
         <AsfMultiCheck label="TYPE" items={allAcTypes.map(t=>({v:t,l:t}))} selected={acTypeFilter} onChange={setAcTypeFilter} allLabel="Any type" color="var(--col-pending)" />
         <AsfSel label="SHOW" value={topN} onChange={v=>setTopN(+v)} opts={ASF_TOPN_OPTS} minWidth={70} />
-        <AsfMultiCheck label="FI FILTER" items={fiAllNames.map(n=>({v:n,l:n}))} selected={fiFilter} onChange={setFiFilter} allLabel="Any available" color="var(--col-pending)" />
+        <AsfMultiCheck label="FI FILTER" items={fiAllNames.map(n=>({ v:n, l:n, badge: Object.keys(leavesMap).some(k => k.toLowerCase() === n.toLowerCase()) ? 'LEAVE' : null }))} selected={fiFilter} onChange={setFiFilter} allLabel="Any available" color="var(--col-pending)" />
         <div style={{ width:1, height:38, background:'var(--line)', alignSelf:'flex-end', marginBottom:1, flexShrink:0 }}/>
         <AsfTimePicker label="FROM" value={windowFrom} onChange={setWindowFrom} />
         <AsfTimePicker label="TO"   value={windowTo}   onChange={setWindowTo} />
@@ -1572,7 +1601,7 @@ function AutoSlotFinderBoard() {
           {rankData && (
             <AsfTimeline
               baseMap={baseBusyMap}
-              allFIs={candidates.candFIs.length ? candidates.candFIs : fiAllNames}
+              allFIs={fiAllNames}
               allTails={allTailsForTimeline}
               windowFrom={windowFrom} windowTo={windowTo}
               rwyStart={rwyBand.rwyStart} rwyEnd={rwyBand.rwyEnd}
@@ -1583,6 +1612,8 @@ function AutoSlotFinderBoard() {
               onAvailableSlotClick={slot => setTlSlotModal({ slot })}
               onReservedSlotClick={act => setTlReleaseModal(act)}
               hourEnd={dynHourEnd}
+              leavesMap={leavesMap}
+              maintTailSet={MAINT_TAILS}
             />
           )}
 
