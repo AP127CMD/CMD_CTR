@@ -2,7 +2,7 @@ name: Fetch Flight Schedule & Deploy
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # every 30 minutes
+    - cron: '0 */2 * * *'  # every 2 hours fallback (CF Worker dispatcher fires every 30 min)
   workflow_dispatch:          # manual trigger from GitHub UI
 
 permissions:
