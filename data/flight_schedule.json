@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-05-28T04:05:59Z",
+  "fetched_at": "2026-05-28T05:29:45Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-05-05": [
@@ -18191,28 +18191,28 @@
         "id": "3513",
         "date": "2026-05-28",
         "rowIdx": 3513,
-        "status": "Pending",
-        "isActual": false,
+        "status": "Completed",
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
-        "start": "09:00",
-        "end": "11:00",
-        "duration": "02:00",
-        "durationMin": 120,
+        "start": "09:06",
+        "end": "11:10",
+        "duration": "02:04",
+        "durationMin": 124,
         "student": "SUKRIT",
         "instructor": "CHAROENCHAI U.",
         "batch": "TCAR / LPC",
-        "lesson": "LPC IR / ME",
+        "lesson": "LPC IR",
         "condition": null,
         "type": "DA42TDI",
         "tail": "HS-TCP",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": 0,
-        "to": 0,
-        "inst": 0
+        "actualType": "Dual",
+        "tkoff": "09:15",
+        "ldgTime": "11:04",
+        "airborne": "01:49",
+        "ldg": 3,
+        "to": 3,
+        "inst": 2
       },
       {
         "id": "3607",
@@ -18569,12 +18569,12 @@
         "id": "3685",
         "date": "2026-05-28",
         "rowIdx": 3685,
-        "status": "Pending",
-        "isActual": false,
+        "status": "Completed",
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "08:00",
+        "start": "07:00",
+        "end": "08:30",
         "duration": "01:30",
         "durationMin": 90,
         "student": "NAFEEN M.",
@@ -18584,12 +18584,12 @@
         "condition": "ME",
         "type": "DA42TDI",
         "tail": "HS-TPL",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": 0,
-        "to": 0,
+        "actualType": "Dual",
+        "tkoff": "07:10",
+        "ldgTime": "08:20",
+        "airborne": "01:10",
+        "ldg": 2,
+        "to": 2,
         "inst": 0
       },
       {
@@ -18812,39 +18812,39 @@
         "id": "3704",
         "date": "2026-05-28",
         "rowIdx": 3704,
-        "status": "Pending",
-        "isActual": false,
+        "status": "Completed",
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "11:30",
-        "duration": "05:00",
-        "durationMin": 300,
+        "start": "10:40",
+        "end": "12:10",
+        "duration": "01:30",
+        "durationMin": 90,
         "student": "SIWAT C.",
         "instructor": "KOONPHOL U.",
         "batch": "AP-126",
-        "lesson": "CSPXV 44",
+        "lesson": "CSPXV 44/3",
         "condition": "Nav",
         "type": "DA40CS",
         "tail": "HS-TVA",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": 0,
-        "to": 0,
+        "actualType": "SPIC",
+        "tkoff": "10:50",
+        "ldgTime": "12:05",
+        "airborne": "01:15",
+        "ldg": 1,
+        "to": 1,
         "inst": 0
       },
       {
         "id": "3712",
         "date": "2026-05-28",
         "rowIdx": 3712,
-        "status": "Pending",
-        "isActual": false,
+        "status": "Completed",
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
-        "start": "08:00",
-        "end": "11:00",
+        "start": "08:06",
+        "end": "11:06",
         "duration": "03:00",
         "durationMin": 180,
         "student": "SUBHAWICHAYA S.",
@@ -18854,12 +18854,12 @@
         "condition": "Nav",
         "type": "DA40CS",
         "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": 0,
-        "to": 0,
+        "actualType": "SPIC",
+        "tkoff": "08:16",
+        "ldgTime": "11:01",
+        "airborne": "02:45",
+        "ldg": 4,
+        "to": 4,
         "inst": 0
       },
       {
@@ -19001,8 +19001,8 @@
         "id": "3734",
         "date": "2026-05-28",
         "rowIdx": 3734,
-        "status": "Pending",
-        "isActual": false,
+        "status": "Completed",
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:40",
@@ -19016,12 +19016,12 @@
         "condition": null,
         "type": "R44",
         "tail": "HS-TZU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": 0,
-        "to": 0,
+        "actualType": "Dual",
+        "tkoff": "09:50",
+        "ldgTime": "10:30",
+        "airborne": "00:40",
+        "ldg": 1,
+        "to": 1,
         "inst": 0
       },
       {
@@ -19238,6 +19238,114 @@
         "airborne": "00:20",
         "ldg": 2,
         "to": 2,
+        "inst": 0
+      },
+      {
+        "id": "ACTUAL_ONLY_",
+        "date": "2026-05-28",
+        "rowIdx": "ACTUAL_ONLY_",
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:00",
+        "end": "10:20",
+        "duration": "01:20",
+        "durationMin": 80,
+        "student": "PHAHOLYUTH P. (Unplanned)",
+        "instructor": "PHAHOLYUTH P.",
+        "batch": "FAM FI",
+        "lesson": "FAM(VTBK-VTPH)",
+        "condition": "Actual",
+        "type": "DA40TDI",
+        "tail": "HS-TPX",
+        "actualType": "PIC",
+        "tkoff": "09:10",
+        "ldgTime": "10:15",
+        "airborne": "01:05",
+        "ldg": 1,
+        "to": 1,
+        "inst": 1
+      },
+      {
+        "id": "ACTUAL_ONLY_3733",
+        "date": "2026-05-28",
+        "rowIdx": "ACTUAL_ONLY_3733",
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:30",
+        "end": "09:30",
+        "duration": "01:00",
+        "durationMin": 60,
+        "student": "NUTTAPONG S. (Unplanned)",
+        "instructor": "NUTTAPONG S.",
+        "batch": "HP-57",
+        "lesson": "LS 53",
+        "condition": "Actual",
+        "type": "R44",
+        "tail": "HS-TZU",
+        "actualType": "Solo",
+        "tkoff": "08:40",
+        "ldgTime": "09:30",
+        "airborne": "00:50",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0
+      },
+      {
+        "id": "ACTUAL_ONLY_3704",
+        "date": "2026-05-28",
+        "rowIdx": "ACTUAL_ONLY_3704",
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:30",
+        "end": "08:50",
+        "duration": "02:20",
+        "durationMin": 140,
+        "student": "SIWAT C. (Unplanned)",
+        "instructor": "KOONPHOL U.",
+        "batch": "AP-126",
+        "lesson": "CSPXV 44/1",
+        "condition": "Actual",
+        "type": "DA40CS",
+        "tail": "HS-TVA",
+        "actualType": "SPIC",
+        "tkoff": "06:40",
+        "ldgTime": "08:45",
+        "airborne": "02:05",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0
+      },
+      {
+        "id": "ACTUAL_ONLY_3704",
+        "date": "2026-05-28",
+        "rowIdx": "ACTUAL_ONLY_3704",
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:20",
+        "end": "10:30",
+        "duration": "01:10",
+        "durationMin": 70,
+        "student": "SIWAT C. (Unplanned)",
+        "instructor": "KOONPHOL U.",
+        "batch": "AP-126",
+        "lesson": "CSPXV 44/2",
+        "condition": "Actual",
+        "type": "DA40CS",
+        "tail": "HS-TVA",
+        "actualType": "SPIC",
+        "tkoff": "09:30",
+        "ldgTime": "10:25",
+        "airborne": "00:55",
+        "ldg": 1,
+        "to": 1,
         "inst": 0
       }
     ],
@@ -19584,7 +19692,7 @@
         "lesson": "CMSPXIT 97",
         "condition": "ME",
         "type": "DA42TDI",
-        "tail": "HS-TPL",
+        "tail": "HS-TCP",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -19871,8 +19979,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "07:00",
-        "end": "08:30",
+        "start": "11:30",
+        "end": "13:00",
         "duration": "01:30",
         "durationMin": 90,
         "student": "SORRAWIT T.",
@@ -20186,6 +20294,60 @@
         "ldg": 0,
         "to": 0,
         "inst": 0
+      },
+      {
+        "id": "3751",
+        "date": "2026-05-29",
+        "rowIdx": 3751,
+        "status": "Pending",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:00",
+        "end": "11:00",
+        "duration": "02:00",
+        "durationMin": 120,
+        "student": "NAFEEN M.",
+        "instructor": "SOWAN C.",
+        "batch": "AP-124",
+        "lesson": "CMSPXI 96",
+        "condition": "ME",
+        "type": "DA42TDI",
+        "tail": "HS-TPL",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": 0,
+        "to": 0,
+        "inst": 0
+      },
+      {
+        "id": "3752",
+        "date": "2026-05-29",
+        "rowIdx": 3752,
+        "status": "Pending",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:30",
+        "end": "08:30",
+        "duration": "02:00",
+        "durationMin": 120,
+        "student": "POONYAPAT W.",
+        "instructor": "SOWAN C.",
+        "batch": "AP-124",
+        "lesson": "CMSPXI 96",
+        "condition": "ME",
+        "type": "DA42TDI",
+        "tail": "HS-TPL",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": 0,
+        "to": 0,
+        "inst": 0
       }
     ],
     "2026-05-30": [
@@ -20473,8 +20635,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-07-27",
+      "name": "WATTIKORN K.",
       "reason": "Personal Leave",
       "end": "2026-07-27"
     },
@@ -20508,8 +20670,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "NAPATTORN S.",
       "start": "2026-05-05",
+      "name": "NAPATTORN S.",
       "reason": "Official Duty",
       "end": "2026-05-05"
     },
@@ -20529,8 +20691,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PUWADET H.",
       "start": "2026-05-05",
+      "name": "PUWADET H.",
       "reason": "Other",
       "end": "2026-05-05"
     },
@@ -20550,50 +20712,50 @@
     },
     {
       "duration": "Full Day",
+      "start": "2026-05-05",
       "name": "PORNTREETRA R.",
-      "start": "2026-05-05",
       "reason": "Other",
       "end": "2026-05-05"
     },
     {
       "duration": "Full Day",
+      "start": "2026-05-05",
       "name": "PRITASNA M.",
-      "start": "2026-05-05",
       "reason": "Other",
       "end": "2026-05-05"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "WATTIKORN K.",
+      "start": "2026-06-02",
       "reason": "Other",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "GRAVITAT C.",
       "start": "2026-05-25",
+      "name": "GRAVITAT C.",
       "reason": "Other",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "SUPAWAN A.",
+      "start": "2026-05-18",
       "reason": "Other",
       "end": "2026-05-19"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "PORNTREETRA R.",
+      "start": "2026-05-18",
       "reason": "Other",
       "end": "2026-05-18"
     },
     {
       "duration": "Full Day",
-      "name": "PARAMUTT C.",
       "start": "2026-05-18",
+      "name": "PARAMUTT C.",
       "reason": "Other",
       "end": "2026-05-18"
     },
@@ -20613,22 +20775,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-14",
       "name": "JIRAYU A.",
+      "start": "2026-05-14",
       "reason": "Other",
       "end": "2026-05-14"
     },
     {
       "duration": "Full Day",
-      "name": "ANUSORN T.",
       "start": "2026-05-08",
+      "name": "ANUSORN T.",
       "reason": "Other",
       "end": "2026-05-16"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-08",
       "name": "NATPAKALP K.",
+      "start": "2026-05-08",
       "reason": "Other",
       "end": "2026-05-17"
     },
@@ -20641,15 +20803,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "ANUSORN T.",
       "start": "2026-05-05",
+      "name": "ANUSORN T.",
       "reason": "Other",
       "end": "2026-05-06"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "SANGYAI P.",
+      "start": "2026-05-05",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
@@ -20662,8 +20824,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "NABHADR P.",
+      "start": "2026-05-18",
       "reason": "CAAT Exam",
       "end": "2026-05-18"
     },
@@ -20676,8 +20838,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-04-24",
       "name": "SARACH C.",
+      "start": "2026-04-24",
       "reason": "Personal Leave",
       "end": "2026-04-28"
     },
@@ -20690,8 +20852,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "SARACH C.",
       "start": "2026-05-18",
+      "name": "SARACH C.",
       "reason": "CAAT Exam",
       "end": "2026-05-19"
     },
@@ -20704,8 +20866,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-28",
       "name": "CHANOL T.",
+      "start": "2026-05-28",
       "reason": "CAAT Exam",
       "end": "2026-05-29"
     },
@@ -20718,15 +20880,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAPHAT K.",
       "start": "2026-05-08",
+      "name": "NUTTAPHAT K.",
       "reason": "CAAT Exam",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-07",
       "name": "PARINYA B.",
+      "start": "2026-05-07",
       "reason": "Personal Leave",
       "end": "2026-05-07"
     },
@@ -20739,22 +20901,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-08",
       "name": "ANUSORN T.",
+      "start": "2026-05-08",
       "reason": "Other",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "SUPAWAN A.",
+      "start": "2026-05-18",
       "reason": "Personal Leave",
       "end": "2026-05-19"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-08",
       "name": "VASAPHON S.",
+      "start": "2026-05-08",
       "reason": "Personal Leave",
       "end": "2026-05-08"
     },
@@ -20767,8 +20929,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "EKKASIT B.",
+      "start": "2026-05-11",
       "reason": "Official Duty",
       "end": "2026-05-24"
     },
@@ -20781,43 +20943,43 @@
     },
     {
       "duration": "Full Day",
-      "name": "KITTIPAT M.",
       "start": "2026-05-11",
+      "name": "KITTIPAT M.",
       "reason": "Official Duty",
       "end": "2026-05-24"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "NAPON R.",
+      "start": "2026-05-25",
       "reason": "CAAT Exam",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "NAPON R.",
+      "start": "2026-05-05",
       "reason": "Personal Leave",
       "end": "2026-05-08"
     },
     {
       "duration": "Full Day",
-      "name": "NATTARAT G.",
       "start": "2026-05-11",
+      "name": "NATTARAT G.",
       "reason": "CAAT Exam",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "MARUAY B.",
+      "start": "2026-05-11",
       "reason": "Sick Leave",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-14",
       "name": "JIRAYU A.",
+      "start": "2026-05-14",
       "reason": "Personal Leave",
       "end": "2026-05-14"
     },
@@ -20837,8 +20999,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-22",
       "name": "PRITASNA M.",
+      "start": "2026-05-22",
       "reason": "CAAT Exam",
       "end": "2026-05-22"
     },
@@ -20865,8 +21027,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "DOLSAKUL S.",
       "start": "2026-05-11",
+      "name": "DOLSAKUL S.",
       "reason": "Official Duty",
       "end": "2026-05-25"
     },
@@ -20886,8 +21048,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "SIWAKORN P.",
+      "start": "2026-05-18",
       "reason": "Personal Leave",
       "end": "2026-05-18"
     },
@@ -20907,29 +21069,29 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "KRIDSADA K.",
+      "start": "2026-05-11",
       "reason": "Official Duty",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "name": "SIWAKORN P.",
       "start": "2026-05-11",
+      "name": "SIWAKORN P.",
       "reason": "Other",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "TAKORN C.",
+      "start": "2026-05-25",
       "reason": "CAAT Exam",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-11",
+      "name": "PICHAKORN J.",
       "reason": "Personal Leave",
       "end": "2026-05-11"
     },
@@ -20942,15 +21104,15 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "WATCHARAPHOL V.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-12",
       "name": "PORNTREETRA R.",
+      "start": "2026-05-12",
       "reason": "Sick Leave",
       "end": "2026-05-12"
     },
@@ -20963,8 +21125,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PARAMUTT C.",
       "start": "2026-05-16",
+      "name": "PARAMUTT C.",
       "reason": "CAAT Exam",
       "end": "2026-05-18"
     },
@@ -20977,15 +21139,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "PUWADET H.",
       "start": "2026-05-12",
+      "name": "PUWADET H.",
       "reason": "Personal Leave",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-12",
       "name": "NUTTAPHAT K.",
+      "start": "2026-05-12",
       "reason": "Sick Leave",
       "end": "2026-05-12"
     },
@@ -21012,8 +21174,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "CHANOL T.",
       "start": "2026-05-30",
+      "name": "CHANOL T.",
       "reason": "CAAT Exam",
       "end": "2026-06-02"
     },
@@ -21026,15 +21188,15 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PARINYA B.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-23",
+      "name": "PICHAKORN J.",
       "reason": "Personal Leave",
       "end": "2026-05-24"
     },
@@ -21068,8 +21230,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "SUPAWAN A.",
+      "start": "2026-05-16",
       "reason": "Personal Leave",
       "end": "2026-05-17"
     },
@@ -21089,8 +21251,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PORNTREETRA R.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
@@ -21110,43 +21272,43 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-14",
       "name": "AKARAVIT K.",
+      "start": "2026-05-14",
       "reason": "Other",
       "end": "2026-05-17"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-14",
       "name": "SANTI SUK.",
-      "reason": "Personal Leave",
-      "end": "2026-05-15"
-    },
-    {
-      "duration": "Full Day",
-      "name": "PUWADET H.",
       "start": "2026-05-14",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-17",
+      "start": "2026-05-14",
+      "name": "PUWADET H.",
+      "reason": "Personal Leave",
+      "end": "2026-05-15"
+    },
+    {
+      "duration": "Full Day",
       "name": "MARUAY B.",
+      "start": "2026-05-17",
       "reason": "Personal Leave",
       "end": "2026-05-18"
     },
     {
       "duration": "Full Day",
-      "name": "SIWAKORN P.",
       "start": "2026-05-14",
+      "name": "SIWAKORN P.",
       "reason": "Other",
       "end": "2026-05-14"
     },
     {
       "duration": "Full Day",
-      "name": "KHOBPONG W.",
       "start": "2026-05-14",
+      "name": "KHOBPONG W.",
       "reason": "Other",
       "end": "2026-05-14"
     },
@@ -21166,15 +21328,15 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "MAETHAPHAN R.",
+      "start": "2026-05-16",
       "reason": "Personal Leave",
       "end": "2026-05-16"
     },
     {
       "duration": "Full Day",
-      "name": "PORNSKUL D.",
       "start": "2026-05-22",
+      "name": "PORNSKUL D.",
       "reason": "Personal Leave",
       "end": "2026-05-25"
     },
@@ -21187,8 +21349,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PICHAKORN J.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
@@ -21201,15 +21363,15 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "KITTHANYA T.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-16"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "MAETHAPHAN R.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-16"
     },
@@ -21222,22 +21384,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "KANTAPONG A.",
+      "start": "2026-05-15",
       "reason": "Personal Leave",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "name": "SIWAKORN P.",
       "start": "2026-05-17",
+      "name": "SIWAKORN P.",
       "reason": "Personal Leave",
       "end": "2026-05-17"
     },
     {
       "duration": "Full Day",
-      "name": "NANJITRA D.",
       "start": "2026-06-02",
+      "name": "NANJITRA D.",
       "reason": "CAAT Exam",
       "end": "2026-06-04"
     },
@@ -21264,8 +21426,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "NANJITRA D.",
+      "start": "2026-05-16",
       "reason": "Other",
       "end": "2026-05-17"
     },
@@ -21278,15 +21440,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "CHANATHIP T.",
       "start": "2026-05-18",
+      "name": "CHANATHIP T.",
       "reason": "Sick Leave",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "PATTHARADEJ S.",
+      "start": "2026-05-18",
       "reason": "Personal Leave",
       "end": "2026-05-18"
     },
@@ -21327,8 +21489,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-19",
       "name": "NAPON S.",
+      "start": "2026-05-19",
       "reason": "CAAT Exam",
       "end": "2026-05-24"
     },
@@ -21348,22 +21510,22 @@
     },
     {
       "duration": "Full Day",
-      "name": "SARACH C.",
       "start": "2026-06-05",
+      "name": "SARACH C.",
       "reason": "CAAT Exam",
       "end": "2026-06-05"
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-05-30",
+      "name": "AKARAVIT K.",
       "reason": "Personal Leave",
       "end": "2026-05-30"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "AKARAVIT K.",
+      "start": "2026-06-02",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
@@ -21383,8 +21545,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "PONGSAKORN A.",
+      "start": "2026-05-25",
       "reason": "CAAT Exam",
       "end": "2026-05-25"
     },
@@ -21404,8 +21566,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "KRIT L.",
       "start": "2026-05-23",
+      "name": "KRIT L.",
       "reason": "Personal Leave",
       "end": "2026-05-24"
     },
@@ -21425,29 +21587,29 @@
     },
     {
       "duration": "Full Day",
-      "name": "NATPAKALP K.",
       "start": "2026-05-30",
+      "name": "NATPAKALP K.",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-08",
       "name": "KHOBPONG W.",
+      "start": "2026-06-08",
       "reason": "CAAT Exam",
       "end": "2026-06-09"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-24",
       "name": "WATCHARAPHOL V.",
+      "start": "2026-05-24",
       "reason": "Personal Leave",
       "end": "2026-05-26"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAPHAT K.",
       "start": "2026-05-20",
+      "name": "NUTTAPHAT K.",
       "reason": "Personal Leave",
       "end": "2026-05-24"
     },
@@ -21467,29 +21629,29 @@
     },
     {
       "duration": "Full Day",
-      "name": "PUWADET H.",
       "start": "2026-05-18",
+      "name": "PUWADET H.",
       "reason": "Personal Leave",
       "end": "2026-05-20"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-21",
       "name": "AKARAVIT K.",
+      "start": "2026-05-21",
       "reason": "Other",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-24",
       "name": "PRITASNA M.",
+      "start": "2026-05-24",
       "reason": "Personal Leave",
       "end": "2026-05-24"
     },
     {
       "duration": "Full Day",
-      "name": "GRAVITAT C.",
       "start": "2026-05-25",
+      "name": "GRAVITAT C.",
       "reason": "CAAT Exam",
       "end": "2026-05-25"
     },
@@ -21502,22 +21664,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-21",
       "name": "VASAPHON S.",
+      "start": "2026-05-21",
       "reason": "Personal Leave",
       "end": "2026-05-21"
     },
     {
       "duration": "Full Day",
-      "name": "KANTAPONG A.",
       "start": "2026-06-02",
+      "name": "KANTAPONG A.",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-22",
+      "name": "PICHAKORN J.",
       "reason": "Personal Leave",
       "end": "2026-05-22"
     },
@@ -21530,15 +21692,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "TAKORN C.",
       "start": "2026-05-23",
+      "name": "TAKORN C.",
       "reason": "CAAT Exam",
       "end": "2026-05-24"
     },
     {
       "duration": "Half Day - Afternoon (PM)",
-      "start": "2026-05-29",
       "name": "NUTTAWAT R.",
+      "start": "2026-05-29",
       "reason": "Personal Leave",
       "end": "2026-05-29"
     },
@@ -21551,22 +21713,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-22",
       "name": "VASAPHON S.",
+      "start": "2026-05-22",
       "reason": "Personal Leave",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "SIWAT C.",
+      "start": "2026-06-02",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "PRITASNA M.",
       "start": "2026-06-12",
+      "name": "PRITASNA M.",
       "reason": "Personal Leave",
       "end": "2026-06-12"
     },
@@ -21586,29 +21748,29 @@
     },
     {
       "duration": "Full Day",
-      "name": "SETASIT P.",
       "start": "2026-05-26",
+      "name": "SETASIT P.",
       "reason": "CAAT Exam",
       "end": "2026-05-26"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-23",
       "name": "VASAPHON S.",
+      "start": "2026-05-23",
       "reason": "Personal Leave",
       "end": "2026-05-24"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-12",
       "name": "PORNSKUL D.",
+      "start": "2026-05-12",
       "reason": "Sick Leave",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "name": "PORNSKUL D.",
       "start": "2026-06-08",
+      "name": "PORNSKUL D.",
       "reason": "CAAT Exam",
       "end": "2026-06-08"
     },
@@ -21628,15 +21790,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "PORNSKUL D.",
       "start": "2026-08-22",
+      "name": "PORNSKUL D.",
       "reason": "Personal Leave",
       "end": "2026-08-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "VASAPHON S.",
+      "start": "2026-05-25",
       "reason": "Personal Leave",
       "end": "2026-05-25"
     },
@@ -21663,15 +21825,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "KRAISEE L.",
       "start": "2026-06-01",
+      "name": "KRAISEE L.",
       "reason": "Personal Leave",
       "end": "2026-06-01"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "CHISANUPONG N.",
+      "start": "2026-06-02",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
@@ -21684,8 +21846,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-06-02",
+      "name": "AKARAVIT K.",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
@@ -21705,15 +21867,15 @@
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-05-30",
+      "name": "WATTIKORN K.",
       "reason": "Personal Leave",
       "end": "2026-05-31"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-28",
       "name": "PICHAKORN J.",
+      "start": "2026-06-28",
       "reason": "CAAT Exam",
       "end": "2026-06-29"
     },
@@ -21726,8 +21888,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "NABHADR P.",
       "start": "2026-06-12",
+      "name": "NABHADR P.",
       "reason": "CAAT Exam",
       "end": "2026-06-13"
     },
@@ -21740,22 +21902,22 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-14",
       "name": "WATCHARAPHOL V.",
+      "start": "2026-06-14",
       "reason": "Personal Leave",
       "end": "2026-06-14"
     },
     {
       "duration": "Full Day",
-      "name": "PRITASNA M.",
       "start": "2026-06-02",
+      "name": "PRITASNA M.",
       "reason": "Personal Leave",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-29",
       "name": "BULASET C.",
+      "start": "2026-05-29",
       "reason": "Personal Leave",
       "end": "2026-05-29"
     }
