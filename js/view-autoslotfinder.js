@@ -1021,21 +1021,18 @@ function AsfStudentCard({
   return (
     <div style={{ background: `linear-gradient(to right, ${hasReservation ? 'var(--highlight)' : accent} 4px, var(--surface) 4px)`, boxShadow: `inset 0 0 0 1px ${expanded ? `color-mix(in oklch,${accent} 50%,var(--line))` : 'var(--line)'}`, borderRadius:6, overflow:'hidden' }}>
 
-      {/* Summary row */}
-      <div onClick={onToggle} style={{ background:'transparent', cursor:'pointer', width:'100%', textAlign:'left', padding:'8px 12px', display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
-        <span className="mono" style={{ width:26, height:26, borderRadius:5, background: hasReservation ? 'var(--highlight)' : accent, color:'oklch(0.12 0 0)', fontWeight:700, fontSize:12, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{rank}</span>
-        <div style={{ display:'flex', flexDirection:'column', gap:1, minWidth:110 }}>
-          <span style={{ fontSize:12, fontWeight:600, color: hasReservation ? 'var(--highlight)' : 'var(--ink)' }}>{asfShortName(student.name)}</span>
-          {student.nick && <span className="mono uc" style={{ fontSize:8, color:'var(--ink-3)', letterSpacing:'0.04em' }}>{student.nick}</span>}
-        </div>
-        <div style={{ display:'flex', flexDirection:'column', minWidth:80 }}>
-          <span className="mono uc" style={{ fontSize:7, color:'var(--ink-3)' }}>NEXT</span>
-          <span className="mono" style={{ fontSize:10, color:'var(--ink-2)' }}>{student.next_lesson || '—'}</span>
-        </div>
-        <div style={{ display:'flex', flexDirection:'column', minWidth:48 }}>
-          <span className="mono uc" style={{ fontSize:7, color:'var(--ink-3)' }}>IDLE</span>
-          <span className="mono num" style={{ fontSize:10, color: idleColor, fontWeight: idle != null && idle >= 6 ? 600 : 400 }}>{idle == null ? '—' : `${idle}d`}</span>
-        </div>
+      {/* Summary row — single line on wide layouts, wraps on narrow */}
+      <div onClick={onToggle} style={{ background:'transparent', cursor:'pointer', width:'100%', textAlign:'left', padding:'6px 10px', display:'flex', alignItems:'center', gap:7, flexWrap:'wrap' }}>
+        <span className="mono" style={{ width:22, height:22, borderRadius:4, background: hasReservation ? 'var(--highlight)' : accent, color:'oklch(0.12 0 0)', fontWeight:700, fontSize:11, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{rank}</span>
+        <span style={{ fontSize:12, fontWeight:600, color: hasReservation ? 'var(--highlight)' : 'var(--ink)', whiteSpace:'nowrap' }}>{asfShortName(student.name)}</span>
+        {student.nick && <span className="mono uc" style={{ fontSize:8, color:'var(--ink-3)', letterSpacing:'0.04em', whiteSpace:'nowrap' }}>{student.nick}</span>}
+        <span style={{ color:'var(--line)', fontSize:10, flexShrink:0 }}>│</span>
+        <span className="mono" style={{ fontSize:9, color:'var(--ink-2)', whiteSpace:'nowrap' }}>
+          <span style={{ fontSize:7, color:'var(--ink-3)' }}>NEXT </span>{student.next_lesson || '—'}
+        </span>
+        <span className="mono num" style={{ fontSize:9, color:idleColor, fontWeight: idle != null && idle >= 6 ? 600 : 400, whiteSpace:'nowrap' }}>
+          <span style={{ fontSize:7, color:'var(--ink-3)' }}>IDLE </span>{idle == null ? '—' : `${idle}d`}
+        </span>
         <span style={{ flex:1 }}/>
         {hasReservation && (
           <>
@@ -1097,7 +1094,7 @@ function AsfStudentCard({
       </div>
 
       {/* Per-SP filter row */}
-      <div onClick={e => e.stopPropagation()} style={{ padding:'4px 12px 5px 48px', borderTop:'1px solid var(--line-soft)', background:'color-mix(in oklch,var(--ink) 1%,transparent)', display:'flex', gap:6, flexWrap:'wrap', alignItems:'flex-end' }}>
+      <div onClick={e => e.stopPropagation()} style={{ padding:'4px 10px 5px 39px', borderTop:'1px solid var(--line-soft)', background:'color-mix(in oklch,var(--ink) 1%,transparent)', display:'flex', gap:6, flexWrap:'wrap', alignItems:'flex-end' }}>
         <AsfInlineSel label="FI"       value={overrides.fi}       onChange={v => onOverrideChange('fi', v)}        opts={fiOpts} />
         <AsfInlineSel label="SE TYPE"  value={overrides.seType}   onChange={v => onOverrideChange('seType', v)}    opts={seTypeOpts} />
         <AsfInlineSel label="DURATION" value={overrides.duration} onChange={v => onOverrideChange('duration', +v)} opts={ASF_DUR_OPTS} />
@@ -1375,9 +1372,13 @@ function AutoSlotFinderBoard() {
       const hasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
       return { ...rec, slots, baselineCount: baselineSlots.length, onLeave, hasFlight };
     });
-    // WITH SLOTS ONLY also hides on-leave / already-scheduled SPs (they have 0 slots)
-    return (onlyOpen ? out.filter(r => r.slots.length > 0) : out).slice(0, topN);
-  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap, dateFlights]);
+    // WITH SLOTS ONLY: hide 0-slot SPs (on-leave, already-scheduled, blocked) AND
+    // hide SPs that already have a reservation (they're done — focus on what's pending).
+    return (onlyOpen
+      ? out.filter(r => r.slots.length > 0 && !activatedSlots[asfShortName(r.student.name)])
+      : out
+    ).slice(0, topN);
+  }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap, dateFlights, activatedSlots]);
 
   const stats = useM_asf(() => ({
     openCount:   finalRecords.filter(r => r.slots.length > 0).length,
@@ -1386,21 +1387,42 @@ function AutoSlotFinderBoard() {
 
   // FI tab: every instructor who has a flight on this date — not limited to SF_AP127_FI_NAMES
   // so non-AP-127 instructors (AP-124, HP, Recurrent, FAM FI supervisors…) are visible too.
-  const allFIsForTimeline = useM_asf(() =>
-    [...new Set(dateFlights.map(f => f.instructor).filter(Boolean))].sort()
-  , [dateFlights]);
+  // FI tab: all instructors in today's flights, filtered by the active fiFilter and
+  // acTypeFilter so only relevant rows are shown. FIs with activated reservations are
+  // always included regardless of filters so their reserved block stays visible.
+  const allFIsForTimeline = useM_asf(() => {
+    const actFIs = new Set(Object.values(activatedSlots).map(a => a.fi).filter(Boolean));
+    const all = [...new Set(dateFlights.map(f => f.instructor).filter(Boolean))];
+    const filtered = all.filter(fi => {
+      if (actFIs.has(fi)) return true;                           // always show reserved FI
+      if (fiFilter !== null && !fiFilter.includes(fi)) return false;  // FI filter
+      if (acTypeFilter !== null) {                                // type filter via FI quals
+        const quals = fiQuals[fi] || [];
+        if (!quals.some(t => acTypeFilter.includes(t))) return false;
+      }
+      return true;
+    });
+    return [...new Set(filtered)].sort();
+  }, [dateFlights, fiFilter, acTypeFilter, fiQuals, activatedSlots]);
 
-  // A/C tab: every tail that appears in today's flights (non-SIM) ∪ RESOURCES non-SIM tails.
-  // Deriving from dateFlights ensures tails not catalogued in RESOURCES still appear.
+  // A/C tab: every tail that appears in today's flights (non-SIM, matching acTypeFilter)
+  // ∪ RESOURCES non-SIM tails filtered by acTypeFilter.
+  // Tails with activated reservations are always included.
   const allTailsForTimeline = useM_asf(() => {
-    const s = new Set(
-      dateFlights.map(f => f.tail).filter(t => t && !/\(SIM\)/i.test(t))
-    );
+    const actTails = new Set(Object.values(activatedSlots).map(a => a.tail).filter(Boolean));
+    const s = new Set();
+    dateFlights.forEach(f => {
+      const t = f.tail;
+      if (!t || /\(SIM\)/i.test(t)) return;
+      if (actTails.has(t)) { s.add(t); return; }                // always show reserved tail
+      if (acTypeFilter !== null && tailTypeMap[t] && !acTypeFilter.includes(tailTypeMap[t])) return;
+      s.add(t);
+    });
     RESOURCES.filter(r => r.tail && !/SIM|Classroom/i.test(r.acType || '') &&
       (acTypeFilter === null || acTypeFilter.includes(r.acType))
     ).forEach(r => s.add(r.tail));
     return [...s].sort();
-  }, [dateFlights, acTypeFilter]);
+  }, [dateFlights, acTypeFilter, tailTypeMap, activatedSlots]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const toggleExpand  = spKey => setExpanded(prev => { const n = new Set(prev); n.has(spKey) ? n.delete(spKey) : n.add(spKey); return n; });
