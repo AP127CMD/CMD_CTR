@@ -7,19 +7,55 @@ const HOUR_SPAN  = HOUR_END - HOUR_START;
 // Compact 12-hour label for tight mobile rulers, e.g. 6 -> "6AM", 13 -> "1PM"
 const fmtHour = h => `${h % 12 === 0 ? 12 : h % 12}${h < 12 ? 'AM' : 'PM'}`;
 
+// Helper: detect non-flight activities (meetings, briefings, ground school)
+const isMeetingFlt = f => /meeting|briefing|debrief|ground.school/i.test(f.lesson || '') || /meeting|recurrent/i.test(f.batch || '');
+
+// Set of all instructor names across full dataset (computed once)
+const ALL_GANTT_FI_NAMES = new Set(FLIGHTS.map(f => f.instructor).filter(Boolean));
+
 function GanttBoard() {
   const app      = useApp();
   const { isMobile } = app;
-  const flights  = app.dayFlights;
   const groupBy  = app.tweaks.groupBy || 'instructor';
   const TRACK_LEFT  = isMobile ? 90  : 190;
   const TRACK_RIGHT = isMobile ? 64  : 180;
+
+  // Override dayFlights: include ALL activity types (bypass showSim filter)
+  const flights = useM_g(() => {
+    const { date, filters, hideOthers, highlightAP127 } = app;
+    return FLIGHTS.filter(x => {
+      if (x.date !== date) return false;
+      // intentionally omit showSim/showStandby filters — GANTT shows all activity types
+      if (filters.batches     && !filters.batches.includes(x.batch))          return false;
+      if (filters.instructors && !filters.instructors.includes(x.instructor))  return false;
+      if (filters.tails       && !filters.tails.includes(x.tail))              return false;
+      if (filters.statuses) {
+        const matchStatus = filters.statuses.includes(x.status);
+        const matchStby   = filters.statuses.includes('Standby') && x.isStandby;
+        if (!matchStatus && !matchStby) return false;
+      }
+      if (hideOthers && highlightAP127 && x.batch !== HIGHLIGHT_BATCH) return false;
+      if (filters.search) {
+        const q = filters.search.toLowerCase();
+        const hay = [x.student, x.instructor, x.batch, x.lesson, x.tail, x.type].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [app.date, app.filters, app.hideOthers, app.highlightAP127]);
 
   const rows = useM_g(()=>{
     const map = {};
     flights.forEach(f=>{
       const key = (groupBy==='instructor'?f.instructor:groupBy==='tail'?f.tail:f.batch)||'—';
-      (map[key]||=[]).push(f);
+      (map[key]||(map[key]=[])).push(f);
+
+      // In instructor view: if the student is also a known FI, add this flight to their row too
+      // (shows the FI is busy as a student pilot during this time)
+      if (groupBy === 'instructor' && f.student && f.student !== key && ALL_GANTT_FI_NAMES.has(f.student)) {
+        const fiKey = f.student;
+        (map[fiKey]||(map[fiKey]=[])).push({ ...f, _asFiStudent: true });
+      }
     });
     return Object.entries(map)
       .map(([k,v])=>({ key:k, flights:v.sort((a,b)=>(minutesOf(a.start)||0)-(minutesOf(b.start)||0)) }))
@@ -161,39 +197,60 @@ function GanttBoard() {
                     <div key={i} style={{ position:'absolute',left:`${(i/HOUR_SPAN)*100}%`,top:0,bottom:0,borderLeft:'1px solid var(--line-soft)',opacity:i%2?0.5:1 }}/>
                   ))}
                   {r.flights.map((f,fi)=>{
+                    if (!f.start) return null;
                     const startMin  = (minutesOf(f.start)||0) - HOUR_START*60;
                     const totalSpan = HOUR_SPAN*60;
                     const left      = Math.max(0,(startMin/totalSpan)*100);
                     const width     = ((f.durMin||60)/totalSpan)*100;
-                    const color     = STATUS_COLOR(f);
+                    const isFiSP    = !!f._asFiStudent;
+                    const isMtg     = isMeetingFlt(f);
+                    const color     = isFiSP ? 'var(--col-stby)' : isMtg ? 'var(--ink-3)' : STATUS_COLOR(f);
                     const done      = f.status==='Completed';
                     const dim       = f.status==='Canceled';
                     const stby      = f.isStandby;
                     return (
-                      <button key={f.id+fi} onClick={()=>app.setDrawer(f.id)}
-                        title={`${f.start}–${f.end} · ${f.student} · ${f.lesson}`}
+                      <button key={f.id+fi+(isFiSP?'s':'')} onClick={()=>app.setDrawer(f.id)}
+                        title={isFiSP
+                          ? `${f.start}–${f.end} · ${f.student} flying as SP · instr: ${f.instructor} · ${f.lesson}`
+                          : `${f.start}–${f.end} · ${f.student||f.instructor||''} · ${f.lesson}`}
                         style={{
                           position:'absolute', left:`${left}%`, width:`calc(${width}% - 2px)`,
-                          top:5, bottom:5,
-                          background:`color-mix(in oklch,${color} ${stby?8:18}%,var(--surface))`,
-                          border:`${stby?'1px dashed':'1px solid'} ${color}`,
-                          borderLeft:`3px ${stby?'dashed':'solid'} ${color}`,
-                          borderRadius:4, padding:'3px 6px', textAlign:'left',
+                          top: isFiSP ? 2 : 5, bottom: isFiSP ? 2 : 5,
+                          background:`color-mix(in oklch,${color} ${stby?8:isFiSP?10:18}%,var(--surface))`,
+                          border:`${stby||isFiSP?'1px dashed':'1px solid'} ${color}`,
+                          borderLeft:`3px ${stby||isFiSP?'dashed':'solid'} ${color}`,
+                          borderRadius:4, padding:'2px 5px', textAlign:'left',
                           cursor:'pointer', overflow:'hidden', color:'var(--ink)',
-                          opacity: dim?0.4:1, textDecoration: dim?'line-through':'none',
+                          opacity: dim?0.4:isFiSP?0.75:1,
+                          textDecoration: dim?'line-through':'none',
                         }}>
-                        <div className="mono num" style={{ fontSize:10,display:'flex',justifyContent:'space-between',gap:4 }}>
+                        <div className="mono num" style={{ fontSize:9,display:'flex',justifyContent:'space-between',gap:4 }}>
                           <span>{f.start}</span>
-                          {done&&<span style={{color:'var(--col-done)'}}>✓</span>}
-                          {stby&&<span style={{color:'var(--col-stby)',fontSize:8}}>STBY</span>}
+                          {isFiSP && <span style={{color:'var(--col-stby)',fontSize:7,fontWeight:600}}>AS SP</span>}
+                          {!isFiSP && done && <span style={{color:'var(--col-done)'}}>✓</span>}
+                          {!isFiSP && stby && <span style={{color:'var(--col-stby)',fontSize:8}}>STBY</span>}
+                          {isMtg && !isFiSP && <span style={{color:'var(--ink-3)',fontSize:7}}>MTG</span>}
                         </div>
-                        <div style={{ fontSize:11,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',lineHeight:1.2 }}>{f.student}</div>
-                        <div className="mono uc" style={{ fontSize:8.5,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',display:'flex',gap:4,alignItems:'center' }}>
-                          <span style={{color:f.batch===HIGHLIGHT_BATCH?'var(--highlight)':'var(--ink-3)',fontWeight:f.batch===HIGHLIGHT_BATCH?600:400}}>{f.batch}</span>
-                          <span style={{color:'var(--ink-3)'}}>·</span>
-                          <span style={{color:isTailMaint(f.tail)?'var(--col-cancel)':'var(--ink-3)',fontWeight:isTailMaint(f.tail)?600:400}}>{f.tail||'TBD'}</span>
-                          {isTailMaint(f.tail) && <GndBadge/>}
+                        <div style={{ fontSize:isMobile?9:11,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',lineHeight:1.2 }}>
+                          {isFiSP
+                            ? `▾ ${f.lesson}`
+                            : isMtg
+                              ? (f.lesson || f.batch || '—')
+                              : f.student}
                         </div>
+                        {!isMobile && (
+                          <div className="mono uc" style={{ fontSize:8,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',display:'flex',gap:4,alignItems:'center' }}>
+                            {isFiSP
+                              ? <span style={{color:'var(--ink-3)'}}>instr: {f.instructor||'—'}</span>
+                              : <>
+                                  <span style={{color:f.batch===HIGHLIGHT_BATCH?'var(--highlight)':'var(--ink-3)',fontWeight:f.batch===HIGHLIGHT_BATCH?600:400}}>{f.batch}</span>
+                                  <span style={{color:'var(--ink-3)'}}>·</span>
+                                  <span style={{color:isTailMaint(f.tail)?'var(--col-cancel)':'var(--ink-3)',fontWeight:isTailMaint(f.tail)?600:400}}>{f.tail||'TBD'}</span>
+                                  {isTailMaint(f.tail) && <GndBadge/>}
+                                </>
+                            }
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -214,13 +271,21 @@ function GanttBoard() {
         </div>
 
         {/* Legend */}
-        <div className="mono uc" style={{ display:'flex',gap:14,padding:'7px 16px',fontSize:9,color:'var(--ink-3)',borderTop:'1px solid var(--line)',background:'var(--bg-2)',flexShrink:0 }}>
+        <div className="mono uc" style={{ display:'flex',gap:10,padding:'7px 16px',fontSize:9,color:'var(--ink-3)',borderTop:'1px solid var(--line)',background:'var(--bg-2)',flexShrink:0,flexWrap:'wrap' }}>
           {[['PENDING','var(--col-pending)'],['COMPLETED','var(--col-done)'],['CANCELED','var(--col-cancel)'],['SIM','var(--col-sim)'],['STANDBY','var(--col-stby)']].map(([l,c])=>(
             <span key={l} style={{ display:'flex',gap:5,alignItems:'center' }}>
               <span style={{ width:12,height:7,background:`color-mix(in oklch,${c} 20%,var(--surface))`,border:`1px ${l==='STANDBY'?'dashed':'solid'} ${c}`,borderRadius:2 }}/>
               {l}
             </span>
           ))}
+          <span style={{ display:'flex',gap:5,alignItems:'center' }}>
+            <span style={{ width:12,height:7,background:`color-mix(in oklch,var(--col-stby) 10%,var(--surface))`,border:'1px dashed var(--col-stby)',borderRadius:2 }}/>
+            FI AS SP
+          </span>
+          <span style={{ display:'flex',gap:5,alignItems:'center' }}>
+            <span style={{ width:12,height:7,background:'color-mix(in oklch,var(--ink-3) 15%,var(--surface))',border:'1px solid var(--ink-3)',borderRadius:2 }}/>
+            MTG/OTHER
+          </span>
           <span style={{flex:1}}/>
           <span>CLICK A BAR FOR DETAILS</span>
         </div>

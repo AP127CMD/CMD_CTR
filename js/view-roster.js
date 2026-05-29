@@ -270,10 +270,8 @@ function RosterBoard() {
                 ? key === HIGHLIGHT_BATCH
                 : ALL_DATES.some(d => rowData[d]?.ap127 > 0);
               const rowAlpha = app.highlightAP127 && !isHL ? 0.3 : 1;
-              // Count leave days in the visible date range (instructor / student rows only)
-              const leaveDays = (groupBy !== 'batch')
-                ? ALL_DATES.filter(d => leavesOnDate(d)[key]).length
-                : 0;
+              // Show LEAVE badge only when they are on leave TODAY
+              const isOnLeaveToday = groupBy !== 'batch' && !!leavesOnDate(today)[key];
 
               return (
                 <tr key={key} style={{ opacity: rowAlpha, transition:'opacity .15s' }}>
@@ -296,7 +294,7 @@ function RosterBoard() {
                         maxWidth: LABEL_W - 30,
                         display:'block',
                       }}>{key}</span>
-                      {leaveDays > 0 && <LeaveBadge reason={`${leaveDays} leave day${leaveDays>1?'s':''} in range`}/>}
+                      {isOnLeaveToday && <LeaveBadge reason={leavesOnDate(today)[key]}/>}
                     </div>
                     {!isMobile && (
                       <div className="mono uc" style={{ fontSize:8,color:'var(--ink-3)',marginTop:1 }}>

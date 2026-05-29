@@ -1,6 +1,13 @@
 // Analytics Summary — batch breakdown, instructor load, AP-127 spotlight
 const { useMemo: useM_s, useState: useS_s } = React;
 
+// Helper: actual flown minutes for a completed flight (airborne if available, else scheduled)
+const flownMin_s = f => {
+  if (f.status !== 'Completed') return 0;
+  if (f.airborne) { const [h,m]=String(f.airborne).split(':').map(Number); return (h||0)*60+(m||0); }
+  return f.durMin || 0;
+};
+
 // Palette for non-AP-127 AP batches (pink/320 intentionally excluded — reserved for AP-127 highlight)
 const BATCH_COLORS = [
   'oklch(0.72 0.18 260)',  // blue
@@ -54,10 +61,10 @@ function DonutChart({ slices, size=150, ring=22 }) {
 // Bar container width ∝ selected metric; inner coloured segments flex-proportional to flight-count per status
 function BreakdownTable({ title, subtitle, rows, nameKey='batch', barMode='flights', highlightKey=null }) {
   const sorted = [...rows].sort((a, b) =>
-    barMode === 'hours' ? b.hours - a.hours : b.total - a.total
+    barMode === 'hours' ? (b.completedHours||0) - (a.completedHours||0) : b.total - a.total
   );
   const maxFlights = Math.max(...sorted.map(r => r.total), 1);
-  const maxHours   = Math.max(...sorted.map(r => r.hours), 0.01);
+  const maxHours   = Math.max(...sorted.map(r => r.completedHours||0), 0.01);
   const todayLeaves = leavesOnDate(localToday());
 
   return (
@@ -72,7 +79,7 @@ function BreakdownTable({ title, subtitle, rows, nameKey='batch', barMode='fligh
           const name  = r[nameKey];
           const isHL  = name === HIGHLIGHT_BATCH || name === highlightKey;
           const barW  = barMode === 'hours'
-            ? `${((r.hours   / maxHours)   * 100).toFixed(1)}%`
+            ? `${(((r.completedHours||0) / maxHours) * 100).toFixed(1)}%`
             : `${((r.total   / maxFlights) * 100).toFixed(1)}%`;
           return (
             <div key={name} style={{ display:'flex', gap:10, alignItems:'center' }}>
@@ -95,12 +102,12 @@ function BreakdownTable({ title, subtitle, rows, nameKey='batch', barMode='fligh
                   {r.total === 0   && <div style={{ flex:1, background:'var(--line)', opacity:.2 }}/>}
                 </div>
               </div>
-              {/* Completed / Canceled counts + metric */}
+              {/* Completed / Canceled counts + completed hours */}
               <div style={{ display:'flex', gap:4, alignItems:'center', flexShrink:0 }}>
                 <div className="mono num" style={{ fontSize:9, color:'var(--col-done)', textAlign:'right', width:20 }} title="Completed">{r.completed}</div>
                 <div className="mono" style={{ fontSize:8, color:'var(--ink-3)' }}>/</div>
                 <div className="mono num" style={{ fontSize:9, color:'var(--col-cancel)', textAlign:'right', width:20 }} title="Canceled">{r.canceled}</div>
-                <div className="mono num" style={{ width:46, fontSize:9, color:'var(--ink-3)', textAlign:'right' }}>{r.hours.toFixed(1)}h</div>
+                <div className="mono num" style={{ width:52, fontSize:9, color:'var(--col-done)', textAlign:'right' }} title="Completed hours">✓{(r.completedHours||0).toFixed(1)}h</div>
               </div>
             </div>
           );
@@ -150,8 +157,9 @@ function SummaryBoard() {
     const m={};
     all.forEach(f=>{
       const b=f.batch||'Unknown';
-      if(!m[b]) m[b]={batch:b,total:0,pending:0,completed:0,canceled:0,hours:0,standby:0};
+      if(!m[b]) m[b]={batch:b,total:0,pending:0,completed:0,canceled:0,hours:0,completedHours:0,standby:0};
       m[b].total++; m[b].hours+=(f.durMin||0)/60;
+      m[b].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[b].pending++;
       if(f.status==='Completed') m[b].completed++;
       if(f.status==='Canceled')  m[b].canceled++;
@@ -164,8 +172,9 @@ function SummaryBoard() {
     const m={};
     all.forEach(f=>{
       const k=f.instructor||'—';
-      if(!m[k]) m[k]={name:k,total:0,hours:0,pending:0,completed:0,canceled:0,standby:0};
+      if(!m[k]) m[k]={name:k,total:0,hours:0,completedHours:0,pending:0,completed:0,canceled:0,standby:0};
       m[k].total++; m[k].hours+=(f.durMin||0)/60;
+      m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;
       if(f.status==='Canceled')  m[k].canceled++;
@@ -179,8 +188,9 @@ function SummaryBoard() {
     all.forEach(f=>{
       if(!f.student) return;  // skip flights with no named student
       const k=f.student;
-      if(!m[k]) m[k]={name:k,total:0,hours:0,pending:0,completed:0,canceled:0,standby:0};
+      if(!m[k]) m[k]={name:k,total:0,hours:0,completedHours:0,pending:0,completed:0,canceled:0,standby:0};
       m[k].total++; m[k].hours+=(f.durMin||0)/60;
+      m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;
       if(f.status==='Canceled')  m[k].canceled++;
@@ -195,19 +205,20 @@ function SummaryBoard() {
     // Seed every known AP-127 student from entire dataset
     FLIGHTS.filter(f => f.batch === HIGHLIGHT_BATCH && f.student).forEach(f => {
       const k = f.student;
-      if (!m[k]) m[k] = {name:k, total:0, hours:0, pending:0, completed:0, canceled:0, standby:0};
+      if (!m[k]) m[k] = {name:k, total:0, hours:0, completedHours:0, pending:0, completed:0, canceled:0, standby:0};
     });
     // Accumulate from the active date range
     all.filter(f => f.batch === HIGHLIGHT_BATCH).forEach(f => {
       const k = f.student || '—';
-      if (!m[k]) m[k] = {name:k, total:0, hours:0, pending:0, completed:0, canceled:0, standby:0};
+      if (!m[k]) m[k] = {name:k, total:0, hours:0, completedHours:0, pending:0, completed:0, canceled:0, standby:0};
       m[k].total++; m[k].hours += (f.durMin||0)/60;
+      m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;
       if(f.status==='Canceled')  m[k].canceled++;
       if(f.isStandby)            m[k].standby++;
     });
-    return Object.values(m).sort((a,b) => b.hours - a.hours || b.total - a.total || a.name.localeCompare(b.name));
+    return Object.values(m).sort((a,b) => (b.completedHours||0) - (a.completedHours||0) || b.total - a.total || a.name.localeCompare(b.name));
   },[all]);
 
   // AP-batch pie: only batches starting with "AP-"
@@ -326,13 +337,13 @@ function SummaryBoard() {
               {ap127StudentStats.length === 0 && <div className="mono uc" style={{ fontSize:9,color:'var(--ink-3)',padding:'8px 0' }}>NO AP-127 STUDENTS FOUND</div>}
               {(()=>{
                 const sorted127 = [...ap127StudentStats].sort((a,b) =>
-                  barMode === 'hours' ? b.hours - a.hours : b.total - a.total
+                  barMode === 'hours' ? (b.completedHours||0) - (a.completedHours||0) : b.total - a.total
                 );
                 const maxF127 = Math.max(...sorted127.map(r=>r.total), 1);
-                const maxH127 = Math.max(...sorted127.map(r=>r.hours), 0.01);
+                const maxH127 = Math.max(...sorted127.map(r=>r.completedHours||0), 0.01);
                 return sorted127.map(r => {
                   const barW = barMode === 'hours'
-                    ? `${((r.hours / maxH127) * 100).toFixed(1)}%`
+                    ? `${(((r.completedHours||0) / maxH127) * 100).toFixed(1)}%`
                     : `${((r.total / maxF127) * 100).toFixed(1)}%`;
                   return (
                     <div key={r.name} style={{ display:'flex', gap:10, alignItems:'center' }}>
@@ -349,12 +360,12 @@ function SummaryBoard() {
                           {r.total === 0   && <div style={{ flex:1, background:'var(--line)', opacity:.2 }}/>}
                         </div>
                       </div>
-                      {/* Completed / Canceled + hours */}
+                      {/* Completed / Canceled + completed hours */}
                       <div style={{ display:'flex', gap:4, alignItems:'center', flexShrink:0 }}>
                         <div className="mono num" style={{ fontSize:9,color:'var(--col-done)',textAlign:'right',width:20 }} title="Completed">{r.completed}</div>
                         <div className="mono" style={{ fontSize:8,color:'var(--ink-3)' }}>/</div>
                         <div className="mono num" style={{ fontSize:9,color:'var(--col-cancel)',textAlign:'right',width:20 }} title="Canceled">{r.canceled}</div>
-                        <div className="mono num" style={{ width:46,fontSize:9,color:'var(--ink-3)',textAlign:'right' }}>{r.hours.toFixed(1)}h</div>
+                        <div className="mono num" style={{ width:52,fontSize:9,color:'var(--col-done)',textAlign:'right' }} title="Completed hours">✓{(r.completedHours||0).toFixed(1)}h</div>
                       </div>
                     </div>
                   );

@@ -39,28 +39,29 @@
 <!-- Shared components and context.
      The ?v= token cache-busts the app JS — bump it whenever a js/ file changes
      so browsers don't serve stale code after a deploy. -->
-<script type="text/babel" src="js/app-shared.js?v=r39"></script>
+<script type="text/babel" src="js/app-shared.js?v=r40"></script>
 
 <!-- Views -->
-<script type="text/babel" src="js/view-daily.js?v=r39"></script>
-<script type="text/babel" src="js/view-board.js?v=r39"></script>
-<script type="text/babel" src="js/view-gantt.js?v=r39"></script>
-<script type="text/babel" src="js/view-weekly.js?v=r39"></script>
-<script type="text/babel" src="js/view-summary.js?v=r39"></script>
-<script type="text/babel" src="js/view-roster.js?v=r39"></script>
-<script type="text/babel" src="js/view-slotfinder.js?v=r39"></script>
-<script type="text/babel" src="js/view-autoslotfinder.js?v=r39"></script>
+<script type="text/babel" src="js/view-daily.js?v=r40"></script>
+<script type="text/babel" src="js/view-board.js?v=r40"></script>
+<script type="text/babel" src="js/view-gantt.js?v=r40"></script>
+<script type="text/babel" src="js/view-weekly.js?v=r40"></script>
+<script type="text/babel" src="js/view-summary.js?v=r40"></script>
+<script type="text/babel" src="js/view-roster.js?v=r40"></script>
+<script type="text/babel" src="js/view-slotfinder.js?v=r40"></script>
+<script type="text/babel" src="js/view-autoslotfinder.js?v=r40"></script>
+<script type="text/babel" src="js/view-calendar.js?v=r40"></script>
 
 <script type="text/babel" data-presets="env,react">
 const VIEWS = [
   { id:'daily',   label:'DAY GLANCE', desc:'Single-day overview — KPIs, schedule pulse, batch/instructor/fleet stats, AP-127 spotlight' },
   { id:'board',   label:'BOARD',     desc:'Sortable daily ops table — all flights for the selected date' },
-  { id:'gantt',   label:'GANTT',     desc:'Timeline bars grouped by instructor, aircraft, or batch' },
+  { id:'gantt',   label:'GANTT',     desc:'Timeline bars grouped by instructor, aircraft, or batch — shows all activity types' },
   { id:'weekly',  label:'WEEKLY',    desc:'Week-by-week calendar showing scheduled flights per day' },
   { id:'summary', label:'ANALYTICS', desc:'Aggregate stats, AP-127 student progress, and batch breakdowns' },
   { id:'roster',         label:'ROSTER',           desc:'Instructor workload heat-map — spot over/under-loaded days' },
-  { id:'slotfinder',     label:'SLOT FINDER',      desc:'Find open slots — check FI, aircraft and SP availability for any date, duration and gap' },
   { id:'autoslotfinder', label:'AUTO SLOT FINDER', desc:'Auto-rank AP-127 SPs from the NGT site and propose the best slot for each — pick from FI × A/C options' },
+  { id:'calendar',       label:'CALENDAR',         desc:'Monthly overview — flight stats, FI/SP leave status, AP-127 highlights' },
 ];
 
 // Sidebar — uses useApp() so must be rendered inside AppProvider
@@ -142,7 +143,7 @@ function Sidebar({ view, setView, width, mobile=false, onClose }) {
 
 // Compact top bar shown on mobile in place of full sidebar
 function MobileTopBar({ view, onMenuOpen }) {
-  const LABELS = { daily:'DAY GLANCE', board:'BOARD', gantt:'GANTT', weekly:'WEEKLY', summary:'ANALYTICS', roster:'ROSTER', slotfinder:'SLOT FINDER', autoslotfinder:'AUTO SLOT FINDER' };
+  const LABELS = { daily:'DAY GLANCE', board:'BOARD', gantt:'GANTT', weekly:'WEEKLY', summary:'ANALYTICS', roster:'ROSTER', autoslotfinder:'AUTO SLOT FINDER', calendar:'CALENDAR' };
   return (
     <div style={{
       height:46, padding:'0 14px', background:'var(--bg-2)',
@@ -217,7 +218,7 @@ function App() {
   }, []);
 
   return (
-    <AppProvider tweaks={tweaks} setTweak={setTweak} isMobile={isMobile}>
+    <AppProvider tweaks={tweaks} setTweak={setTweak} isMobile={isMobile} setView={setView}>
       <ThemeStyle/>
       <div style={{ display:'flex', height:'100%', overflow:'hidden' }}>
 
@@ -254,6 +255,7 @@ function App() {
             {view==='roster'         && <RosterBoard/>}
             {view==='slotfinder'     && <SlotFinderBoard/>}
             {view==='autoslotfinder' && <AutoSlotFinderBoard/>}
+            {view==='calendar'       && <CalendarBoard/>}
           </div>
         </div>
       </div>

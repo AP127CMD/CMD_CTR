@@ -166,7 +166,8 @@ function asfBuildBusyMap(flights, gapMin) {
   flights.forEach(f => {
     const s = minutesOf(f.start), e = minutesOf(f.end);
     if (s == null || e == null) return;
-    const push = (map, key) => { if (key) (map[key] = map[key] || []).push({ s, e }); };
+    // Include full flight object so the timeline can show clickable detail
+    const push = (map, key) => { if (key) (map[key] = map[key] || []).push({ s, e, flight: f }); };
     push(rawFI, f.instructor); push(rawSP, f.student); push(rawTail, f.tail);
     // If an FI appears as the student (e.g. FAM FI, PPC check), block their FI time too
     if (f.student && _fiSet.has(f.student)) push(rawFI, f.student);
@@ -480,6 +481,7 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
 // ─── Main timeline ────────────────────────────────────────────────────────
 function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart, rwyEnd, allResults, activatedSlots, hoveredSlot, onSlotHover, onAvailableSlotClick, onReservedSlotClick, hourEnd, leavesMap, maintTailSet }) {
   const [timelineTab, setTimelineTab] = useS_asf('fi');
+  const _app = useApp();
   const LABEL_W   = 140;
   const HOUR_END  = Math.max(ASF_HOUR_END, hourEnd || ASF_HOUR_END);
   const BASE_MIN  = ASF_HOUR_START * 60;
@@ -565,9 +567,31 @@ function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart
                 {rwyStart != null && rwyEnd != null && (
                   <div style={{ position:'absolute', left:pct(Math.max(BASE_MIN,rwyStart)), width:wpct(Math.min(BASE_MIN+SPAN_MIN,rwyEnd)-Math.max(BASE_MIN,rwyStart)), top:0, bottom:0, background:'color-mix(in oklch,var(--col-cancel) 8%,transparent)', pointerEvents:'none' }}/>
                 )}
-                {flights.map((fl, fi) => (
-                  <div key={fi} style={{ position:'absolute', left:pct(Math.max(BASE_MIN,fl.s)), width:wpct(Math.min(BASE_MIN+SPAN_MIN,fl.e)-Math.max(BASE_MIN,fl.s)), top:4, bottom:4, background:'color-mix(in oklch,var(--ink-2) 28%,transparent)', boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--ink-2) 45%,transparent)', borderRadius:3, pointerEvents:'none' }}/>
-                ))}
+                {flights.map((fl, fi) => {
+                  const flObj = fl.flight;
+                  const flColor = flObj ? STATUS_COLOR(flObj) : 'var(--ink-2)';
+                  return (
+                    <button key={fi}
+                      onClick={() => flObj && _app.setDrawer(flObj.id)}
+                      title={flObj ? `${flObj.start}–${flObj.end} · ${flObj.student||flObj.instructor||''} · ${flObj.lesson||''}` : ''}
+                      style={{
+                        position:'absolute', left:pct(Math.max(BASE_MIN,fl.s)),
+                        width:`calc(${wpct(Math.min(BASE_MIN+SPAN_MIN,fl.e)-Math.max(BASE_MIN,fl.s))} - 1px)`,
+                        top:3, bottom:3,
+                        background:`color-mix(in oklch,${flColor} 22%,transparent)`,
+                        boxShadow:`inset 0 0 0 1px color-mix(in oklch,${flColor} 40%,transparent)`,
+                        borderLeft: flObj ? `3px solid ${flColor}` : 'none',
+                        borderRadius:3, cursor: flObj ? 'pointer' : 'default',
+                        overflow:'hidden', textAlign:'left', padding:'1px 3px',
+                      }}>
+                      {flObj && (
+                        <div className="mono" style={{ fontSize:7, lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'var(--ink)' }}>
+                          <span style={{ fontWeight:600 }}>{flObj.start}</span>{' '}{flObj.lesson || flObj.student || ''}
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
                 {/* Available slots — hover sync + click to reserve */}
                 {allSlots.map((slot, si) => {
                   if (!section.inPairs(slot, rowKey)) return null;
@@ -1372,10 +1396,10 @@ function AutoSlotFinderBoard() {
       const hasFlight = dateFlights.some(f => f.student && f.status !== 'Canceled' && asfShortName(f.student).toLowerCase() === spKey.toLowerCase());
       return { ...rec, slots, baselineCount: baselineSlots.length, onLeave, hasFlight };
     });
-    // WITH SLOTS ONLY: hide 0-slot SPs (on-leave, already-scheduled, blocked) AND
-    // hide SPs that already have a reservation (they're done — focus on what's pending).
+    // WITH SLOTS ONLY: hide 0-slot SPs (on-leave, already-scheduled, blocked)
+    // but KEEP SPs that already have a reservation so you can see the full picture.
     return (onlyOpen
-      ? out.filter(r => r.slots.length > 0 && !activatedSlots[asfShortName(r.student.name)])
+      ? out.filter(r => r.slots.length > 0 || !!activatedSlots[asfShortName(r.student.name)])
       : out
     ).slice(0, topN);
   }, [ranked, slotsByStudent, baselineSlotsByStudent, onlyOpen, topN, leavesMap, dateFlights, activatedSlots]);

@@ -170,7 +170,7 @@ const THEME_CSS = `
 const AppCtx = createContext(null);
 const useApp  = () => useContext(AppCtx);
 
-function AppProvider({ children, tweaks, setTweak, isMobile=false }) {
+function AppProvider({ children, tweaks, setTweak, isMobile=false, setView=null }) {
   const [date, setDate]               = useState(DEFAULT_DATE);
   const [filters, setFilters]         = useState({ batches:null, instructors:null, tails:null, statuses:null, search:'' });
   const [drawer, setDrawer]           = useState(null);
@@ -211,6 +211,7 @@ function AppProvider({ children, tweaks, setTweak, isMobile=false }) {
     dayFlights,
     flightById: id => FLIGHTS.find(f => f.id === id),
     isMobile,
+    setView: setView || (() => {}),
   };
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
 }
@@ -811,6 +812,19 @@ function ViewIcon({ id, size=13, color='currentColor' }) {
       {/* Magnifying glass — smaller, top-right */}
       <circle cx="10.6" cy="3.6" r="2"/>
       <line x1="12" y1="5.1" x2="13.2" y2="6.3" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+  if (id === 'calendar') return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke={color} strokeWidth="1.2">
+      <rect x="1.5" y="2.5" width="11" height="10" rx="1"/>
+      <line x1="1.5" y1="5.5" x2="12.5" y2="5.5"/>
+      <line x1="4.5" y1="1" x2="4.5" y2="3"/>
+      <line x1="9.5" y1="1" x2="9.5" y2="3"/>
+      <rect x="3.5" y="7" width="2" height="2" rx=".3" fill={color} stroke="none"/>
+      <rect x="6.5" y="7" width="2" height="2" rx=".3" fill={color} stroke="none" opacity=".6"/>
+      <rect x="3.5" y="9.5" width="2" height="1.5" rx=".3" fill={color} stroke="none" opacity=".4"/>
+      <rect x="6.5" y="9.5" width="2" height="1.5" rx=".3" fill={color} stroke="none" opacity=".6"/>
+      <rect x="9.5" y="7" width="2" height="1.5" rx=".3" fill={color} stroke="none" opacity=".4"/>
     </svg>
   );
   if (id === 'roster') return (

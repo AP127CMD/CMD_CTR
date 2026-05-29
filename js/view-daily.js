@@ -135,7 +135,7 @@ function DailyBoard() {
     const s = {
       total: 0, pending: 0, completed: 0, canceled: 0,
       standby: 0, sim: 0, ap127: 0,
-      schedHours: 0, flownHours: 0,
+      schedHours: 0, flownHours: 0, pendingHours: 0, canceledHours: 0, simHours: 0,
       students: new Set(), instructors: new Set(), tails: new Set(), batches: new Set(),
       // Mutually-exclusive buckets for the donut (matches STATUS_COLOR precedence)
       mix: { sim: 0, standby: 0, completed: 0, pending: 0, canceled: 0 },
@@ -160,6 +160,9 @@ function DailyBoard() {
         const minutes = f.airborne ? hmToMin_d(f.airborne) : (f.durMin || 0);
         s.flownHours += minutes / 60;
       }
+      if (f.status === 'Pending')  s.pendingHours  += (f.durMin || 0) / 60;
+      if (f.status === 'Canceled') s.canceledHours += (f.durMin || 0) / 60;
+      if (f.isSim)                 s.simHours      += (f.durMin || 0) / 60;
       if (f.student)    s.students.add(f.student);
       if (f.instructor) s.instructors.add(f.instructor);
       if (f.tail)       s.tails.add(f.tail);
@@ -247,15 +250,16 @@ function DailyBoard() {
     const s = {
       flights: arr.length, students: new Set(), instructors: new Set(),
       completed: 0, pending: 0, canceled: 0, standby: 0, sim: 0,
-      hours: 0, lessons: new Set(),
+      hours: 0, completedHours: 0, pendingHours: 0, canceledHours: 0,
+      lessons: new Set(),
     };
     arr.forEach(f => {
       if (f.student)    s.students.add(f.student);
       if (f.instructor) s.instructors.add(f.instructor);
       if (f.lesson)     s.lessons.add(f.lesson);
-      if (f.status === 'Pending')   s.pending++;
-      if (f.status === 'Completed') s.completed++;
-      if (f.status === 'Canceled')  s.canceled++;
+      if (f.status === 'Pending')   { s.pending++; s.pendingHours += (f.durMin||0)/60; }
+      if (f.status === 'Completed') { s.completed++; const m = f.airborne ? hmToMin_d(f.airborne) : (f.durMin||0); s.completedHours += m/60; }
+      if (f.status === 'Canceled')  { s.canceled++; s.canceledHours += (f.durMin||0)/60; }
       if (f.isStandby) s.standby++;
       if (f.isSim)     s.sim++;
       s.hours += (f.durMin || 0) / 60;
@@ -321,12 +325,12 @@ function DailyBoard() {
 
           {/* Hero KPI strip — School performance */}
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <DKPI label="TOTAL"     value={stats.total}        sub="SCHEDULED" color="var(--col-pending)" small={isMobile}/>
-            <DKPI label="COMPLETED" value={stats.completed}    sub={stats.completionRate != null ? `${stats.completionRate.toFixed(0)}% RATE` : '—'} color="var(--col-done)" small={isMobile}/>
-            <DKPI label="PENDING"   value={stats.pending}      sub={`${stats.standby} STBY`} color="var(--col-pending)" small={isMobile}/>
-            <DKPI label="CANCELED"  value={stats.canceled}     sub="OF SCHED" color="var(--col-cancel)" small={isMobile}/>
+            <DKPI label="TOTAL"     value={stats.total}        sub={`${hoursFmt(stats.schedHours)} HRS SCHED`} color="var(--col-pending)" small={isMobile}/>
+            <DKPI label="COMPLETED" value={stats.completed}    sub={stats.completionRate != null ? `${stats.completionRate.toFixed(0)}% · ${hoursFmt(stats.flownHours)}H` : `${hoursFmt(stats.flownHours)}H`} color="var(--col-done)" small={isMobile}/>
+            <DKPI label="PENDING"   value={stats.pending}      sub={`${stats.standby} STBY · ${hoursFmt(stats.pendingHours)}H`} color="var(--col-pending)" small={isMobile}/>
+            <DKPI label="CANCELED"  value={stats.canceled}     sub={`${hoursFmt(stats.canceledHours)} HRS`} color="var(--col-cancel)" small={isMobile}/>
             <DKPI label="HOURS"     value={hoursFmt(stats.flownHours)} sub={`${hoursFmt(stats.schedHours)} PLAN`} color="var(--col-done)" small={isMobile}/>
-            <DKPI label="SIM"       value={stats.sim}          sub="SIMULATOR" color="var(--col-sim)" small={isMobile}/>
+            <DKPI label="SIM"       value={stats.sim}          sub={`${hoursFmt(stats.simHours)} HRS`} color="var(--col-sim)" small={isMobile}/>
             <DKPI label="A/C USED"  value={stats.tails.size}   sub="AIRCRAFT" color="var(--ink-2)" small={isMobile}/>
             <DKPI label="INSTR"     value={stats.instructors.size} sub="ACTIVE" color="var(--ink-2)" small={isMobile}/>
             <DKPI label="◆ AP-127"  value={stats.ap127}        sub={`${ap127.students.size} STUDENTS`} color="var(--highlight)" small={isMobile}/>
@@ -617,13 +621,13 @@ function DailyBoard() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {/* AP-127 KPIs */}
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  <DKPI label="FLIGHTS"    value={ap127.flights}        sub={`${ap127.lessons.size} LESSONS`} color="var(--highlight)" small={isMobile}/>
-                  <DKPI label="STUDENTS"   value={ap127.students.size}  sub="FLYING"     color="var(--highlight)" small={isMobile}/>
-                  <DKPI label="INSTR"      value={ap127.instructors.size} sub="ASSIGNED"  color="var(--highlight)" small={isMobile}/>
-                  <DKPI label="COMPLETED"  value={ap127.completed}      sub={ap127.completionRate != null ? `${ap127.completionRate.toFixed(0)}% RATE` : '—'} color="var(--col-done)" small={isMobile}/>
-                  <DKPI label="PENDING"    value={ap127.pending}        sub={`${ap127.standby} STBY`} color="var(--col-pending)" small={isMobile}/>
-                  <DKPI label="CANCELED"   value={ap127.canceled}       sub="OF SCHED"   color="var(--col-cancel)" small={isMobile}/>
-                  <DKPI label="HOURS"      value={hoursFmt(ap127.hours)} sub="PLANNED"   color="var(--highlight)" small={isMobile}/>
+                  <DKPI label="FLIGHTS"    value={ap127.flights}           sub={`${ap127.lessons.size} LESS · ${hoursFmt(ap127.hours)}H`} color="var(--highlight)" small={isMobile}/>
+                  <DKPI label="STUDENTS"   value={ap127.students.size}     sub="FLYING"     color="var(--highlight)" small={isMobile}/>
+                  <DKPI label="INSTR"      value={ap127.instructors.size}  sub="ASSIGNED"   color="var(--highlight)" small={isMobile}/>
+                  <DKPI label="COMPLETED"  value={ap127.completed}         sub={ap127.completionRate != null ? `${ap127.completionRate.toFixed(0)}% · ${hoursFmt(ap127.completedHours)}H` : `${hoursFmt(ap127.completedHours)}H`} color="var(--col-done)" small={isMobile}/>
+                  <DKPI label="PENDING"    value={ap127.pending}           sub={`${ap127.standby} STBY · ${hoursFmt(ap127.pendingHours)}H`} color="var(--col-pending)" small={isMobile}/>
+                  <DKPI label="CANCELED"   value={ap127.canceled}          sub={`${hoursFmt(ap127.canceledHours)} HRS`} color="var(--col-cancel)" small={isMobile}/>
+                  <DKPI label="HOURS"      value={hoursFmt(ap127.hours)}   sub="PLANNED"    color="var(--highlight)" small={isMobile}/>
                 </div>
 
                 {/* AP-127 student list */}
