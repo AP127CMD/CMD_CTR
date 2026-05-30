@@ -1,6 +1,13 @@
 // Live Ops Board — departure-board style table
 const { useMemo: useM_b, useState: useS_b } = React;
 
+const brdHours  = h => h >= 10 ? h.toFixed(0) : h.toFixed(1);
+const brdFlownMin = f => {
+  if (f.status !== 'Completed') return 0;
+  if (f.airborne) { const [h,m]=String(f.airborne).split(':').map(Number); return (h||0)*60+(m||0); }
+  return f.durMin || 0;
+};
+
 const SORT_KEYS = {
   start:      f => minutesOf(f.start) ?? 9999,
   end:        f => minutesOf(f.end)   ?? 9999,
@@ -14,12 +21,13 @@ const SORT_KEYS = {
   status:     f => f.status ?? '',
 };
 
-function StatHero({ label, value, color, small=false }) {
+function StatHero({ label, value, color, small=false, sub='' }) {
   return (
     <div style={{ flex:1, padding: small?'4px 8px':'6px 10px', background:'var(--surface)', border:'1px solid var(--line)', borderRadius:5, position:'relative', overflow:'hidden', minWidth: small?56:72 }}>
       <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:color }}/>
       <div className="mono uc" style={{ fontSize:small?7:8, color:'var(--ink-3)' }}>{label}</div>
       <div className="num" style={{ fontSize:small?16:22, fontWeight:600, lineHeight:1.1, marginTop:1, color:'var(--ink)' }}>{String(value).padStart(2,'0')}</div>
+      {sub && <div className="mono uc" style={{ fontSize:small?6:7, color:'var(--ink-3)', marginTop:1 }}>{sub}</div>}
     </div>
   );
 }
@@ -50,8 +58,20 @@ function OpsBoard() {
   }, [flights, sortCol, sortDir]);
 
   const stats = useM_b(()=>{
-    const s={Pending:0,Completed:0,Canceled:0,total:flights.length,sim:0,ap127:0,standby:0};
-    flights.forEach(f=>{ s[f.status]=(s[f.status]||0)+1; if(f.isSim)s.sim++; if(f.batch===HIGHLIGHT_BATCH)s.ap127++; if(f.isStandby)s.standby++; });
+    const s={Pending:0,Completed:0,Canceled:0,total:flights.length,
+             sim:0,ap127:0,standby:0,
+             totalHours:0,completedHours:0,pendingHours:0,canceledHours:0,
+             simHours:0,ap127Hours:0,standbyHours:0};
+    flights.forEach(f=>{
+      s[f.status]=(s[f.status]||0)+1;
+      if(f.isSim)     { s.sim++;     s.simHours     +=(f.durMin||0)/60; }
+      if(f.batch===HIGHLIGHT_BATCH) { s.ap127++; s.ap127Hours+=(f.durMin||0)/60; }
+      if(f.isStandby) { s.standby++; s.standbyHours +=(f.durMin||0)/60; }
+      s.totalHours += (f.durMin||0)/60;
+      if(f.status==='Completed') s.completedHours += brdFlownMin(f)/60;
+      if(f.status==='Pending')   s.pendingHours   += (f.durMin||0)/60;
+      if(f.status==='Canceled')  s.canceledHours  += (f.durMin||0)/60;
+    });
     return s;
   },[flights]);
 
@@ -81,13 +101,13 @@ function OpsBoard() {
           <div className="num" style={{ fontSize:isMobile?26:38, fontWeight:700, lineHeight:1, letterSpacing:'-0.02em' }}>{String(day).padStart(2,'0')}</div>
           <div className="mono uc" style={{ fontSize:isMobile?9:11, color:'var(--ink-2)' }}>{mo} · {wd}</div>
         </div>
-        <StatHero label="TOTAL"     value={stats.total}     color="var(--col-pending)" small={isMobile}/>
-        <StatHero label="PENDING"   value={stats.Pending}   color="var(--col-pending)" small={isMobile}/>
-        <StatHero label="COMPLETED" value={stats.Completed} color="var(--col-done)"    small={isMobile}/>
-        <StatHero label="CANCELED"  value={stats.Canceled}  color="var(--col-cancel)"  small={isMobile}/>
-        <StatHero label="AP-127"    value={stats.ap127}     color="var(--highlight)"   small={isMobile}/>
-        <StatHero label="STANDBY"   value={stats.standby}   color="var(--col-stby)"    small={isMobile}/>
-        <StatHero label="SIM"       value={stats.sim}       color="var(--col-sim)"     small={isMobile}/>
+        <StatHero label="TOTAL"     value={stats.total}     color="var(--col-pending)" small={isMobile} sub={`${brdHours(stats.totalHours)}H SCHED`}/>
+        <StatHero label="PENDING"   value={stats.Pending}   color="var(--col-pending)" small={isMobile} sub={`${brdHours(stats.pendingHours)}H`}/>
+        <StatHero label="COMPLETED" value={stats.Completed} color="var(--col-done)"    small={isMobile} sub={`${brdHours(stats.completedHours)}H ✓`}/>
+        <StatHero label="CANCELED"  value={stats.Canceled}  color="var(--col-cancel)"  small={isMobile} sub={`${brdHours(stats.canceledHours)}H`}/>
+        <StatHero label="AP-127"    value={stats.ap127}     color="var(--highlight)"   small={isMobile} sub={`${brdHours(stats.ap127Hours)}H`}/>
+        <StatHero label="STANDBY"   value={stats.standby}   color="var(--col-stby)"    small={isMobile} sub={`${brdHours(stats.standbyHours)}H`}/>
+        <StatHero label="SIM"       value={stats.sim}       color="var(--col-sim)"     small={isMobile} sub={`${brdHours(stats.simHours)}H`}/>
       </div>
 
       {/* Date + filter */}

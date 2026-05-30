@@ -1,11 +1,8 @@
 // Gantt timeline — rows = instructor / tail / batch
 const { useMemo: useM_g } = React;
 
-const HOUR_START = 6;
-const HOUR_END   = 18;
-const HOUR_SPAN  = HOUR_END - HOUR_START;
-// Compact 12-hour label for tight mobile rulers, e.g. 6 -> "6AM", 13 -> "1PM"
-const fmtHour = h => `${h % 12 === 0 ? 12 : h % 12}${h < 12 ? 'AM' : 'PM'}`;
+const HOUR_START     = 6;
+const HOUR_END_MIN   = 18; // minimum end — extends dynamically if flights run later
 
 // Helper: detect non-flight activities (meetings, briefings, ground school)
 const isMeetingFlt = f => /meeting|briefing|debrief|ground.school/i.test(f.lesson || '') || /meeting|recurrent/i.test(f.batch || '');
@@ -19,6 +16,7 @@ function GanttBoard() {
   const groupBy  = app.tweaks.groupBy || 'instructor';
   const TRACK_LEFT  = isMobile ? 90  : 190;
   const TRACK_RIGHT = isMobile ? 64  : 180;
+  const PX_PER_HOUR = 60; // minimum px per hour — drives horizontal scroll width
 
   // Override dayFlights: include ALL activity types (bypass showSim filter)
   const flights = useM_g(() => {
@@ -43,6 +41,14 @@ function GanttBoard() {
       return true;
     });
   }, [app.date, app.filters, app.hideOthers, app.highlightAP127]);
+
+  // Extend end hour to cover late flights (e.g. 19:00, 20:00)
+  const hourEnd = useM_g(() => {
+    let maxMin = HOUR_END_MIN * 60;
+    flights.forEach(f => { const e = minutesOf(f.end); if (e) maxMin = Math.max(maxMin, e); });
+    return Math.max(HOUR_END_MIN, Math.ceil(maxMin / 60));
+  }, [flights]);
+  const hourSpan = hourEnd - HOUR_START;
 
   const rows = useM_g(()=>{
     const map = {};
@@ -122,7 +128,8 @@ function GanttBoard() {
             you swipe/scroll. (One scroll container is required for position:sticky
             to track the same scroll on both axes.) */}
         <div style={{ flex:1, minHeight:0, overflow:'auto' }}>
-          <div style={{ minWidth: isMobile ? 720 : 'auto' }}>
+          {/* minWidth ensures horizontal scroll activates for extended-hour days */}
+          <div style={{ minWidth: TRACK_LEFT + TRACK_RIGHT + hourSpan * PX_PER_HOUR }}>
             {/* Hour ruler — sticky to the top of the viewport */}
             <div style={{ display:'grid', gridTemplateColumns:`${TRACK_LEFT}px 1fr ${TRACK_RIGHT}px`, borderBottom:'1px solid var(--line)', background:'var(--bg-2)', position:'sticky', top:0, zIndex:4 }}>
               <div className="mono uc" style={{ padding:'9px 14px', fontSize:9, color:'var(--ink-3)',
@@ -130,13 +137,12 @@ function GanttBoard() {
                 {groupBy.toUpperCase()} · {rows.length}
               </div>
               <div style={{ position:'relative', height:34, overflow:'hidden' }}>
-                {Array.from({length:HOUR_SPAN+1}).map((_,i)=>{
+                {Array.from({length:hourSpan+1}).map((_,i)=>{
                   const h=HOUR_START+i;
-                  // On mobile only label every 3rd hour (avoids overlap)
                   const showLabel = !isMobile || h % 3 === 0;
                   return (
                     <div key={i} className="mono num" style={{
-                      position:'absolute', left:`${(i/HOUR_SPAN)*100}%`, top:0, bottom:0,
+                      position:'absolute', left:`${(i/hourSpan)*100}%`, top:0, bottom:0,
                       borderLeft:i===0?'none':'1px solid var(--line-soft)',
                       paddingLeft:5, fontSize:isMobile?9:10, color:'var(--ink-3)', display:'flex', alignItems:'center',
                       whiteSpace:'nowrap',
@@ -145,7 +151,7 @@ function GanttBoard() {
                 })}
               </div>
               <div className="mono uc" style={{ padding:'9px 14px', fontSize:9, color:'var(--ink-3)', borderLeft:'1px solid var(--line)' }}>
-                {groupBy==='instructor'?'DUTY PERIOD':groupBy==='tail'?'TAIL HRS':'BATCH HRS'}
+                {groupBy==='instructor' ? `DUTY ${HOUR_START}–${hourEnd}` : groupBy==='tail' ? 'TAIL HRS' : 'BATCH HRS'}
               </div>
             </div>
 
@@ -193,13 +199,13 @@ function GanttBoard() {
                   </div>
                 </div>
                 <div style={{ position:'relative' }}>
-                  {Array.from({length:HOUR_SPAN+1}).map((_,i)=>(
-                    <div key={i} style={{ position:'absolute',left:`${(i/HOUR_SPAN)*100}%`,top:0,bottom:0,borderLeft:'1px solid var(--line-soft)',opacity:i%2?0.5:1 }}/>
+                  {Array.from({length:hourSpan+1}).map((_,i)=>(
+                    <div key={i} style={{ position:'absolute',left:`${(i/hourSpan)*100}%`,top:0,bottom:0,borderLeft:'1px solid var(--line-soft)',opacity:i%2?0.5:1 }}/>
                   ))}
                   {r.flights.map((f,fi)=>{
                     if (!f.start) return null;
                     const startMin  = (minutesOf(f.start)||0) - HOUR_START*60;
-                    const totalSpan = HOUR_SPAN*60;
+                    const totalSpan = hourSpan*60;
                     const left      = Math.max(0,(startMin/totalSpan)*100);
                     const width     = ((f.durMin||60)/totalSpan)*100;
                     const isFiSP    = !!f._asFiStudent;

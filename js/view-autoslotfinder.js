@@ -480,7 +480,8 @@ function AsfMultiCheck({ label, items, selected, onChange, allLabel, color }) {
 
 // ─── Main timeline ────────────────────────────────────────────────────────
 function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart, rwyEnd, allResults, activatedSlots, hoveredSlot, onSlotHover, onAvailableSlotClick, onReservedSlotClick, hourEnd, leavesMap, maintTailSet }) {
-  const [timelineTab, setTimelineTab] = useS_asf('fi');
+  const [timelineTab,  setTimelineTab]  = useS_asf('fi');
+  const [showDetails,  setShowDetails]  = useS_asf(false); // OFF by default for performance
   const _app = useApp();
   const LABEL_W   = 140;
   const HOUR_END  = Math.max(ASF_HOUR_END, hourEnd || ASF_HOUR_END);
@@ -526,6 +527,15 @@ function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart
                 fontWeight: timelineTab===s.id ? 600 : 400,
               }}>{s.id === 'fi' ? 'FI' : 'A/C'}</button>
           ))}
+          {/* Details toggle — default OFF for performance */}
+          <button onClick={() => setShowDetails(v => !v)} className="mono uc"
+            title={showDetails ? 'Hide flight details in occupied blocks (faster)' : 'Show flight details in occupied blocks (click to open Drawer)'}
+            style={{ height:16, padding:'0 5px', fontSize:7, borderRadius:3, cursor:'pointer', flexShrink:0, marginLeft:2,
+              border:`1px solid ${showDetails?'var(--col-done)':'var(--line)'}`,
+              background: showDetails ? 'color-mix(in oklch,var(--col-done) 14%,transparent)' : 'transparent',
+              color: showDetails ? 'var(--col-done)' : 'var(--ink-3)',
+              fontWeight: showDetails ? 600 : 400,
+            }}>DETAILS</button>
         </div>
         <div style={{ position:'relative' }}>
           <div style={{ position:'absolute', left:pct(Math.max(BASE_MIN,wStart)), width:wpct(Math.min(BASE_MIN+SPAN_MIN,wEnd)-Math.max(BASE_MIN,wStart)), top:0, bottom:0, background:'color-mix(in oklch,var(--col-pending) 8%,transparent)', pointerEvents:'none' }}/>
@@ -568,6 +578,19 @@ function AsfTimeline({ baseMap, allFIs, allTails, windowFrom, windowTo, rwyStart
                   <div style={{ position:'absolute', left:pct(Math.max(BASE_MIN,rwyStart)), width:wpct(Math.min(BASE_MIN+SPAN_MIN,rwyEnd)-Math.max(BASE_MIN,rwyStart)), top:0, bottom:0, background:'color-mix(in oklch,var(--col-cancel) 8%,transparent)', pointerEvents:'none' }}/>
                 )}
                 {flights.map((fl, fi) => {
+                  if (!showDetails) {
+                    return (
+                      <div key={fi} style={{
+                        position:'absolute',
+                        left:pct(Math.max(BASE_MIN,fl.s)),
+                        width:wpct(Math.min(BASE_MIN+SPAN_MIN,fl.e)-Math.max(BASE_MIN,fl.s)),
+                        top:4, bottom:4,
+                        background:'color-mix(in oklch,var(--ink-2) 25%,transparent)',
+                        boxShadow:'inset 0 0 0 1px color-mix(in oklch,var(--ink-2) 40%,transparent)',
+                        borderRadius:3, pointerEvents:'none',
+                      }}/>
+                    );
+                  }
                   const flObj = fl.flight;
                   const flColor = flObj ? STATUS_COLOR(flObj) : 'var(--ink-2)';
                   return (
@@ -1416,7 +1439,11 @@ function AutoSlotFinderBoard() {
   // always included regardless of filters so their reserved block stays visible.
   const allFIsForTimeline = useM_asf(() => {
     const actFIs = new Set(Object.values(activatedSlots).map(a => a.fi).filter(Boolean));
-    const all = [...new Set(dateFlights.map(f => f.instructor).filter(Boolean))];
+    // Always include all AP-127 FIs (even those with no flights today) + any other
+    // instructors who appear in today's schedule.
+    const ap127FIs = (typeof SF_AP127_FI_NAMES !== 'undefined') ? SF_AP127_FI_NAMES : [];
+    const dailyFIs = dateFlights.map(f => f.instructor).filter(Boolean);
+    const all = [...new Set([...ap127FIs, ...dailyFIs])];
     const filtered = all.filter(fi => {
       if (actFIs.has(fi)) return true;                           // always show reserved FI
       if (fiFilter !== null && !fiFilter.includes(fi)) return false;  // FI filter
