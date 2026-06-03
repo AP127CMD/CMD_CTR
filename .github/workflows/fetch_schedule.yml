@@ -7,17 +7,12 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
   issues: write
 
 jobs:
   fetch-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
@@ -72,18 +67,6 @@ jobs:
             git pull --rebase origin main
             git push origin main
           fi
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
 
       # Open a GitHub issue when this run fails so stale data doesn't go unnoticed.
       - name: Report failure as GitHub issue
