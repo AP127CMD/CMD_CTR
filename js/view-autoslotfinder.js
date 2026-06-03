@@ -1,8 +1,8 @@
 // AUTO SLOT FINDER — auto-rank AP-127 SPs and find the best slot for each.
 const { useMemo: useM_asf, useState: useS_asf, useEffect: useE_asf, useRef: useR_asf, useCallback: useC_asf } = React;
 
-const ASF_CACHE_URL      = 'https://nuguitar.github.io/AP127_NGT_001/cache.json';
-const ASF_CACHE_FALLBACK = 'https://raw.githubusercontent.com/nuguitar/AP127_NGT_001/main/cache.json';
+const ASF_CACHE_URL      = 'https://ap127cmd.github.io/DB001/cache.json';
+const ASF_CACHE_FALLBACK = 'https://raw.githubusercontent.com/AP127CMD/DB001/main/cache.json';
 
 // ─── FI lookup (short code → full name used in FLIGHTS) ──────────────────
 const ASF_FI_FULL = {
@@ -1617,7 +1617,7 @@ function AutoSlotFinderBoard() {
       {/* SP info banner */}
       <div style={{ padding:'5px 14px', background:'color-mix(in oklch,var(--col-pending) 5%,var(--bg-2))', borderBottom:'1px solid var(--line)', display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', flexShrink:0 }}>
         <span className="mono uc" style={{ fontSize:8, color:'var(--ink-3)' }}>SP SOURCE</span>
-        <a href="https://nuguitar.github.io/AP127_NGT_001/" target="_blank" rel="noopener" className="mono" style={{ fontSize:10, color:'var(--col-pending)', textDecoration:'none', fontWeight:600 }}>AP127_NGT_001 ↗</a>
+        <a href="https://ap127cmd.github.io/DB001/" target="_blank" rel="noopener" className="mono" style={{ fontSize:10, color:'var(--col-pending)', textDecoration:'none', fontWeight:600 }}>DB001 ↗</a>
         <span className="mono" style={{ fontSize:9, color:'var(--ink-3)' }}>
           {loading ? 'Loading…' : fetchErr ? `Error: ${fetchErr}` : rankData ? `Updated ${updatedLabel} · ${rankData.ap127?.length||0} SPs` : 'No data yet'}
         </span>
