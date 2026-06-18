@@ -26,9 +26,9 @@ VALID_STATUSES = {"Pending", "Completed", "Canceled"}
 
 # Fields every schedule entry must carry. A missing field is a hard error.
 REQUIRED_ENTRY_FIELDS = {
-    "rowIdx", "status", "isActual",
+    "date", "rowIdx", "realRowIdx", "status", "isActual",
     "student", "instructor", "batch", "lesson",
-    "start", "end", "duration", "condition",
+    "start", "end", "duration", "planDur", "condition",
     "type", "tail", "actualType",
     "tkoff", "ldgTime", "airborne",
     "ldg", "to", "inst",
@@ -36,13 +36,23 @@ REQUIRED_ENTRY_FIELDS = {
 
 # Fields seen in the source as of the last schema review.
 # Extra fields beyond this set trigger a warning so new upstream data is noticed.
-KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS
+# cancelReason is optional — only present on Canceled entries.
+KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS | {"cancelReason"}
 
 _DURATION_RE = re.compile(r"^\d+:\d{2}$")
 _TIME_RE = re.compile(r"^\d{2}:\d{2}$")
-# rowIdx is either a plain integer string or the "ACTUAL_ONLY_<n>" pattern
-# used by the source system for unplanned flights with no scheduled slot.
-_ROW_IDX_RE = re.compile(r"^\d+$|^ACTUAL_ONLY_\d*$")
+# rowIdx is either a booking ID string ("BK-XXXX-NNNN" / "BK-XXXX-NNNN_ACT_NNNN")
+# or "UNPLANNED_ACT_NNNN" for flights with no scheduled slot.
+_ROW_IDX_RE = re.compile(r"^BK-[A-Z0-9]{4}-\d+(_ACT_\d+)?$|^UNPLANNED_ACT_\d+$")
+
+
+def _schedules_list_to_dict(schedules_list):
+    """Convert a flat list of entries (each with a 'date' key) to a dict keyed by date."""
+    result = {}
+    for entry in schedules_list:
+        d = entry.get("date", "unknown")
+        result.setdefault(d, []).append(entry)
+    return result
 
 
 def validate_raw_cache(cache):
@@ -66,9 +76,12 @@ def validate_raw_cache(cache):
         warnings.append(f"New top-level keys (upstream addition): {sorted(extra_top)}")
 
     schedules = cache.get("schedules", {})
-    if not isinstance(schedules, dict):
-        errors.append(f"'schedules' is not a dict (got {type(schedules).__name__})")
-        return warnings, errors  # can't validate entries without it
+    if isinstance(schedules, list):
+        # Source now emits a flat list; normalize to dict keyed by date for validation.
+        schedules = _schedules_list_to_dict(schedules)
+    elif not isinstance(schedules, dict):
+        errors.append(f"'schedules' is not a dict or list (got {type(schedules).__name__})")
+        return warnings, errors
 
     # ── Per-entry checks ──────────────────────────────────────────────────────
     new_statuses: set = set()
@@ -92,8 +105,7 @@ def validate_raw_cache(cache):
             if extra:
                 new_fields.update(extra)
 
-            # rowIdx must be a plain integer or the "ACTUAL_ONLY_<n>" pattern
-            # (used by the source for unplanned flights with no scheduled slot).
+            # rowIdx must be a booking ID string.
             raw_idx = str(entry.get("rowIdx", ""))
             if not _ROW_IDX_RE.match(raw_idx):
                 warnings.append(f"{ref}: unexpected rowIdx format: {raw_idx!r}")
@@ -159,14 +171,16 @@ def _parse_duration_min(duration_str):
 
 def normalize_entry(entry, date):
     """Return a normalized schedule entry ready for dashboard consumption."""
-    raw_row_idx = entry.get("rowIdx")
-    # Keep ACTUAL_ONLY_* as string; convert plain numeric strings to int.
+    row_idx = entry.get("rowIdx")  # booking ID string, e.g. "BK-MR1E-8318"
+
+    real_row_idx_raw = entry.get("realRowIdx")
     try:
-        row_idx = int(raw_row_idx) if str(raw_row_idx or "").isdigit() else raw_row_idx
+        real_row_idx = int(real_row_idx_raw) if str(real_row_idx_raw or "").isdigit() else real_row_idx_raw
     except (TypeError, ValueError):
-        row_idx = raw_row_idx
+        real_row_idx = real_row_idx_raw
 
     duration_str = entry.get("duration") or ""
+    plan_dur_str = entry.get("planDur") or ""
     ac_type = entry.get("type") or ""
     status = entry.get("status")
     raw_condition = _null_empty(_null_dash(entry.get("condition") or ""))
@@ -174,9 +188,10 @@ def normalize_entry(entry, date):
     condition = raw_condition.replace(" (Standby)", "").strip() if is_standby else raw_condition
 
     return {
-        "id": str(raw_row_idx),
+        "id": str(row_idx),
         "date": date,
         "rowIdx": row_idx,
+        "realRowIdx": real_row_idx,
         "status": status if status in VALID_STATUSES else "Pending",
         "isActual": bool(entry.get("isActual", False)),
         "isSimulator": "(SIM)" in ac_type,
@@ -186,6 +201,8 @@ def normalize_entry(entry, date):
         "end": entry.get("end"),
         "duration": duration_str or None,
         "durationMin": _parse_duration_min(duration_str),
+        "planDur": plan_dur_str or None,
+        "planDurMin": _parse_duration_min(plan_dur_str),
         # people
         "student": _null_dash(entry.get("student")),
         "instructor": _null_dash(entry.get("instructor")),
@@ -203,6 +220,8 @@ def normalize_entry(entry, date):
         "ldg": entry.get("ldg"),
         "to": entry.get("to"),
         "inst": entry.get("inst"),
+        # cancellation
+        "cancelReason": _null_empty(entry.get("cancelReason")),
     }
 
 
@@ -222,10 +241,11 @@ async def get_iframe_flight_cache(page):
                 continue
             try:
                 cache = await frame.evaluate(
-                    "() => (typeof window.flightCache !== 'undefined' && "
-                    "window.flightCache.schedules && "
-                    "Object.keys(window.flightCache.schedules).length > 0) "
-                    "? window.flightCache : null"
+                    "() => { var fc = window.flightCache; "
+                    "if (!fc || !fc.schedules) return null; "
+                    "var s = fc.schedules; "
+                    "return (Array.isArray(s) ? s.length : Object.keys(s).length) > 0 "
+                    "? fc : null; }"
                 )
                 if cache:
                     return cache
@@ -293,6 +313,8 @@ async def main():
         print(f"Schema validation passed with {len(warnings)} warning(s). Review stderr.", file=sys.stderr)
 
     raw_schedules = cache.get("schedules", {})
+    if isinstance(raw_schedules, list):
+        raw_schedules = _schedules_list_to_dict(raw_schedules)
     new_schedules = {
         date: [normalize_entry(entry, date) for entry in entries]
         for date, entries in raw_schedules.items()
