@@ -1,8 +1,10 @@
 # AP127 Command Center — Project Reference
 
+> 📚 **Master reference:** the whole AP127 ecosystem — all sites, Cloudflare Workers, data feeds, the auto-fetch pipeline, deployment, and the Telegram watchdog — is documented in **AP127_Docs**, live at **https://ap127-docs.pages.dev**.
+
 > **Keep this file updated** after every significant change.  
-> GitHub repo: `https://github.com/nuguitar/AP127_Command_Center`  
-> Live URL: `https://nuguitar.github.io/AP127_Command_Center/`
+> GitHub repo: `https://github.com/AP127CMD/CMD_CTR`  
+> Live URL: `https://ap127-cmd-ctr.pages.dev`
 
 ---
 
