@@ -9,7 +9,6 @@ const CAL_SP_COLOR = 'oklch(0.72 0.15 280)';
 // Helpers
 const calFlownMin = f => {
   if (f.status !== 'Completed') return 0;
-  if (f.airborne) { const [h,m]=String(f.airborne).split(':').map(Number); return (h||0)*60+(m||0); }
   return f.durMin || 0;
 };
 const calAbbrev = name => (name||'').split(/[\s.]+/).filter(Boolean)[0]?.slice(0,4).toUpperCase() || '?';

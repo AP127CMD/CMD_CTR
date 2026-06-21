@@ -4,7 +4,6 @@ const { useMemo: useM_b, useState: useS_b } = React;
 const brdHours  = h => h >= 10 ? h.toFixed(0) : h.toFixed(1);
 const brdFlownMin = f => {
   if (f.status !== 'Completed') return 0;
-  if (f.airborne) { const [h,m]=String(f.airborne).split(':').map(Number); return (h||0)*60+(m||0); }
   return f.durMin || 0;
 };
 

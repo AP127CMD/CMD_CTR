@@ -1,7 +1,7 @@
 # CMD CTR — Claude Code Context
 
 ## ⚠️ Update rule — do this after EVERY code change
-1. Bump cache token in `index.html` — next must be `r43` (r41/r42 code was never bumped, see Verify below)
+1. Bump cache token in `index.html` — next must be `r44`
 2. Update the Verify section below with the new token + change summary
 3. Update `/Users/nugui/AP127_Docs/README.md` §2.1 (add to §10 log) — then push AP127_Docs
 4. `git add . && git commit -m "rNN: <what changed>" && git pull --rebase && git push`
@@ -15,7 +15,7 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r40` (2026-05-30). r41 (Calendar) + r42 (BOARD/GANTT) JS was committed without bumping the token — next change MUST use `r43` to fix the stale cache.
+**Last known:** token = `r43` (2026-06-21 — hours always use block time durMin, not airborne, across all ops views). Next → `r44`.
 
 ## Key facts
 - React 18 CDN UMD + Babel Standalone — no build step; `<script type="text/babel">`

@@ -157,7 +157,7 @@ function DailyBoard() {
       else                               s.mix.pending++;
       s.schedHours += (f.durMin || 0) / 60;
       if (f.status === 'Completed') {
-        const minutes = f.airborne ? hmToMin_d(f.airborne) : (f.durMin || 0);
+        const minutes = f.durMin || 0;
         s.flownHours += minutes / 60;
       }
       if (f.status === 'Pending')  s.pendingHours  += (f.durMin || 0) / 60;
@@ -258,7 +258,7 @@ function DailyBoard() {
       if (f.instructor) s.instructors.add(f.instructor);
       if (f.lesson)     s.lessons.add(f.lesson);
       if (f.status === 'Pending')   { s.pending++; s.pendingHours += (f.durMin||0)/60; }
-      if (f.status === 'Completed') { s.completed++; const m = f.airborne ? hmToMin_d(f.airborne) : (f.durMin||0); s.completedHours += m/60; }
+      if (f.status === 'Completed') { s.completed++; s.completedHours += (f.durMin||0)/60; }
       if (f.status === 'Canceled')  { s.canceled++; s.canceledHours += (f.durMin||0)/60; }
       if (f.isStandby) s.standby++;
       if (f.isSim)     s.sim++;

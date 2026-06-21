@@ -1,10 +1,8 @@
 // Analytics Summary — batch breakdown, instructor load, AP-127 spotlight
 const { useMemo: useM_s, useState: useS_s } = React;
 
-// Helper: actual flown minutes for a completed flight (airborne if available, else scheduled)
 const flownMin_s = f => {
   if (f.status !== 'Completed') return 0;
-  if (f.airborne) { const [h,m]=String(f.airborne).split(':').map(Number); return (h||0)*60+(m||0); }
   return f.durMin || 0;
 };
 
