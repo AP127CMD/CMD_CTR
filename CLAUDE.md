@@ -23,6 +23,7 @@ git log --oneline | grep -v "chore: update flight data" | head -6
 - Hosting: CF Pages Git-integrated — push to main auto-deploys
 - Local preview: `python3 -m http.server 7420 --directory /Users/nugui/flight-schedule-feed`
 - Cache token format: `?v=rNN` on every `<script>` tag in `index.html` — bump all at once
+- **CI (2026-06-29):** `fetch_schedule.yml` push step is race-proof — 5-attempt push loop with `git rebase -X theirs` (keeps our freshly generated data). Do NOT revert to plain `git pull --rebase`; overlapping cron/dispatcher/manual runs caused ~100 failures.
 
 ## Master reference
 Full architecture, deploy steps, secrets: https://ap127-docs.pages.dev  (§2.1)
