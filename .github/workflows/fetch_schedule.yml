@@ -53,7 +53,10 @@ jobs:
       - name: Generate flight-data.js
         run: python scripts/generate_flight_data.py
 
-      # Rebase before pushing to survive concurrent runs (cron + manual overlap).
+      # Push with retry to survive concurrent runs (cron + dispatcher + manual
+      # overlap). On a non-fast-forward rejection we replay our single commit on
+      # top of the new remote tip, always keeping OUR freshly generated data
+      # (`-X theirs` resolves any conflict on the regenerated file in our favour).
       - name: Commit updated data
         run: |
           git config user.name "github-actions[bot]"
@@ -63,9 +66,18 @@ jobs:
             echo "No data changes — skipping commit."
           else
             git commit -m "chore: update flight data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            # Rebase over any concurrent data commit, then push.
-            git pull --rebase origin main
-            git push origin main
+            for attempt in 1 2 3 4 5; do
+              if git push origin main; then
+                echo "Pushed on attempt $attempt"; break
+              fi
+              if [ "$attempt" = 5 ]; then
+                echo "::error::push failed after 5 attempts"; exit 1
+              fi
+              echo "Push rejected — syncing with remote (attempt $attempt)…"
+              git fetch origin main
+              git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+              sleep $((attempt * 3))
+            done
           fi
 
       # Trigger CMDV2 refresh now that CMD_CTR has fresh flight-data.js committed.
