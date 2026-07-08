@@ -86,7 +86,7 @@ jobs:
       - name: Trigger CMDV2 refresh
         if: success()
         run: |
-          curl -s -X POST \
+          curl -sf -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_PAT_WORKFLOW }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Content-Type: application/json" \
