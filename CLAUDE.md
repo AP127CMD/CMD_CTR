@@ -24,6 +24,8 @@ git log --oneline | grep -v "chore: update flight data" | head -6
 - Local preview: `python3 -m http.server 7420 --directory /Users/nugui/flight-schedule-feed`
 - Cache token format: `?v=rNN` on every `<script>` tag in `index.html` — bump all at once
 - **CI (2026-06-29):** `fetch_schedule.yml` push step is race-proof — 5-attempt push loop with `git rebase -X theirs` (keeps our freshly generated data). Do NOT revert to plain `git pull --rebase`; overlapping cron/dispatcher/manual runs caused ~100 failures.
+- **CI (2026-07-08):** `GH_PAT_WORKFLOW` had expired — the "Trigger CMDV2 refresh" step used plain `curl -s` with no `-f`, so it printed "dispatched" and reported job **success** even on a 401, hiding the failure for days while CMDV2 silently fell back to its own unreliable hourly cron. Now uses `curl -sf` so an auth failure fails the step loudly and trips the existing failure-issue step. See AP127_Docs §10.
+- **PAT rotated to fine-grained (2026-07-09):** `GH_PAT_WORKFLOW` is now a dedicated fine-grained PAT (`ap127-cmdv2-trigger`, Actions R/W on `CMDV2` only) — not the broad stopgap token from 07-08. 1-year expiry, rotate by **2027-07-09**.
 
 ## Master reference
 Full architecture, deploy steps, secrets: https://ap127-docs.pages.dev  (§2.1)
