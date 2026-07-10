@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-10T02:41:12Z",
+  "fetched_at": "2026-07-10T06:33:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -115893,7 +115893,7 @@
         "realRowIdx": 5146,
         "status": "Completed",
         "isActual": true,
-        "isSimulator": false,
+        "isSimulator": true,
         "isStandby": false,
         "start": "06:00",
         "end": "08:00",
@@ -115906,7 +115906,7 @@
         "batch": "AP-126",
         "lesson": "CDIF(SIM) 62",
         "condition": "Sim DA40",
-        "type": "DA40_SIM",
+        "type": "DA40 (SIM)",
         "tail": "HS-TPN (SIM)",
         "actualType": "Dual",
         "tkoff": "06:00",
@@ -115924,7 +115924,7 @@
         "realRowIdx": 5146,
         "status": "Completed",
         "isActual": false,
-        "isSimulator": false,
+        "isSimulator": true,
         "isStandby": false,
         "start": "06:00",
         "end": "08:00",
@@ -115935,9 +115935,9 @@
         "student": "SUBHAWICHAYA S.",
         "instructor": "CHAWIN K.",
         "batch": "AP-126",
-        "lesson": "CDIF(SIM) 63",
+        "lesson": "CDIF(SIM) 62",
         "condition": "Sim DA40",
-        "type": "DA40_SIM",
+        "type": "DA40 (SIM)",
         "tail": "HS-TPN (SIM)",
         "actualType": null,
         "tkoff": null,
@@ -115949,11 +115949,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-BSS0-1644_ACT_3633",
+        "date": "2026-07-10",
+        "rowIdx": "BK-BSS0-1644_ACT_3633",
+        "realRowIdx": 5147,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:00",
+        "end": "10:00",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": "02:00",
+        "planDurMin": 120,
+        "student": "GRAVITAT C.",
+        "instructor": "CHAWIN K.",
+        "batch": "AP-126",
+        "lesson": "CDIF(SIM) 61",
+        "condition": "Sim DA40",
+        "type": "DA40_SIM",
+        "tail": "HS-TPN (SIM)",
+        "actualType": "Dual",
+        "tkoff": "08:10",
+        "ldgTime": "09:55",
+        "airborne": "01:45",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "cancelReason": null
+      },
+      {
         "id": "BK-BSS0-1644",
         "date": "2026-07-10",
         "rowIdx": "BK-BSS0-1644",
         "realRowIdx": 5147,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116042,11 +116073,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-0A0A-5306_ACT_3639",
+        "date": "2026-07-10",
+        "rowIdx": "BK-0A0A-5306_ACT_3639",
+        "realRowIdx": 5150,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:00",
+        "end": "09:00",
+        "duration": "03:00",
+        "durationMin": 180,
+        "planDur": "03:00",
+        "planDurMin": 180,
+        "student": "PATTHARADEJ S.",
+        "instructor": "ATHINAT H.",
+        "batch": "AP-126",
+        "lesson": "CDIF(SIM) 66",
+        "condition": "Sim DA40",
+        "type": "DA40_SIM",
+        "tail": "HS-TPO (SIM)",
+        "actualType": "Dual",
+        "tkoff": "06:00",
+        "ldgTime": "09:00",
+        "airborne": "03:00",
+        "ldg": 3,
+        "to": 3,
+        "inst": 3,
+        "cancelReason": null
+      },
+      {
         "id": "BK-0A0A-5306",
         "date": "2026-07-10",
         "rowIdx": "BK-0A0A-5306",
         "realRowIdx": 5150,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116352,11 +116414,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-MRCR2YVI_ACT_3632",
+        "date": "2026-07-10",
+        "rowIdx": "BK-MRCR2YVI_ACT_3632",
+        "realRowIdx": 5159,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "07:22",
+        "end": "08:22",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": "01:40",
+        "planDurMin": 100,
+        "student": "PURIN K.",
+        "instructor": "WUTTHICHAI L.",
+        "batch": "TCAR / LPC",
+        "lesson": "LPC MEP",
+        "condition": null,
+        "type": "DA42TDI",
+        "tail": "HS-TPL",
+        "actualType": "Dual",
+        "tkoff": "07:32",
+        "ldgTime": "08:17",
+        "airborne": "00:45",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-MRCR2YVI",
         "date": "2026-07-10",
         "rowIdx": "BK-MRCR2YVI",
         "realRowIdx": 5159,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116538,11 +116631,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-NAPO-LWCB6_ACT_3635",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-NAPO-LWCB6_ACT_3635",
+        "realRowIdx": 5163,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:35",
+        "end": "08:05",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "NAPON S.",
+        "instructor": "CHAROENCHAI U.",
+        "batch": "AP-127",
+        "lesson": "CDIL 23",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVD",
+        "actualType": "Dual",
+        "tkoff": "06:54",
+        "ldgTime": "08:00",
+        "airborne": "01:06",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-NAPO-LWCB6",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-NAPO-LWCB6",
         "realRowIdx": 5163,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116693,11 +116817,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-MAET-TMGQ7_ACT_3651",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-MAET-TMGQ7_ACT_3651",
+        "realRowIdx": 5166,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:10",
+        "end": "11:40",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:30",
+        "planDurMin": 90,
+        "student": "MAETHAPHAN R.",
+        "instructor": "KOONPHOL U.",
+        "batch": "AP-127",
+        "lesson": "CDIL 25",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVG",
+        "actualType": "Dual",
+        "tkoff": "10:20",
+        "ldgTime": "11:35",
+        "airborne": "01:15",
+        "ldg": 1,
+        "to": 1,
+        "inst": 1,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-MAET-TMGQ7",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-MAET-TMGQ7",
         "realRowIdx": 5166,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116724,11 +116879,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-KORN-9677S_ACT_3642",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-KORN-9677S_ACT_3642",
+        "realRowIdx": 5167,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:25",
+        "end": "10:55",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:30",
+        "planDurMin": 90,
+        "student": "BULASET C.",
+        "instructor": "SANTI SUK.",
+        "batch": "AP-127",
+        "lesson": "CDIL 27",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVD",
+        "actualType": "Dual",
+        "tkoff": "09:35",
+        "ldgTime": "10:50",
+        "airborne": "01:15",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-KORN-9677S",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-KORN-9677S",
         "realRowIdx": 5167,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116755,11 +116941,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-KITT-2Z4RG_ACT_3638",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-KITT-2Z4RG_ACT_3638",
+        "realRowIdx": 5168,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:20",
+        "end": "09:35",
+        "duration": "01:15",
+        "durationMin": 75,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "KITTHANYA T.",
+        "instructor": "SANTI PO.",
+        "batch": "AP-127",
+        "lesson": "CSGL 24",
+        "condition": "Solo",
+        "type": "DA40CS",
+        "tail": "HS-TVE",
+        "actualType": "Dual",
+        "tkoff": "08:30",
+        "ldgTime": "09:30",
+        "airborne": "01:00",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-KITT-2Z4RG",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-KITT-2Z4RG",
         "realRowIdx": 5168,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116790,7 +117007,7 @@
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-AKAR-ZS9M9",
         "realRowIdx": 5169,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116814,6 +117031,37 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
+        "cancelReason": "Other"
+      },
+      {
+        "id": "DR-AP-127-NUTT-Q9R90_ACT_3636",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-NUTT-Q9R90_ACT_3636",
+        "realRowIdx": 5170,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:30",
+        "end": "09:45",
+        "duration": "01:15",
+        "durationMin": 75,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "NUTTAPHAT K.",
+        "instructor": "SANTI PO.",
+        "batch": "AP-127",
+        "lesson": "CSGL 22",
+        "condition": "Solo",
+        "type": "DA40CS",
+        "tail": "HS-TVH",
+        "actualType": "Solo",
+        "tkoff": "08:40",
+        "ldgTime": "09:40",
+        "airborne": "01:00",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
         "cancelReason": null
       },
       {
@@ -116821,7 +117069,7 @@
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-NUTT-Q9R90",
         "realRowIdx": 5170,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116879,11 +117127,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-126-PONG-HTWWT_ACT_3641",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-126-PONG-HTWWT_ACT_3641",
+        "realRowIdx": 5172,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:04",
+        "end": "10:14",
+        "duration": "02:10",
+        "durationMin": 130,
+        "planDur": "02:00",
+        "planDurMin": 120,
+        "student": "NANJITRA D.",
+        "instructor": "KITTICHAI C.",
+        "batch": "AP-126",
+        "lesson": "CDXI 68",
+        "condition": "IR/Nav",
+        "type": "DA40TDI",
+        "tail": "HS-TPV",
+        "actualType": "Dual",
+        "tkoff": "08:22",
+        "ldgTime": "10:07",
+        "airborne": "01:45",
+        "ldg": 3,
+        "to": 3,
+        "inst": 2,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-126-PONG-HTWWT",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-126-PONG-HTWWT",
         "realRowIdx": 5172,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116910,11 +117189,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-TAKO-AGM4A_ACT_3634",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-TAKO-AGM4A_ACT_3634",
+        "realRowIdx": 5173,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:40",
+        "end": "08:10",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "TAKORN C.",
+        "instructor": "PARINYA B.",
+        "batch": "AP-127",
+        "lesson": "CDIL 19",
+        "condition": "Solo",
+        "type": "DA40CS",
+        "tail": "HS-TVE",
+        "actualType": "Dual",
+        "tkoff": "06:50",
+        "ldgTime": "08:05",
+        "airborne": "01:15",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-TAKO-AGM4A",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-TAKO-AGM4A",
         "realRowIdx": 5173,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116941,11 +117251,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-128-EKKA-1QDFM_ACT_3649",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-128-EKKA-1QDFM_ACT_3649",
+        "realRowIdx": 5174,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:38",
+        "end": "10:00",
+        "duration": "01:22",
+        "durationMin": 82,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "EKKASIT B.",
+        "instructor": "CHAROENCHAI U.",
+        "batch": "AP-128",
+        "lesson": "CDIL 23",
+        "condition": "Solo",
+        "type": "C172",
+        "tail": "HS-TPH",
+        "actualType": "Dual",
+        "tkoff": "08:50",
+        "ldgTime": "09:55",
+        "airborne": "01:05",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-128-EKKA-1QDFM",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-128-EKKA-1QDFM",
         "realRowIdx": 5174,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -116958,8 +117299,8 @@
         "student": "EKKASIT B.",
         "instructor": "CHAROENCHAI U.",
         "batch": "AP-128",
-        "lesson": "CDIL 23",
-        "condition": null,
+        "lesson": "CSGL 24",
+        "condition": "Solo",
         "type": "C172",
         "tail": "HS-TPH",
         "actualType": null,
@@ -117007,7 +117348,7 @@
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-ANUS-9199E",
         "realRowIdx": 5176,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117031,14 +117372,14 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
-        "cancelReason": null
+        "cancelReason": "Weather (WX)"
       },
       {
         "id": "DR-AP-128-DOLS-H7DJK",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-128-DOLS-H7DJK",
         "realRowIdx": 5177,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117062,14 +117403,14 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
-        "cancelReason": null
+        "cancelReason": "Weather (WX)"
       },
       {
         "id": "DR-AP-128-KITT-3CYM5",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-128-KITT-3CYM5",
         "realRowIdx": 5178,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117093,6 +117434,37 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
+        "cancelReason": "Weather (WX)"
+      },
+      {
+        "id": "DR-AP-127-VASA-VKQEG_ACT_3655",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-VASA-VKQEG_ACT_3655",
+        "realRowIdx": 5179,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "11:30",
+        "end": "13:00",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:30",
+        "planDurMin": 90,
+        "student": "VASAPHON S.",
+        "instructor": "CHAROENCHAI U.",
+        "batch": "AP-127",
+        "lesson": "CDIL 21",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVD",
+        "actualType": "Dual",
+        "tkoff": "11:46",
+        "ldgTime": "12:55",
+        "airborne": "01:09",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
         "cancelReason": null
       },
       {
@@ -117100,7 +117472,7 @@
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-VASA-VKQEG",
         "realRowIdx": 5179,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117131,7 +117503,7 @@
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-PORN-NEUJZ",
         "realRowIdx": 5180,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117155,7 +117527,7 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
-        "cancelReason": null
+        "cancelReason": "Weather (WX)"
       },
       {
         "id": "DR-AP-127-WATC-FJS2T",
@@ -117189,11 +117561,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-127-SUPA-EAMBR_ACT_3652",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-127-SUPA-EAMBR_ACT_3652",
+        "realRowIdx": 5182,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "11:17",
+        "end": "12:47",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:30",
+        "planDurMin": 90,
+        "student": "SUPAWAN A.",
+        "instructor": "KITTICHAI C.",
+        "batch": "AP-127",
+        "lesson": "CDIL 27",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVE",
+        "actualType": "Dual",
+        "tkoff": "11:35",
+        "ldgTime": "12:40",
+        "airborne": "01:05",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-127-SUPA-EAMBR",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-127-SUPA-EAMBR",
         "realRowIdx": 5182,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117220,11 +117623,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-129-CHAI-JZEAA_ACT_3645",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-129-CHAI-JZEAA_ACT_3645",
+        "realRowIdx": 5183,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:40",
+        "end": "09:40",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": "01:00",
+        "planDurMin": 60,
+        "student": "CHAIPAT T.",
+        "instructor": "PARINYA B.",
+        "batch": "AP-129",
+        "lesson": "CDGL 01",
+        "condition": null,
+        "type": "DA40TDI",
+        "tail": "HS-TPX",
+        "actualType": "Dual",
+        "tkoff": "08:50",
+        "ldgTime": "09:35",
+        "airborne": "00:45",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-129-CHAI-JZEAA",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-129-CHAI-JZEAA",
         "realRowIdx": 5183,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117406,11 +117840,42 @@
         "cancelReason": null
       },
       {
+        "id": "DR-AP-129-NALA-K6E6U_ACT_3646",
+        "date": "2026-07-10",
+        "rowIdx": "DR-AP-129-NALA-K6E6U_ACT_3646",
+        "realRowIdx": 5187,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:05",
+        "end": "09:15",
+        "duration": "01:10",
+        "durationMin": 70,
+        "planDur": "01:00",
+        "planDurMin": 60,
+        "student": "NALAT S.",
+        "instructor": "THAWATANAN P.",
+        "batch": "AP-129",
+        "lesson": "CDGL 02",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVD",
+        "actualType": "Dual",
+        "tkoff": "08:15",
+        "ldgTime": "09:00",
+        "airborne": "00:45",
+        "ldg": 5,
+        "to": 5,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "DR-AP-129-NALA-K6E6U",
         "date": "2026-07-10",
         "rowIdx": "DR-AP-129-NALA-K6E6U",
         "realRowIdx": 5187,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117468,11 +117933,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-MRCTAF0C_ACT_3643",
+        "date": "2026-07-10",
+        "rowIdx": "BK-MRCTAF0C_ACT_3643",
+        "realRowIdx": 5189,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:45",
+        "end": "10:00",
+        "duration": "01:15",
+        "durationMin": 75,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "PICHAKORN J.",
+        "instructor": "KOONPHOL U.",
+        "batch": "AP-127",
+        "lesson": "CDIL 23",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVG",
+        "actualType": "Dual",
+        "tkoff": "08:55",
+        "ldgTime": "09:55",
+        "airborne": "01:00",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-MRCTAF0C",
         "date": "2026-07-10",
         "rowIdx": "BK-MRCTAF0C",
         "realRowIdx": 5189,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117561,11 +118057,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-7QME-6478_ACT_3647",
+        "date": "2026-07-10",
+        "rowIdx": "BK-7QME-6478_ACT_3647",
+        "realRowIdx": 5192,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "07:55",
+        "end": "10:55",
+        "duration": "03:00",
+        "durationMin": 180,
+        "planDur": "03:00",
+        "planDurMin": 180,
+        "student": "THANACHOTE A.",
+        "instructor": "ITTIPOL P.",
+        "batch": "AP-126",
+        "lesson": "CDXI 74",
+        "condition": "IR/Nav",
+        "type": "DA40TDI",
+        "tail": "HS-TPO",
+        "actualType": "Dual",
+        "tkoff": "08:09",
+        "ldgTime": "10:51",
+        "airborne": "02:42",
+        "ldg": 4,
+        "to": 4,
+        "inst": 3,
+        "cancelReason": null
+      },
+      {
         "id": "BK-7QME-6478",
         "date": "2026-07-10",
         "rowIdx": "BK-7QME-6478",
         "realRowIdx": 5192,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117596,7 +118123,7 @@
         "date": "2026-07-10",
         "rowIdx": "BK-OYV3-8676",
         "realRowIdx": 5193,
-        "status": "Pending",
+        "status": "Canceled",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117620,7 +118147,7 @@
         "ldg": 0,
         "to": 0,
         "inst": 0,
-        "cancelReason": null
+        "cancelReason": "Weather (WX)"
       },
       {
         "id": "BK-F98R-1884_ACT_3628",
@@ -117778,11 +118305,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-25WQ-1404_ACT_3637",
+        "date": "2026-07-10",
+        "rowIdx": "BK-25WQ-1404_ACT_3637",
+        "realRowIdx": 5198,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:30",
+        "end": "10:10",
+        "duration": "01:40",
+        "durationMin": 100,
+        "planDur": "01:40",
+        "planDurMin": 100,
+        "student": "NUTTAPONG S.",
+        "instructor": "KAMONVICH O.",
+        "batch": "HP-57",
+        "lesson": "LS 73",
+        "condition": null,
+        "type": "R44",
+        "tail": "HS-TZU",
+        "actualType": "SPIC",
+        "tkoff": "08:40",
+        "ldgTime": "10:10",
+        "airborne": "01:30",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-25WQ-1404",
         "date": "2026-07-10",
         "rowIdx": "BK-25WQ-1404",
         "realRowIdx": 5198,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117809,11 +118367,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-6F0B-6017_ACT_3650",
+        "date": "2026-07-10",
+        "rowIdx": "BK-6F0B-6017_ACT_3650",
+        "realRowIdx": 5199,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:30",
+        "end": "12:10",
+        "duration": "01:40",
+        "durationMin": 100,
+        "planDur": "01:40",
+        "planDurMin": 100,
+        "student": "PRECHAWUT N.",
+        "instructor": "KAMONVICH O.",
+        "batch": "HP-57",
+        "lesson": "LS 74",
+        "condition": null,
+        "type": "R44",
+        "tail": "HS-TZU",
+        "actualType": "SPIC",
+        "tkoff": "10:40",
+        "ldgTime": "12:00",
+        "airborne": "01:20",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-6F0B-6017",
         "date": "2026-07-10",
         "rowIdx": "BK-6F0B-6017",
         "realRowIdx": 5199,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117871,11 +118460,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-U31V-8566_ACT_3640",
+        "date": "2026-07-10",
+        "rowIdx": "BK-U31V-8566_ACT_3640",
+        "realRowIdx": 5201,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:00",
+        "end": "09:20",
+        "duration": "01:20",
+        "durationMin": 80,
+        "planDur": "01:15",
+        "planDurMin": 75,
+        "student": "NATPAKALP K.",
+        "instructor": "PHAHOLYUTH P.",
+        "batch": "AP-127",
+        "lesson": "CDIL 23",
+        "condition": null,
+        "type": "DA40CS",
+        "tail": "HS-TVA",
+        "actualType": "Dual",
+        "tkoff": "08:15",
+        "ldgTime": "09:15",
+        "airborne": "01:00",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-U31V-8566",
         "date": "2026-07-10",
         "rowIdx": "BK-U31V-8566",
         "realRowIdx": 5201,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117902,11 +118522,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-GM3D-0909_ACT_3653",
+        "date": "2026-07-10",
+        "rowIdx": "BK-GM3D-0909_ACT_3653",
+        "realRowIdx": 5202,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:00",
+        "end": "10:30",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": "01:30",
+        "planDurMin": 90,
+        "student": "KRIT L.",
+        "instructor": "WISANU T.",
+        "batch": "AP-127",
+        "lesson": "CSXV 33",
+        "condition": "Solo/Nav",
+        "type": "DA40TDI",
+        "tail": "HS-TPT",
+        "actualType": "Solo",
+        "tkoff": "09:05",
+        "ldgTime": "10:25",
+        "airborne": "01:20",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
         "id": "BK-GM3D-0909",
         "date": "2026-07-10",
         "rowIdx": "BK-GM3D-0909",
         "realRowIdx": 5202,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117933,11 +118584,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-0K35-6427_ACT_3644",
+        "date": "2026-07-10",
+        "rowIdx": "BK-0K35-6427_ACT_3644",
+        "realRowIdx": 5203,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:35",
+        "end": "10:49",
+        "duration": "02:14",
+        "durationMin": 134,
+        "planDur": "02:00",
+        "planDurMin": 120,
+        "student": "PONGSAKORN A.",
+        "instructor": "NAPATTORN S.",
+        "batch": "AP-126",
+        "lesson": "CDXI 70",
+        "condition": "IR/Nav",
+        "type": "DA40TDI",
+        "tail": "HS-TPR",
+        "actualType": "Dual",
+        "tkoff": "08:47",
+        "ldgTime": "10:47",
+        "airborne": "02:00",
+        "ldg": 3,
+        "to": 3,
+        "inst": 2,
+        "cancelReason": null
+      },
+      {
         "id": "BK-0K35-6427",
         "date": "2026-07-10",
         "rowIdx": "BK-0K35-6427",
         "realRowIdx": 5203,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -117960,6 +118642,37 @@
         "airborne": null,
         "ldg": 0,
         "to": 0,
+        "inst": 0,
+        "cancelReason": null
+      },
+      {
+        "id": "BK-57HB-4356_ACT_3654",
+        "date": "2026-07-10",
+        "rowIdx": "BK-57HB-4356_ACT_3654",
+        "realRowIdx": 5204,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:30",
+        "end": "10:30",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": "03:00",
+        "planDurMin": 180,
+        "student": "WORAPOJ",
+        "instructor": "SANTI PO.",
+        "batch": "Test Flight",
+        "lesson": "TEST FLIGHT",
+        "condition": "Test",
+        "type": "DA40CS",
+        "tail": "HS-TVC",
+        "actualType": "PIC",
+        "tkoff": "09:40",
+        "ldgTime": "10:25",
+        "airborne": "00:45",
+        "ldg": 1,
+        "to": 1,
         "inst": 0,
         "cancelReason": null
       },
@@ -118026,11 +118739,42 @@
         "cancelReason": null
       },
       {
+        "id": "BK-2J2M-0238_ACT_3648",
+        "date": "2026-07-10",
+        "rowIdx": "BK-2J2M-0238_ACT_3648",
+        "realRowIdx": 5206,
+        "status": "Completed",
+        "isActual": true,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:00",
+        "end": "11:00",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": "02:00",
+        "planDurMin": 120,
+        "student": "PARAMUTT C.",
+        "instructor": "JIRAT R.",
+        "batch": "AP-126",
+        "lesson": "CDIF(SIM) 58",
+        "condition": "Sim DA40",
+        "type": "DA40_SIM",
+        "tail": "HS-TPO (SIM)",
+        "actualType": "Dual",
+        "tkoff": "09:10",
+        "ldgTime": "10:55",
+        "airborne": "01:45",
+        "ldg": 4,
+        "to": 4,
+        "inst": 4,
+        "cancelReason": null
+      },
+      {
         "id": "BK-2J2M-0238",
         "date": "2026-07-10",
         "rowIdx": "BK-2J2M-0238",
         "realRowIdx": 5206,
-        "status": "Pending",
+        "status": "Completed",
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
@@ -121497,14 +122241,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-07-31",
+      "name": "WATTIKORN K.",
       "end": "2026-07-31"
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-06-02",
+      "name": "WATTIKORN K.",
       "end": "2026-06-02"
     },
     {
@@ -121533,8 +122277,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "PARAMUTT C.",
+      "start": "2026-05-05",
       "end": "2026-05-05"
     },
     {
@@ -121545,8 +122289,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-05",
+      "name": "PICHAKORN J.",
       "end": "2026-05-05"
     },
     {
@@ -121557,8 +122301,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "PORNTREETRA R.",
+      "start": "2026-05-05",
       "end": "2026-05-05"
     },
     {
@@ -121569,14 +122313,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "WATTIKORN K.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "GRAVITAT C.",
       "start": "2026-05-25",
+      "name": "GRAVITAT C.",
       "end": "2026-05-25"
     },
     {
@@ -121587,26 +122331,26 @@
     },
     {
       "duration": "Full Day",
+      "start": "2026-05-18",
       "name": "PORNTREETRA R.",
-      "start": "2026-05-18",
       "end": "2026-05-18"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "PARAMUTT C.",
+      "start": "2026-05-18",
       "end": "2026-05-18"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "PRITASNA M.",
+      "start": "2026-05-11",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAWAT R.",
       "start": "2026-05-15",
+      "name": "NUTTAWAT R.",
       "end": "2026-05-15"
     },
     {
@@ -121635,14 +122379,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "ANUSORN T.",
       "start": "2026-05-05",
+      "name": "ANUSORN T.",
       "end": "2026-05-06"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "SANGYAI P.",
+      "start": "2026-05-05",
       "end": "2026-05-15"
     },
     {
@@ -121653,14 +122397,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "NABHADR P.",
+      "start": "2026-05-18",
       "end": "2026-05-18"
     },
     {
       "duration": "Full Day",
-      "name": "AWIRUT S.",
       "start": "2026-05-25",
+      "name": "AWIRUT S.",
       "end": "2026-05-25"
     },
     {
@@ -121671,8 +122415,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "SARACH C.",
       "start": "2026-04-30",
+      "name": "SARACH C.",
       "end": "2026-05-06"
     },
     {
@@ -121683,14 +122427,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "PAKORN W.",
       "start": "2026-05-11",
+      "name": "PAKORN W.",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-28",
       "name": "CHANOL T.",
+      "start": "2026-05-28",
       "end": "2026-05-29"
     },
     {
@@ -121701,14 +122445,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-08",
       "name": "NUTTAPHAT K.",
+      "start": "2026-05-08",
       "end": "2026-05-11"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-07",
       "name": "PARINYA B.",
+      "start": "2026-05-07",
       "end": "2026-05-07"
     },
     {
@@ -121725,20 +122469,20 @@
     },
     {
       "duration": "Full Day",
-      "name": "SUPAWAN A.",
       "start": "2026-05-18",
+      "name": "SUPAWAN A.",
       "end": "2026-05-19"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-08",
       "name": "VASAPHON S.",
+      "start": "2026-05-08",
       "end": "2026-05-08"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "DOLSAKUL S.",
+      "start": "2026-05-11",
       "end": "2026-05-24"
     },
     {
@@ -121749,8 +122493,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "KRIDSADA K.",
       "start": "2026-05-11",
+      "name": "KRIDSADA K.",
       "end": "2026-05-24"
     },
     {
@@ -121761,20 +122505,20 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "NAPON R.",
+      "start": "2026-05-25",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-05",
       "name": "NAPON R.",
+      "start": "2026-05-05",
       "end": "2026-05-08"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "NATTARAT G.",
+      "start": "2026-05-11",
       "end": "2026-05-11"
     },
     {
@@ -121797,20 +122541,20 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PRITASNA M.",
+      "start": "2026-05-15",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-22",
       "name": "PRITASNA M.",
+      "start": "2026-05-22",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "PREM P.",
+      "start": "2026-05-11",
       "end": "2026-05-11"
     },
     {
@@ -121827,8 +122571,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "DOLSAKUL S.",
+      "start": "2026-05-11",
       "end": "2026-05-25"
     },
     {
@@ -121839,8 +122583,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "SOWAN C.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
@@ -121851,8 +122595,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "EKKASIT B.",
+      "start": "2026-05-11",
       "end": "2026-05-25"
     },
     {
@@ -121863,20 +122607,20 @@
     },
     {
       "duration": "Full Day",
-      "name": "KRIDSADA K.",
       "start": "2026-05-11",
+      "name": "KRIDSADA K.",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "name": "SIWAKORN P.",
       "start": "2026-05-11",
+      "name": "SIWAKORN P.",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "name": "TAKORN C.",
       "start": "2026-05-25",
+      "name": "TAKORN C.",
       "end": "2026-05-25"
     },
     {
@@ -121887,8 +122631,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-11",
       "name": "VASAPHON S.",
+      "start": "2026-05-11",
       "end": "2026-05-11"
     },
     {
@@ -121899,14 +122643,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "PORNTREETRA R.",
       "start": "2026-05-12",
+      "name": "PORNTREETRA R.",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "PORNTREETRA R.",
+      "start": "2026-05-16",
       "end": "2026-05-18"
     },
     {
@@ -121923,14 +122667,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-12",
       "name": "PUWADET H.",
+      "start": "2026-05-12",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAPHAT K.",
       "start": "2026-05-12",
+      "name": "NUTTAPHAT K.",
       "end": "2026-05-12"
     },
     {
@@ -121959,8 +122703,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "PRITASNA M.",
+      "start": "2026-05-16",
       "end": "2026-05-17"
     },
     {
@@ -121971,8 +122715,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-23",
+      "name": "PICHAKORN J.",
       "end": "2026-05-24"
     },
     {
@@ -122007,20 +122751,20 @@
     },
     {
       "duration": "Full Day",
-      "name": "SANTI SUK.",
       "start": "2026-05-14",
+      "name": "SANTI SUK.",
       "end": "2026-05-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PARAMUTT C.",
+      "start": "2026-05-15",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "name": "PORNTREETRA R.",
       "start": "2026-05-15",
+      "name": "PORNTREETRA R.",
       "end": "2026-05-15"
     },
     {
@@ -122037,8 +122781,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-05-14",
+      "name": "AKARAVIT K.",
       "end": "2026-05-17"
     },
     {
@@ -122055,8 +122799,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "MARUAY B.",
       "start": "2026-05-17",
+      "name": "MARUAY B.",
       "end": "2026-05-18"
     },
     {
@@ -122067,14 +122811,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "KHOBPONG W.",
       "start": "2026-05-14",
+      "name": "KHOBPONG W.",
       "end": "2026-05-14"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "WATCHARAPOL A.",
+      "start": "2026-05-16",
       "end": "2026-05-16"
     },
     {
@@ -122085,14 +122829,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-16",
       "name": "MAETHAPHAN R.",
+      "start": "2026-05-16",
       "end": "2026-05-16"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-22",
       "name": "PORNSKUL D.",
+      "start": "2026-05-22",
       "end": "2026-05-25"
     },
     {
@@ -122103,14 +122847,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-15",
       "name": "PICHAKORN J.",
+      "start": "2026-05-15",
       "end": "2026-05-15"
     },
     {
       "duration": "Full Day",
-      "name": "TAKORN C.",
       "start": "2026-05-22",
+      "name": "TAKORN C.",
       "end": "2026-05-22"
     },
     {
@@ -122145,14 +122889,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "NANJITRA D.",
+      "start": "2026-06-02",
       "end": "2026-06-04"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAPHAT K.",
       "start": "2026-05-23",
+      "name": "NUTTAPHAT K.",
       "end": "2026-05-24"
     },
     {
@@ -122163,8 +122907,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-05-18",
+      "name": "VASAPHON S.",
       "end": "2026-05-19"
     },
     {
@@ -122175,8 +122919,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "KORN S.",
       "start": "2026-05-18",
+      "name": "KORN S.",
       "end": "2026-05-18"
     },
     {
@@ -122253,32 +122997,32 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "AKARAVIT K.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "PORNTREETRA R.",
       "start": "2026-05-21",
+      "name": "PORNTREETRA R.",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-27",
       "name": "KANTAPONG A.",
+      "start": "2026-05-27",
       "end": "2026-05-28"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "PONGSAKORN A.",
+      "start": "2026-05-25",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-19",
       "name": "SIWAKORN P.",
+      "start": "2026-05-19",
       "end": "2026-05-19"
     },
     {
@@ -122295,14 +123039,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-24",
       "name": "NATPAKALP K.",
+      "start": "2026-05-24",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-30",
       "name": "NATPAKALP K.",
+      "start": "2026-05-30",
       "end": "2026-06-02"
     },
     {
@@ -122313,8 +123057,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-24",
       "name": "WATCHARAPHOL V.",
+      "start": "2026-05-24",
       "end": "2026-05-26"
     },
     {
@@ -122325,8 +123069,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-01",
       "name": "NUTTAPHAT K.",
+      "start": "2026-06-01",
       "end": "2026-06-04"
     },
     {
@@ -122337,26 +123081,26 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-18",
       "name": "PUWADET H.",
+      "start": "2026-05-18",
       "end": "2026-05-20"
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-05-21",
+      "name": "AKARAVIT K.",
       "end": "2026-05-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-24",
       "name": "PRITASNA M.",
+      "start": "2026-05-24",
       "end": "2026-05-24"
     },
     {
       "duration": "Full Day",
-      "name": "GRAVITAT C.",
       "start": "2026-05-25",
+      "name": "GRAVITAT C.",
       "end": "2026-05-25"
     },
     {
@@ -122367,20 +123111,20 @@
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-05-21",
+      "name": "VASAPHON S.",
       "end": "2026-05-21"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "KANTAPONG A.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-05-22",
+      "name": "PICHAKORN J.",
       "end": "2026-05-22"
     },
     {
@@ -122397,14 +123141,14 @@
     },
     {
       "duration": "Half Day - Afternoon (PM)",
-      "start": "2026-05-29",
       "name": "NUTTAWAT R.",
+      "start": "2026-05-29",
       "end": "2026-05-29"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAWAT R.",
       "start": "2026-06-04",
+      "name": "NUTTAWAT R.",
       "end": "2026-06-04"
     },
     {
@@ -122415,8 +123159,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "SIWAT C.",
       "start": "2026-06-02",
+      "name": "SIWAT C.",
       "end": "2026-06-02"
     },
     {
@@ -122427,26 +123171,26 @@
     },
     {
       "duration": "Full Day",
-      "name": "NANJITRA D.",
       "start": "2026-06-01",
+      "name": "NANJITRA D.",
       "end": "2026-06-04"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "WATCHARAPONG C.",
+      "start": "2026-05-25",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "name": "SETASIT P.",
       "start": "2026-05-26",
+      "name": "SETASIT P.",
       "end": "2026-05-26"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-23",
       "name": "VASAPHON S.",
+      "start": "2026-05-23",
       "end": "2026-05-24"
     },
     {
@@ -122457,14 +123201,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-08",
       "name": "PORNSKUL D.",
+      "start": "2026-06-08",
       "end": "2026-06-08"
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-05-31",
+      "name": "AKARAVIT K.",
       "end": "2026-05-31"
     },
     {
@@ -122475,32 +123219,32 @@
     },
     {
       "duration": "Full Day",
-      "name": "PORNSKUL D.",
       "start": "2026-08-22",
+      "name": "PORNSKUL D.",
       "end": "2026-08-22"
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-05-25",
+      "name": "VASAPHON S.",
       "end": "2026-05-25"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-26",
       "name": "WATCHARAPONG C.",
+      "start": "2026-05-26",
       "end": "2026-05-26"
     },
     {
       "duration": "Full Day",
-      "name": "ANUSORN T.",
       "start": "2026-06-01",
+      "name": "ANUSORN T.",
       "end": "2026-06-01"
     },
     {
       "duration": "Full Day",
-      "start": "2026-05-25",
       "name": "KRAISEE L.",
+      "start": "2026-05-25",
       "end": "2026-05-26"
     },
     {
@@ -122523,14 +123267,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-06-02",
+      "name": "AKARAVIT K.",
       "end": "2026-06-02"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "VASAPHON S.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
@@ -122547,8 +123291,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-28",
       "name": "PICHAKORN J.",
+      "start": "2026-06-28",
       "end": "2026-06-29"
     },
     {
@@ -122559,26 +123303,26 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-12",
       "name": "NABHADR P.",
+      "start": "2026-06-12",
       "end": "2026-06-13"
     },
     {
       "duration": "Full Day",
-      "name": "KANTAPONG A.",
       "start": "2026-06-25",
+      "name": "KANTAPONG A.",
       "end": "2026-06-28"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-14",
       "name": "WATCHARAPHOL V.",
+      "start": "2026-06-14",
       "end": "2026-06-14"
     },
     {
       "duration": "Full Day",
-      "name": "PRITASNA M.",
       "start": "2026-06-02",
+      "name": "PRITASNA M.",
       "end": "2026-06-02"
     },
     {
@@ -122589,8 +123333,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "EKKASIT B.",
       "start": "2026-05-28",
+      "name": "EKKASIT B.",
       "end": "2026-05-28"
     },
     {
@@ -122619,8 +123363,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-05-29",
+      "name": "VASAPHON S.",
       "end": "2026-05-29"
     },
     {
@@ -122643,8 +123387,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-02",
       "name": "KRAISEE L.",
+      "start": "2026-06-02",
       "end": "2026-06-02"
     },
     {
@@ -122661,8 +123405,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "WATCHARAPONG C.",
       "start": "2026-06-02",
+      "name": "WATCHARAPONG C.",
       "end": "2026-06-02"
     },
     {
@@ -122691,14 +123435,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-04",
       "name": "NUTTAPONG S.",
+      "start": "2026-06-04",
       "end": "2026-06-04"
     },
     {
       "duration": "Full Day",
-      "name": "KANTAPONG A.",
       "start": "2026-06-04",
+      "name": "KANTAPONG A.",
       "end": "2026-06-05"
     },
     {
@@ -122709,8 +123453,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-07",
       "name": "SUPAWAN A.",
+      "start": "2026-06-07",
       "end": "2026-06-07"
     },
     {
@@ -122721,8 +123465,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-05",
       "name": "KRIT L.",
+      "start": "2026-06-05",
       "end": "2026-06-07"
     },
     {
@@ -122733,8 +123477,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-04",
       "name": "VASAPHON S.",
+      "start": "2026-06-04",
       "end": "2026-06-04"
     },
     {
@@ -122751,8 +123495,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "TEERAWAJ C.",
       "start": "2026-06-05",
+      "name": "TEERAWAJ C.",
       "end": "2026-06-05"
     },
     {
@@ -122763,38 +123507,38 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-08",
       "name": "PATCHARANAN D.",
+      "start": "2026-06-08",
       "end": "2026-06-08"
     },
     {
       "duration": "Full Day",
-      "name": "RANGSIMAN S.",
       "start": "2026-06-12",
+      "name": "RANGSIMAN S.",
       "end": "2026-06-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-07",
       "name": "WATCHARAPONG C.",
+      "start": "2026-06-07",
       "end": "2026-06-07"
     },
     {
       "duration": "Full Day",
-      "name": "KRAISEE L.",
       "start": "2026-06-08",
+      "name": "KRAISEE L.",
       "end": "2026-06-08"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-10",
       "name": "PATTHARADEJ S.",
+      "start": "2026-06-10",
       "end": "2026-06-15"
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-06-08",
+      "name": "VASAPHON S.",
       "end": "2026-06-09"
     },
     {
@@ -122817,14 +123561,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "CHANATHIP T.",
       "start": "2026-06-13",
+      "name": "CHANATHIP T.",
       "end": "2026-06-14"
     },
     {
       "duration": "Half Day - Afternoon (PM)",
-      "start": "2026-06-16",
       "name": "ANUSORN T.",
+      "start": "2026-06-16",
       "end": "2026-06-16"
     },
     {
@@ -122847,8 +123591,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-27",
       "name": "PICHAKORN J.",
+      "start": "2026-06-27",
       "end": "2026-06-27"
     },
     {
@@ -122859,8 +123603,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "JIRAYU A.",
       "start": "2026-06-12",
+      "name": "JIRAYU A.",
       "end": "2026-06-12"
     },
     {
@@ -122877,44 +123621,44 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-13",
       "name": "NATPAKALP K.",
+      "start": "2026-06-13",
       "end": "2026-06-14"
     },
     {
       "duration": "Full Day",
-      "name": "NATPAKALP K.",
       "start": "2026-06-26",
+      "name": "NATPAKALP K.",
       "end": "2026-06-28"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-15",
       "name": "PATCHARANAN D.",
+      "start": "2026-06-15",
       "end": "2026-06-15"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-13",
       "name": "ANUSORN T.",
+      "start": "2026-06-13",
       "end": "2026-06-16"
     },
     {
       "duration": "Full Day",
-      "name": "NUTTAPHAT K.",
       "start": "2026-06-13",
+      "name": "NUTTAPHAT K.",
       "end": "2026-06-14"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-15",
       "name": "NUTTAPHAT K.",
+      "start": "2026-06-15",
       "end": "2026-06-15"
     },
     {
       "duration": "Full Day",
-      "name": "ANUSORN T.",
       "start": "2026-06-13",
+      "name": "ANUSORN T.",
       "end": "2026-06-14"
     },
     {
@@ -122931,8 +123675,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-22",
       "name": "DOLSAKUL S.",
+      "start": "2026-06-22",
       "end": "2026-06-22"
     },
     {
@@ -122943,8 +123687,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PANITHAN V.",
       "start": "2026-06-15",
+      "name": "PANITHAN V.",
       "end": "2026-06-15"
     },
     {
@@ -122955,32 +123699,32 @@
     },
     {
       "duration": "Full Day",
-      "name": "PANITHAN V.",
       "start": "2026-06-27",
+      "name": "PANITHAN V.",
       "end": "2026-06-29"
     },
     {
       "duration": "Full Day",
-      "name": "PANITHAN V.",
       "start": "2026-06-16",
+      "name": "PANITHAN V.",
       "end": "2026-06-16"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-19",
       "name": "BULASET C.",
+      "start": "2026-06-19",
       "end": "2026-06-22"
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-06-22",
+      "name": "WATTIKORN K.",
       "end": "2026-06-22"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-20",
       "name": "WATTIKORN K.",
+      "start": "2026-06-20",
       "end": "2026-06-21"
     },
     {
@@ -122991,26 +123735,26 @@
     },
     {
       "duration": "Full Day",
-      "name": "KRIT L.",
       "start": "2026-07-04",
+      "name": "KRIT L.",
       "end": "2026-07-06"
     },
     {
       "duration": "Full Day",
-      "name": "DOLSAKUL S.",
       "start": "2026-07-13",
+      "name": "DOLSAKUL S.",
       "end": "2026-07-13"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-27",
       "name": "DOLSAKUL S.",
+      "start": "2026-07-27",
       "end": "2026-07-27"
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "start": "2026-07-13",
       "name": "MAETHAPHAN R.",
+      "start": "2026-07-13",
       "end": "2026-07-13"
     },
     {
@@ -123027,38 +123771,38 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-20",
       "name": "KRIT L.",
+      "start": "2026-06-20",
       "end": "2026-06-21"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-21",
       "name": "PICHAKORN J.",
+      "start": "2026-06-21",
       "end": "2026-06-21"
     },
     {
       "duration": "Full Day",
-      "name": "TAKORN C.",
       "start": "2026-06-17",
+      "name": "TAKORN C.",
       "end": "2026-06-17"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-17",
       "name": "BULASET C.",
+      "start": "2026-06-17",
       "end": "2026-06-18"
     },
     {
       "duration": "Full Day",
-      "name": "PICHAKORN J.",
       "start": "2026-07-11",
+      "name": "PICHAKORN J.",
       "end": "2026-07-12"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-18",
       "name": "PICHAKORN J.",
+      "start": "2026-07-18",
       "end": "2026-07-19"
     },
     {
@@ -123069,8 +123813,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-20",
       "name": "NANJITRA D.",
+      "start": "2026-06-20",
       "end": "2026-06-21"
     },
     {
@@ -123081,14 +123825,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "SETASIT P.",
       "start": "2026-06-28",
+      "name": "SETASIT P.",
       "end": "2026-07-01"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-22",
       "name": "Po",
+      "start": "2026-06-22",
       "end": "2026-06-22"
     },
     {
@@ -123099,8 +123843,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-19",
       "name": "THANATHIP W.",
+      "start": "2026-06-19",
       "end": "2026-06-21"
     },
     {
@@ -123111,8 +123855,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-19",
       "name": "KOONPHOL U.",
+      "start": "2026-06-19",
       "end": "2026-06-21"
     },
     {
@@ -123135,14 +123879,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "THANACHOTE A.",
       "start": "2026-06-20",
+      "name": "THANACHOTE A.",
       "end": "2026-06-21"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-20",
       "name": "PREM P.",
+      "start": "2026-06-20",
       "end": "2026-06-21"
     },
     {
@@ -123153,14 +123897,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-20",
       "name": "KRAISEE L.",
+      "start": "2026-06-20",
       "end": "2026-06-20"
     },
     {
       "duration": "Full Day",
-      "name": "RAKCHON K.",
       "start": "2026-06-19",
+      "name": "RAKCHON K.",
       "end": "2026-06-21"
     },
     {
@@ -123171,8 +123915,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "NAPATH T.",
       "start": "2026-06-20",
+      "name": "NAPATH T.",
       "end": "2026-06-21"
     },
     {
@@ -123183,8 +123927,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "PATTHARADEJ S.",
       "start": "2026-06-20",
+      "name": "PATTHARADEJ S.",
       "end": "2026-06-21"
     },
     {
@@ -123201,20 +123945,20 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-06",
       "name": "Watcharaphol Vongnoi",
+      "start": "2026-07-06",
       "end": "2026-07-06"
     },
     {
       "duration": "Full Day",
-      "name": "AKARAVIT K.",
       "start": "2026-07-25",
+      "name": "AKARAVIT K.",
       "end": "2026-07-27"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-06",
       "name": "SUPAWAN A.",
+      "start": "2026-07-06",
       "end": "2026-07-06"
     },
     {
@@ -123225,20 +123969,20 @@
     },
     {
       "duration": "Full Day",
-      "name": "SUBHAWICHAYA S.",
       "start": "2026-06-20",
+      "name": "SUBHAWICHAYA S.",
       "end": "2026-06-21"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-23",
       "name": "BULASET C.",
+      "start": "2026-06-23",
       "end": "2026-06-23"
     },
     {
       "duration": "Full Day",
-      "name": "NANJITRA D.",
       "start": "2026-06-23",
+      "name": "NANJITRA D.",
       "end": "2026-06-23"
     },
     {
@@ -123273,14 +124017,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-06-27",
+      "name": "WATTIKORN K.",
       "end": "2026-06-28"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-28",
       "name": "PRITASNA M.",
+      "start": "2026-06-28",
       "end": "2026-06-28"
     },
     {
@@ -123297,8 +124041,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "VASAPHON S.",
       "start": "2026-06-25",
+      "name": "VASAPHON S.",
       "end": "2026-06-25"
     },
     {
@@ -123309,14 +124053,14 @@
     },
     {
       "duration": "Half Day - Afternoon (PM)",
-      "name": "SOWAN C.",
       "start": "2026-06-26",
+      "name": "SOWAN C.",
       "end": "2026-06-26"
     },
     {
       "duration": "Half Day - Afternoon (PM)",
-      "name": "SOWAN C.",
       "start": "2026-06-26",
+      "name": "SOWAN C.",
       "end": "2026-06-26"
     },
     {
@@ -123357,14 +124101,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-28",
       "name": "WATCHARAPOL A.",
+      "start": "2026-06-28",
       "end": "2026-06-28"
     },
     {
       "duration": "Full Day",
-      "start": "2026-06-27",
       "name": "SUPAWAN A.",
+      "start": "2026-06-27",
       "end": "2026-06-28"
     },
     {
@@ -123381,8 +124125,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-03",
       "name": "TEERAWAJ C.",
+      "start": "2026-07-03",
       "end": "2026-07-05"
     },
     {
@@ -123393,26 +124137,26 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-25",
       "name": "PICHAKORN J.",
+      "start": "2026-07-25",
       "end": "2026-07-27"
     },
     {
       "duration": "Full Day",
-      "name": "PREM P.",
       "start": "2026-07-06",
+      "name": "PREM P.",
       "end": "2026-07-07"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-12",
       "name": "PREM P.",
+      "start": "2026-07-12",
       "end": "2026-07-15"
     },
     {
       "duration": "Full Day",
-      "name": "ATHINAT H.",
       "start": "2026-07-09",
+      "name": "ATHINAT H.",
       "end": "2026-07-09"
     },
     {
@@ -123435,8 +124179,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "KITTICHAI C.",
       "start": "2026-07-02",
+      "name": "KITTICHAI C.",
       "end": "2026-07-02"
     },
     {
@@ -123459,8 +124203,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-03",
       "name": "NAPATH T.",
+      "start": "2026-07-03",
       "end": "2026-07-03"
     },
     {
@@ -123471,14 +124215,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-04",
       "name": "NABHADR P.",
+      "start": "2026-07-04",
       "end": "2026-07-05"
     },
     {
       "duration": "Full Day",
-      "name": "WATTIKORN K.",
       "start": "2026-07-04",
+      "name": "WATTIKORN K.",
       "end": "2026-07-05"
     },
     {
@@ -123489,14 +124233,14 @@
     },
     {
       "duration": "Full Day",
-      "name": "RAKCHON K.",
       "start": "2026-07-03",
+      "name": "RAKCHON K.",
       "end": "2026-07-05"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-06",
       "name": "PORNTREETRA R.",
+      "start": "2026-07-06",
       "end": "2026-07-06"
     },
     {
@@ -123513,8 +124257,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-04",
       "name": "NUTTAWAT R.",
+      "start": "2026-07-04",
       "end": "2026-07-05"
     },
     {
@@ -123531,26 +124275,26 @@
     },
     {
       "duration": "Full Day",
+      "start": "2026-07-06",
       "name": "WATCHARAPOL A.",
-      "start": "2026-07-06",
       "end": "2026-07-06"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-05",
       "name": "KANTAPONG A.",
+      "start": "2026-07-05",
       "end": "2026-07-06"
     },
     {
       "duration": "Full Day",
-      "name": "PANITHAN V.",
       "start": "2026-07-06",
+      "name": "PANITHAN V.",
       "end": "2026-07-06"
     },
     {
       "duration": "Full Day",
-      "name": "KRAISEE L.",
       "start": "2026-07-08",
+      "name": "KRAISEE L.",
       "end": "2026-07-08"
     },
     {
@@ -123561,8 +124305,8 @@
     },
     {
       "duration": "Full Day",
-      "name": "TAKORN C.",
       "start": "2026-07-08",
+      "name": "TAKORN C.",
       "end": "2026-07-08"
     },
     {
@@ -123585,20 +124329,20 @@
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "start": "2026-07-05",
       "name": "SUPAWAN A.",
+      "start": "2026-07-05",
       "end": "2026-07-05"
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "name": "SUPAWAN A.",
       "start": "2026-07-08",
+      "name": "SUPAWAN A.",
       "end": "2026-07-08"
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-17",
       "name": "VIPHARATH C.",
+      "start": "2026-07-17",
       "end": "2026-07-17"
     },
     {
@@ -123609,8 +124353,8 @@
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "name": "MAETHAPHAN R.",
       "start": "2026-07-08",
+      "name": "MAETHAPHAN R.",
       "end": "2026-07-08"
     },
     {
@@ -123621,14 +124365,14 @@
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "start": "2026-07-08",
       "name": "WATCHARAPOL A.",
+      "start": "2026-07-08",
       "end": "2026-07-08"
     },
     {
       "duration": "Half Day - Morning (AM)",
-      "start": "2026-07-08",
       "name": "KRIT L.",
+      "start": "2026-07-08",
       "end": "2026-07-08"
     },
     {
@@ -123639,8 +124383,8 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-31",
       "name": "NUTTAWAT R.",
+      "start": "2026-07-31",
       "end": "2026-07-31"
     },
     {
@@ -123657,14 +124401,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-31",
       "name": "SOWAN C.",
+      "start": "2026-07-31",
       "end": "2026-07-31"
     },
     {
       "duration": "Full Day",
-      "name": "SOWAN C.",
       "start": "2026-09-28",
+      "name": "SOWAN C.",
       "end": "2026-09-28"
     },
     {
@@ -123681,14 +124425,14 @@
     },
     {
       "duration": "Full Day",
-      "start": "2026-07-11",
       "name": "AKARAVIT K.",
+      "start": "2026-07-11",
       "end": "2026-07-12"
     },
     {
       "duration": "Full Day",
-      "name": "KRIT L.",
       "start": "2026-07-11",
+      "name": "KRIT L.",
       "end": "2026-07-12"
     }
   ],
