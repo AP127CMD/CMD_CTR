@@ -2,6 +2,14 @@
 One-off backfill script: fetch historical flight schedule data by driving the
 GAS web app's date picker, then merge into data/flight_schedule.json.
 
+STALE as of 2026-07-11: the Ops Portal was rebuilt from scratch (~2026-07-10),
+old SCRIPT_URL below now 404s and the page structure this script drives
+(#sandboxFrame + window.flightCache) no longer exists — see the new portal's
+handling in fetch_schedule.py (userHtmlFrame + window.G, one day per
+request via the #gantt-date picker) and AP127_Docs README §10. If historical
+backfill is ever needed again, port this script to the new navigation/schema
+first — don't run it as-is.
+
 Usage:
     python3 scripts/backfill_history.py                       # 2026-04-20 → day before oldest
     python3 scripts/backfill_history.py --from 2026-04-20

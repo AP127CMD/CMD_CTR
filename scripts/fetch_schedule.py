@@ -3,89 +3,82 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
-from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright.async_api import async_playwright
 
+# Ops Portal was rebuilt from scratch ~2026-07-10 (old flightCache single-shot
+# dump -> new google.script.run SPA, one day per request). Old URL 404s now.
 SCRIPT_URL = (
     "https://script.google.com/macros/s/"
-    "AKfycbzsOcPHLUpD5U8Qyq-x78edIOMUr28NJAp0KTvJvYCW6IQ_yG-HB97aRue8aFoxGQ5lJg/exec"
+    "AKfycbx-8p8MWbDAeJkTBPt4Yy_6cH0azSv-5VXcrzVhIUGM6XEJRtMBQNku-WybzNlhq9zN/exec"
 )
 OUTPUT_FILE = Path(__file__).parent.parent / "data" / "flight_schedule.json"
-LOAD_TIMEOUT_MS = 90_000   # 90 s total page load budget (GAS cold-starts can be slow)
-POLL_INTERVAL_MS = 500     # check every 0.5 s
-MAX_POLL_TRIES = 80        # 40 s of polling after page load
+LOAD_TIMEOUT_MS = 90_000    # 90 s total page load budget (GAS cold-starts can be slow)
+DATE_SETTLE_TIMEOUT_S = 25  # observed per-date server round-trip: 1.5-12s, be generous
 
 # Retry config — overridable via env vars set in the workflow.
 MAX_ATTEMPTS  = int(os.environ.get("FETCH_MAX_ATTEMPTS", "3"))
 RETRY_DELAY_S = int(os.environ.get("FETCH_RETRY_DELAY",  "20"))
 
+# Date window to scrape each run — the new portal only returns one day per
+# request (no more single-shot multi-month dump), so we loop day-by-day.
+# History accumulates across runs via the merge-with-existing-file logic
+# below; this window only needs to cover what's likely to change between
+# runs plus a comfortable buffer, not the full multi-month archive.
+DAYS_BACK    = int(os.environ.get("FETCH_DAYS_BACK",    "7"))
+DAYS_FORWARD = int(os.environ.get("FETCH_DAYS_FORWARD", "10"))
+
 TIMEZONE = "Asia/Bangkok"
 VALID_STATUSES = {"Pending", "Completed", "Canceled"}
 
-# Fields every schedule entry must carry. A missing field is a hard error.
+# Fields observed from the new Ops Portal as of the 2026-07-11 migration
+# (Timeline View's window.G.flights and Daily Schedule's window.SD.flights
+# confirmed to expose the identical shape). A missing field is a hard error;
+# a new/unexpected field is a warning surfaced as a non-fatal GitHub issue so
+# upstream drift gets noticed instead of silently breaking again.
 REQUIRED_ENTRY_FIELDS = {
-    "date", "rowIdx", "realRowIdx", "status", "isActual",
-    "student", "instructor", "batch", "lesson",
-    "start", "end", "duration", "planDur", "condition",
-    "type", "tail", "actualType",
-    "tkoff", "ldgTime", "airborne",
-    "ldg", "to", "inst",
+    "date", "bookingId", "status", "student", "instructor", "batch", "lesson",
+    "startTime", "endTime", "duration", "condition", "acType", "acReg",
 }
-
-# Fields seen in the source as of the last schema review.
-# Extra fields beyond this set trigger a warning so new upstream data is noticed.
-# cancelReason is optional — only present on Canceled entries.
-KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS | {"cancelReason"}
+KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS
 
 _DURATION_RE = re.compile(r"^\d+:\d{2}$")
 _TIME_RE = re.compile(r"^\d{2}:\d{2}$")
-# rowIdx is either a booking ID string ("BK-XXXX-NNNN" / "BK-XXXX-NNNN_ACT_NNNN")
-# or "UNPLANNED_ACT_NNNN" for flights with no scheduled slot.
-_ROW_IDX_RE = re.compile(r"^BK-[A-Z0-9]{4}-\d+(_ACT_\d+)?$|^UNPLANNED_ACT_\d+$")
-
-
-def _schedules_list_to_dict(schedules_list):
-    """Convert a flat list of entries (each with a 'date' key) to a dict keyed by date."""
-    result = {}
-    for entry in schedules_list:
-        d = entry.get("date", "unknown")
-        result.setdefault(d, []).append(entry)
-    return result
+# Booking id formats observed: "BK-XXXX-NNNN" (normal booking) and
+# "DR-AP-126-PONG-C0LHI" (a second scheme). Kept loose on purpose — tightening
+# it just means more false "unexpected format" warnings without catching
+# anything a hard error would help with.
+_BOOKING_ID_RE = re.compile(r"^[A-Z]{2,}-[A-Z0-9-]+$")
+# The new portal appends an override note to status instead of a separate
+# field, e.g. "Pending [OVERRIDE: Student solo]".
+_STATUS_OVERRIDE_RE = re.compile(r"^(Pending|Completed|Canceled)\s*\[OVERRIDE:\s*(.+?)\]\s*$")
 
 
 def validate_raw_cache(cache):
     """
-    Check raw cache structure before normalization.
+    Check raw scraped data against the known Ops Portal schema before
+    normalization.
 
     Returns (warnings, errors). Errors mean our normalization logic will
     break or produce wrong output; warnings mean upstream drift worth
-    investigating but not immediately fatal.
+    investigating but not fatal — surfaced as a non-blocking GitHub issue by
+    the workflow so it doesn't sit unnoticed (the 2026-07-11 portal rebuild
+    went 18+ hours before anyone realized data had gone stale).
     """
     warnings = []
     errors = []
 
-    # ── Top-level keys ────────────────────────────────────────────────────────
-    required_top = {"schedules", "leaves", "instructors", "resources"}
-    missing_top = required_top - set(cache)
-    extra_top = set(cache) - required_top
-    if missing_top:
-        errors.append(f"Missing top-level keys: {sorted(missing_top)}")
-    if extra_top:
-        warnings.append(f"New top-level keys (upstream addition): {sorted(extra_top)}")
-
     schedules = cache.get("schedules", {})
-    if isinstance(schedules, list):
-        # Source now emits a flat list; normalize to dict keyed by date for validation.
-        schedules = _schedules_list_to_dict(schedules)
-    elif not isinstance(schedules, dict):
-        errors.append(f"'schedules' is not a dict or list (got {type(schedules).__name__})")
+    if not isinstance(schedules, dict):
+        errors.append(f"'schedules' is not a dict (got {type(schedules).__name__})")
         return warnings, errors
 
-    # ── Per-entry checks ──────────────────────────────────────────────────────
-    new_statuses: set = set()
     new_fields: set = set()
+    new_statuses: set = set()
+    new_id_prefixes: set = set()
 
     for date, entries in schedules.items():
         if not isinstance(entries, list):
@@ -93,75 +86,57 @@ def validate_raw_cache(cache):
             continue
 
         for entry in entries:
-            ref = f"date={date} rowIdx={entry.get('rowIdx', '?')!r}"
+            ref = f"date={date} bookingId={entry.get('bookingId', '?')!r}"
 
-            # Missing required fields
             missing = REQUIRED_ENTRY_FIELDS - set(entry)
             if missing:
                 errors.append(f"{ref}: missing fields {sorted(missing)}")
 
-            # Unknown new fields
             extra = set(entry) - KNOWN_ENTRY_FIELDS
             if extra:
                 new_fields.update(extra)
 
-            # rowIdx must be a booking ID string.
-            raw_idx = str(entry.get("rowIdx", ""))
-            if not _ROW_IDX_RE.match(raw_idx):
-                warnings.append(f"{ref}: unexpected rowIdx format: {raw_idx!r}")
+            booking_id = str(entry.get("bookingId", ""))
+            if not _BOOKING_ID_RE.match(booking_id):
+                warnings.append(f"{ref}: unexpected bookingId format: {booking_id!r}")
+            else:
+                prefix = booking_id.split("-")[0] + "-"
+                if prefix not in ("BK-", "DR-"):
+                    new_id_prefixes.add(prefix)
 
-            # isActual must be bool
-            if not isinstance(entry.get("isActual"), bool):
-                errors.append(
-                    f"{ref}: isActual expected bool, "
-                    f"got {type(entry.get('isActual')).__name__}: {entry.get('isActual')!r}"
-                )
-
-            # ldg / to / inst must be int
-            for field in ("ldg", "to", "inst"):
-                val = entry.get(field)
-                if not isinstance(val, int):
-                    errors.append(
-                        f"{ref}: {field} expected int, "
-                        f"got {type(val).__name__}: {val!r}"
-                    )
-
-            # duration must be "H…:MM" or "-" (missing)
             duration = entry.get("duration", "")
             if duration and duration != "-" and not _DURATION_RE.match(duration):
                 errors.append(f"{ref}: duration has unexpected format: {duration!r}")
 
-            # start / end must be "HH:MM"
-            for field in ("start", "end"):
+            for field in ("startTime", "endTime"):
                 val = entry.get(field, "")
                 if val and not _TIME_RE.match(val):
                     errors.append(f"{ref}: {field} has unexpected format: {val!r}")
 
-            # status drift (non-fatal — we default unknowns to "Pending")
-            status = entry.get("status")
-            if status not in VALID_STATUSES:
+            status = entry.get("status", "")
+            base_status = status
+            m = _STATUS_OVERRIDE_RE.match(status or "")
+            if m:
+                base_status = m.group(1)
+            if base_status not in VALID_STATUSES:
                 new_statuses.add(status)
 
     if new_fields:
         warnings.append(f"New entry fields from upstream (review for usefulness): {sorted(new_fields)}")
     if new_statuses:
-        warnings.append(
-            f"Unknown status values (defaulted to 'Pending'): {sorted(str(s) for s in new_statuses)}"
-        )
+        warnings.append(f"Unknown status values (defaulted to 'Pending'): {sorted(str(s) for s in new_statuses)}")
+    if new_id_prefixes:
+        warnings.append(f"New bookingId prefix(es) not yet handled: {sorted(new_id_prefixes)}")
 
     return warnings, errors
 
 
 def _null_dash(value):
-    return None if value == "-" else value
-
-
-def _null_empty(value):
-    return None if value == "" else value
+    return None if value in ("-", "") else value
 
 
 def _parse_duration_min(duration_str):
-    """Convert 'HH:MM' to total minutes as int, or None if unparseable."""
+    """Convert 'H:MM' to total minutes as int, or None if unparseable."""
     try:
         h, m = duration_str.split(":")
         return int(h) * 60 + int(m)
@@ -169,40 +144,63 @@ def _parse_duration_min(duration_str):
         return None
 
 
-def normalize_entry(entry, date):
-    """Return a normalized schedule entry ready for dashboard consumption."""
-    row_idx = entry.get("rowIdx")  # booking ID string, e.g. "BK-MR1E-8318"
-
-    real_row_idx_raw = entry.get("realRowIdx")
+def _zero_pad_duration(duration_str):
+    """New portal emits 'H:MM' (e.g. '2:00'); old one emitted 'HH:MM'
+    ('02:00') and several views render this string as-is. Zero-pad to avoid
+    a purely cosmetic display change."""
     try:
-        real_row_idx = int(real_row_idx_raw) if str(real_row_idx_raw or "").isdigit() else real_row_idx_raw
-    except (TypeError, ValueError):
-        real_row_idx = real_row_idx_raw
+        h, m = duration_str.split(":")
+        return f"{int(h):02d}:{m}"
+    except Exception:
+        return duration_str
 
-    duration_str = entry.get("duration") or ""
-    plan_dur_str = entry.get("planDur") or ""
-    ac_type = entry.get("type") or ""
-    status = entry.get("status")
-    raw_condition = _null_empty(_null_dash(entry.get("condition") or ""))
+
+def normalize_entry(entry, date):
+    """
+    Return a normalized schedule entry ready for dashboard consumption.
+
+    The new Ops Portal (migrated ~2026-07-10) has a materially simpler data
+    model than the old one: one canonical record per booking whose `status`
+    tracks lifecycle (Pending -> Completed/Canceled), instead of the old dual
+    planned+actual row pair keyed by rowIdx/realRowIdx. Fields that depended
+    on that old model (isActual, planDur, rowIdx/realRowIdx as distinct
+    concepts) or on post-flight detail the new portal's read views don't
+    expose (tkoff/ldgTime/airborne/to/ldg/inst, cancelReason) are kept in the
+    output shape for backward compatibility but are always None/derived —
+    see AP127_Docs README §10 (2026-07-11) for what was checked (Timeline
+    View, Daily Schedule, the Flight/Cancel Record submission schemas)
+    before concluding they're genuinely unavailable, not just unmapped.
+    """
+    booking_id = entry.get("bookingId")
+    duration_str = _zero_pad_duration(entry.get("duration") or "")
+    ac_type = entry.get("acType") or ""
+    raw_status = entry.get("status") or ""
+    status_override = None
+    status = raw_status
+    m = _STATUS_OVERRIDE_RE.match(raw_status)
+    if m:
+        status, status_override = m.group(1), m.group(2)
+    raw_condition = _null_dash(entry.get("condition") or "")
     is_standby = isinstance(raw_condition, str) and "(Standby)" in raw_condition
     condition = raw_condition.replace(" (Standby)", "").strip() if is_standby else raw_condition
 
     return {
-        "id": str(row_idx),
+        "id": str(booking_id),
         "date": date,
-        "rowIdx": row_idx,
-        "realRowIdx": real_row_idx,
+        "rowIdx": booking_id,
+        "realRowIdx": None,
         "status": status if status in VALID_STATUSES else "Pending",
-        "isActual": bool(entry.get("isActual", False)),
+        "statusOverride": status_override,
+        "isActual": status == "Completed",
         "isSimulator": "(SIM)" in ac_type,
         "isStandby": is_standby,
         # scheduling
-        "start": entry.get("start"),
-        "end": entry.get("end"),
+        "start": entry.get("startTime"),
+        "end": entry.get("endTime"),
         "duration": duration_str or None,
         "durationMin": _parse_duration_min(duration_str),
-        "planDur": plan_dur_str or None,
-        "planDurMin": _parse_duration_min(plan_dur_str),
+        "planDur": None,
+        "planDurMin": None,
         # people
         "student": _null_dash(entry.get("student")),
         "instructor": _null_dash(entry.get("instructor")),
@@ -210,99 +208,192 @@ def normalize_entry(entry, date):
         "lesson": entry.get("lesson"),
         "condition": condition,
         # aircraft
-        "type": _null_empty(_null_dash(ac_type)),
-        "tail": _null_dash(entry.get("tail")),
-        # actuals (populated after flight)
-        "actualType": _null_empty(entry.get("actualType")),
-        "tkoff": _null_dash(entry.get("tkoff")),
-        "ldgTime": _null_dash(entry.get("ldgTime")),
-        "airborne": _null_dash(entry.get("airborne")),
-        "ldg": entry.get("ldg"),
-        "to": entry.get("to"),
-        "inst": entry.get("inst"),
-        # cancellation
-        "cancelReason": _null_empty(entry.get("cancelReason")),
+        "type": _null_dash(ac_type),
+        "tail": _null_dash(entry.get("acReg")),
+        # actuals — not exposed by the new portal's read views (checked
+        # 2026-07-11; see AP127_Docs README §10)
+        "actualType": None,
+        "tkoff": None,
+        "ldgTime": None,
+        "airborne": None,
+        "ldg": None,
+        "to": None,
+        "inst": None,
+        # cancellation — Cancel Record's submission schema has a `reason`
+        # field but it isn't echoed back on any read view
+        "cancelReason": None,
     }
 
 
-async def get_iframe_flight_cache(page):
-    """Return the flightCache object from inside the sandbox iframe."""
-    # The iframe src is set dynamically; wait for it to appear.
-    await page.wait_for_selector("#sandboxFrame", timeout=LOAD_TIMEOUT_MS)
-
-    # Give the iframe a moment to receive its src and start loading.
-    await page.wait_for_timeout(2000)
-
-    sandbox_frame = None
-    for _ in range(MAX_POLL_TRIES):
-        # Playwright exposes all frames including cross-origin ones.
+async def _get_content_frame(page):
+    """Return the userHtmlFrame nested inside GAS's sandboxFrame."""
+    await page.wait_for_selector("iframe", timeout=LOAD_TIMEOUT_MS)
+    for _ in range(40):
         for frame in page.frames:
-            if frame == page.main_frame:
+            if frame.name == "userHtmlFrame":
+                return frame
+        await page.wait_for_timeout(500)
+    raise RuntimeError("userHtmlFrame never appeared")
+
+
+async def _open_timeline_view(user_frame):
+    await user_frame.get_by_text("Timeline View").click(timeout=15_000)
+    await user_frame.wait_for_selector("#gantt-date", timeout=15_000)
+
+
+DATE_FETCH_ATTEMPTS = int(os.environ.get("FETCH_DATE_ATTEMPTS", "3"))
+
+
+MIN_SETTLE_WAIT_S = 3   # a result (esp. an empty one) landing before this is
+                        # almost certainly a stale-clear artifact, not real data
+STABILITY_RECHECK_S = 2  # re-verify an apparently-settled EMPTY result is real,
+                          # not the brief clear-state before the async reply lands
+
+
+async def _fetch_one_date(page, user_frame, date_str):
+    """Set the Gantt date picker and wait for window.G to settle on that date.
+
+    Uses locator.fill() (a real, trusted browser input event) rather than a
+    plain element.dispatchEvent() from in-page JS — the latter is untrusted
+    and was observed to sometimes get silently no-op'd by the app, leaving
+    G.date updated but G.flights stuck on the previous date's data with no
+    error and no new network request at all.
+
+    window.G.date updates synchronously once the request is accepted, but
+    window.G.flights lags behind until the async server round-trip resolves
+    (observed 1.5-12s). An EMPTY flights array needs extra scrutiny: the app
+    appears to clear G.flights = [] immediately on date change, before the
+    async reply overwrites it — so a naive "flights matches target date"
+    check (trivially true for an empty array) can accept a transient clear
+    state as if it were a genuine zero-flights day. Enforce a minimum wait
+    before accepting anything, and re-verify an empty result is stable
+    before trusting it.
+    """
+    date_input = user_frame.locator("#gantt-date")
+    await date_input.fill(date_str)
+    await date_input.dispatch_event("change")
+    await page.wait_for_timeout(MIN_SETTLE_WAIT_S * 1000)
+
+    for _ in range(DATE_SETTLE_TIMEOUT_S):
+        g = await user_frame.evaluate("() => JSON.stringify(window.G)")
+        data = json.loads(g)
+        if data.get("date") == date_str:
+            flights = data.get("flights", [])
+            flight_dates = {f["date"] for f in flights}
+            if flight_dates <= {date_str}:
+                if flights:
+                    return flights
+                # Empty — could be genuine or a not-yet-loaded artifact.
+                # Re-check after a short pause; only trust it if it's stable.
+                await page.wait_for_timeout(STABILITY_RECHECK_S * 1000)
+                g2 = await user_frame.evaluate("() => JSON.stringify(window.G)")
+                data2 = json.loads(g2)
+                if data2.get("date") == date_str and not data2.get("flights"):
+                    return []
+                # It changed — loop again and re-evaluate from scratch.
                 continue
-            try:
-                cache = await frame.evaluate(
-                    "() => { var fc = window.flightCache; "
-                    "if (!fc || !fc.schedules) return null; "
-                    "var s = fc.schedules; "
-                    "return (Array.isArray(s) ? s.length : Object.keys(s).length) > 0 "
-                    "? fc : null; }"
-                )
-                if cache:
-                    return cache
-            except Exception:
-                pass
-        await page.wait_for_timeout(POLL_INTERVAL_MS)
+        await page.wait_for_timeout(1000)
+    raise TimeoutError(f"Ops Portal did not settle on date {date_str} within {DATE_SETTLE_TIMEOUT_S}s")
 
-    # Last attempt — return whatever is there even if schedules is empty.
-    for frame in page.frames:
-        if frame == page.main_frame:
-            continue
+
+async def scrape_window(days_back, days_forward):
+    """Fetch every date in [today-days_back, today+days_forward] from the
+    Ops Portal. Returns (schedules, failed_dates).
+
+    The upstream GAS server is intermittently unreliable under repeated
+    rapid requests (observed ~25% of single-date requests silently stall or
+    error even with correct, trusted input events — this is the same "GAS
+    cold-starts can be slow" flakiness the original scraper's retry logic
+    was built for, just manifesting per-date now instead of per-run). A date
+    that fails after DATE_FETCH_ATTEMPTS tries is skipped rather than
+    aborting the whole run — the existing merge-with-previous-file logic
+    keeps that date's last-known-good data, and since this runs every 5
+    minutes in production, a skipped date gets retried again shortly.
+    """
+    today = datetime.now(timezone.utc).astimezone(ZoneInfo(TIMEZONE)).date()
+    dates = [
+        (today + timedelta(days=offset)).isoformat()
+        for offset in range(-days_back, days_forward + 1)
+    ]
+
+    schedules = {}
+    failed_dates = []
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
         try:
-            cache = await frame.evaluate(
-                "() => typeof window.flightCache !== 'undefined' ? window.flightCache : null"
+            context = await browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/124.0.0.0 Safari/537.36"
+                )
             )
-            if cache is not None:
-                return cache
-        except Exception:
-            pass
+            page = await context.new_page()
+            print(f"Navigating to {SCRIPT_URL} …")
+            await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
+            user_frame = await _get_content_frame(page)
+            await _open_timeline_view(user_frame)
 
-    return None
+            for date_str in dates:
+                last_err = None
+                for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
+                    try:
+                        flights = await _fetch_one_date(page, user_frame, date_str)
+                        schedules[date_str] = flights
+                        print(f"  {date_str}: {len(flights)} flights"
+                              + (f" (attempt {attempt})" if attempt > 1 else ""))
+                        break
+                    except Exception as exc:
+                        last_err = exc
+                        await page.wait_for_timeout(1500)
+                else:
+                    print(f"  {date_str}: FAILED after {DATE_FETCH_ATTEMPTS} attempts ({last_err!r}) — skipping",
+                          file=sys.stderr)
+                    failed_dates.append(date_str)
+                # Brief pacing between dates — the upstream GAS server seems to
+                # degrade (silently empty responses) under back-to-back requests.
+                await page.wait_for_timeout(1000)
+        finally:
+            await browser.close()
+
+    if len(failed_dates) == len(dates):
+        raise RuntimeError(f"All {len(dates)} dates failed — Ops Portal likely down or navigation broke")
+
+    return schedules, failed_dates
+
+
+def _report_schema_drift(warnings):
+    """Surface schema drift as a GitHub Actions output so a (non-fatal)
+    workflow step can open an issue. Non-fatal deliberately — new/unexpected
+    fields or statuses shouldn't block a run, they should just get noticed
+    instead of silently ignored (per the 2026-07-11 incident)."""
+    if not warnings:
+        return
+    gh_output = os.environ.get("GITHUB_OUTPUT")
+    gh_summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    body = "\n".join(f"- {w}" for w in warnings)
+    if gh_output:
+        with open(gh_output, "a", encoding="utf-8") as f:
+            f.write("schema_drift=true\n")
+            f.write("schema_drift_summary<<EOF\n")
+            f.write(body + "\n")
+            f.write("EOF\n")
+    if gh_summary_path:
+        with open(gh_summary_path, "a", encoding="utf-8") as f:
+            f.write("## Ops Portal schema drift detected\n\n" + body + "\n")
+    print(f"SCHEMA DRIFT: {len(warnings)} warning(s) — see step summary / issue.", file=sys.stderr)
 
 
 async def main():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (X11; Linux x86_64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/124.0.0.0 Safari/537.36"
-            )
-        )
-        page = await context.new_page()
-
-        print(f"Navigating to {SCRIPT_URL} …")
-        try:
-            await page.goto(SCRIPT_URL, wait_until="domcontentloaded", timeout=LOAD_TIMEOUT_MS)
-        except PlaywrightTimeoutError:
-            print("ERROR: Page load timed out.", file=sys.stderr)
-            await browser.close()
-            sys.exit(1)
-
-        print("Waiting for flight cache data …")
-        try:
-            cache = await get_iframe_flight_cache(page)
-        except PlaywrightTimeoutError:
-            print("ERROR: Timed out waiting for #sandboxFrame flight cache.", file=sys.stderr)
-            await browser.close()
-            sys.exit(1)
-        await browser.close()
-
-    if cache is None:
-        print("ERROR: Could not retrieve flightCache from the page.", file=sys.stderr)
-        sys.exit(1)
+    schedules, failed_dates = await scrape_window(DAYS_BACK, DAYS_FORWARD)
+    cache = {"schedules": schedules, "leaves": [], "instructors": [], "resources": []}
 
     warnings, errors = validate_raw_cache(cache)
+    if failed_dates:
+        warnings.append(
+            f"{len(failed_dates)} date(s) failed to fetch after {DATE_FETCH_ATTEMPTS} attempts "
+            f"and were skipped (previous data for these dates, if any, is kept as-is): {failed_dates}"
+        )
     for msg in warnings:
         print(f"WARNING: {msg}", file=sys.stderr)
     for msg in errors:
@@ -314,15 +405,12 @@ async def main():
             file=sys.stderr,
         )
         sys.exit(1)
-    if warnings:
-        print(f"Schema validation passed with {len(warnings)} warning(s). Review stderr.", file=sys.stderr)
 
-    raw_schedules = cache.get("schedules", {})
-    if isinstance(raw_schedules, list):
-        raw_schedules = _schedules_list_to_dict(raw_schedules)
+    _report_schema_drift(warnings)
+
     new_schedules = {
         date: [normalize_entry(entry, date) for entry in entries]
-        for date, entries in raw_schedules.items()
+        for date, entries in schedules.items()
     }
 
     # ── Merge with existing data ───────────────────────────────────────────────
@@ -339,14 +427,11 @@ async def main():
         except Exception as e:
             print(f"WARNING: could not read existing file for merge: {e}", file=sys.stderr)
 
-        # Back up before overwriting
         try:
             BACKUP_FILE.write_bytes(OUTPUT_FILE.read_bytes())
         except Exception as e:
             print(f"WARNING: could not write backup: {e}", file=sys.stderr)
 
-    # Merge: existing dates first (preserves history), then new fetch overwrites
-    # any date it covers.
     merged_schedules = {**existing_schedules, **new_schedules}
 
     new_dates  = set(new_schedules.keys())
@@ -374,8 +459,18 @@ async def main():
 
 
 async def main_with_retry():
-    """Run main() up to MAX_ATTEMPTS times with exponential-ish backoff."""
+    """Run main() up to MAX_ATTEMPTS times with exponential-ish backoff.
+
+    Catches ANY exception, not just deliberate sys.exit() calls — the
+    previous version only caught SystemExit, so an uncaught
+    PlaywrightTimeoutError (e.g. from wait_for_selector) propagated straight
+    past the retry loop and killed the run on attempt 1 every time, silently
+    defeating the retry mechanism entirely (found investigating an 18-hour
+    outage on 2026-07-10 that turned out to be caused by exactly this — see
+    AP127_Docs README §10).
+    """
     last_exc = None
+    exit_code = 1
     for attempt in range(1, MAX_ATTEMPTS + 1):
         try:
             await main()
@@ -384,20 +479,25 @@ async def main_with_retry():
             if exc.code == 0:
                 return
             last_exc = exc
-            if attempt < MAX_ATTEMPTS:
-                wait = RETRY_DELAY_S * attempt
-                print(
-                    f"Attempt {attempt}/{MAX_ATTEMPTS} failed (exit {exc.code}). "
-                    f"Retrying in {wait}s …",
-                    file=sys.stderr,
-                )
-                await asyncio.sleep(wait)
-            else:
-                print(
-                    f"All {MAX_ATTEMPTS} attempts failed. Giving up.",
-                    file=sys.stderr,
-                )
-    sys.exit(last_exc.code if last_exc else 1)
+            exit_code = exc.code if isinstance(exc.code, int) else 1
+        except Exception as exc:
+            last_exc = exc
+            exit_code = 1
+
+        if attempt < MAX_ATTEMPTS:
+            wait = RETRY_DELAY_S * attempt
+            print(
+                f"Attempt {attempt}/{MAX_ATTEMPTS} failed ({last_exc!r}). "
+                f"Retrying in {wait}s …",
+                file=sys.stderr,
+            )
+            await asyncio.sleep(wait)
+        else:
+            print(
+                f"All {MAX_ATTEMPTS} attempts failed ({last_exc!r}). Giving up.",
+                file=sys.stderr,
+            )
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
