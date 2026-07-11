@@ -290,7 +290,12 @@ async def main():
             sys.exit(1)
 
         print("Waiting for flight cache data …")
-        cache = await get_iframe_flight_cache(page)
+        try:
+            cache = await get_iframe_flight_cache(page)
+        except PlaywrightTimeoutError:
+            print("ERROR: Timed out waiting for #sandboxFrame flight cache.", file=sys.stderr)
+            await browser.close()
+            sys.exit(1)
         await browser.close()
 
     if cache is None:
