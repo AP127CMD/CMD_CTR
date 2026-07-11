@@ -426,8 +426,6 @@ async def main():
         )
         sys.exit(1)
 
-    _report_schema_drift(warnings)
-
     new_schedules = {
         date: [normalize_entry(entry, date) for entry in entries]
         for date, entries in schedules.items()
@@ -451,6 +449,36 @@ async def main():
             BACKUP_FILE.write_bytes(OUTPUT_FILE.read_bytes())
         except Exception as e:
             print(f"WARNING: could not write backup: {e}", file=sys.stderr)
+
+    # Regression guard: a date going from populated to (near-)empty in a
+    # single fetch is far more likely to mean the Ops Portal silently
+    # returned a bad/blocked response for that date (confirmed 2026-07-11:
+    # GitHub Actions runner requests started coming back stable-but-empty for
+    # every date in the window, worsening across consecutive runs, while
+    # requests from a normal network succeeded fine — looks like IP-based
+    # throttling of the Actions runner pool) than that a real schedule
+    # dropped to near-zero bookings. _fetch_one_date()'s stability re-check
+    # only proves a response was consistent, not that it was correct, so it
+    # can't catch this on its own — compare against the last known-good
+    # count instead. A date failing this check keeps its existing data.
+    suspicious_dates = []
+    for date, entries in list(new_schedules.items()):
+        existing_count = len(existing_schedules.get(date, []))
+        new_count = len(entries)
+        if existing_count >= 5 and new_count < existing_count * 0.2:
+            suspicious_dates.append((date, existing_count, new_count))
+            del new_schedules[date]
+    if suspicious_dates:
+        drift_msg = (
+            f"{len(suspicious_dates)} date(s) looked like a fetch regression "
+            f"(existing→fresh count dropped sharply, likely a blocked/bad Ops Portal response "
+            f"rather than a real schedule change) — kept existing data instead: "
+            + ", ".join(f"{d} ({e}→{n})" for d, e, n in suspicious_dates)
+        )
+        print(f"WARNING: {drift_msg}", file=sys.stderr)
+        warnings.append(drift_msg)
+
+    _report_schema_drift(warnings)
 
     merged_schedules = {**existing_schedules, **new_schedules}
 
