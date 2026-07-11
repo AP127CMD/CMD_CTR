@@ -19,6 +19,14 @@ OUTPUT_FILE = Path(__file__).parent.parent / "data" / "flight_schedule.json"
 LOAD_TIMEOUT_MS = 90_000    # 90 s total page load budget (GAS cold-starts can be slow)
 DATE_SETTLE_TIMEOUT_S = 25  # observed per-date server round-trip: 1.5-12s, be generous
 
+# Frozen archive of the OLD portal's data (rich fields: tkoff/ldgTime/airborne/
+# planDur/isActual/cancelReason — none of which the new portal exposes). Dates
+# in this archive are fully resolved (every flight already flown/cancelled as
+# of 2026-07-09) and are permanently excluded from the new scraper's fetch —
+# see _apply_frozen_archive(). Per explicit request: keep old data as-is for
+# everything before the cutover, only let the new source manage dates after.
+FROZEN_ARCHIVE_FILE = Path(__file__).parent.parent / "data" / "flight_schedule.pre_migration_archive.json"
+
 # Retry config — overridable via env vars set in the workflow.
 MAX_ATTEMPTS  = int(os.environ.get("FETCH_MAX_ATTEMPTS", "3"))
 RETRY_DELAY_S = int(os.environ.get("FETCH_RETRY_DELAY",  "20"))
@@ -296,9 +304,18 @@ async def _fetch_one_date(page, user_frame, date_str):
     raise TimeoutError(f"Ops Portal did not settle on date {date_str} within {DATE_SETTLE_TIMEOUT_S}s")
 
 
+def _load_frozen_archive():
+    """Dates the OLD portal already fully resolved (see FROZEN_ARCHIVE_FILE
+    docstring above) — never re-fetched, never overwritten."""
+    if not FROZEN_ARCHIVE_FILE.exists():
+        return {}
+    return json.loads(FROZEN_ARCHIVE_FILE.read_text(encoding="utf-8")).get("schedules", {})
+
+
 async def scrape_window(days_back, days_forward):
     """Fetch every date in [today-days_back, today+days_forward] from the
-    Ops Portal. Returns (schedules, failed_dates).
+    Ops Portal, excluding any date already covered by the frozen pre-migration
+    archive. Returns (schedules, failed_dates).
 
     The upstream GAS server is intermittently unreliable under repeated
     rapid requests (observed ~25% of single-date requests silently stall or
@@ -311,10 +328,13 @@ async def scrape_window(days_back, days_forward):
     minutes in production, a skipped date gets retried again shortly.
     """
     today = datetime.now(timezone.utc).astimezone(ZoneInfo(TIMEZONE)).date()
+    frozen_dates = _load_frozen_archive().keys()
     dates = [
-        (today + timedelta(days=offset)).isoformat()
-        for offset in range(-days_back, days_forward + 1)
+        d for offset in range(-days_back, days_forward + 1)
+        if (d := (today + timedelta(days=offset)).isoformat()) not in frozen_dates
     ]
+    if frozen_dates:
+        print(f"Skipping {len(frozen_dates)} frozen pre-migration date(s) — never re-fetched from the new portal.")
 
     schedules = {}
     failed_dates = []
@@ -440,6 +460,16 @@ async def main():
     if kept_dates:
         print(f"Preserved {len(kept_dates)} historical date(s) not in current window: "
               f"{', '.join(sorted(kept_dates))}")
+
+    # Final override: frozen pre-migration dates always win, regardless of
+    # what's in existing_schedules/new_schedules. scrape_window() already
+    # excludes them from fetching, but this is the actual guarantee — even a
+    # stale on-disk file, a bug elsewhere, or a future change to the fetch
+    # window can't cause these dates to drift from the archived old-portal
+    # data. See FROZEN_ARCHIVE_FILE.
+    frozen = _load_frozen_archive()
+    if frozen:
+        merged_schedules.update(frozen)
 
     output = {
         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
