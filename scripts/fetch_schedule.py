@@ -312,10 +312,79 @@ def _load_frozen_archive():
     return json.loads(FROZEN_ARCHIVE_FILE.read_text(encoding="utf-8")).get("schedules", {})
 
 
+# A tail with no booking anywhere in [today - N days, +∞) is treated as
+# unavailable (isMaint) — see derive_resources().
+RESOURCE_ACTIVE_LOOKBACK_DAYS = int(os.environ.get("RESOURCE_ACTIVE_LOOKBACK_DAYS", "14"))
+
+
+def derive_resources(schedules, today_iso):
+    """Rebuild the aircraft roster from the flight data itself.
+
+    The OLD Ops Portal exposed a real fleet list (tail, acType, isMaint).
+    The rebuilt portal (2026-07-10) has no readable equivalent — the Gantt's
+    aircraft rows are derived from that day's flights and no global holds a
+    roster (probed 2026-07-16) — so `resources` shipped permanently empty
+    after the migration. That silently broke every consumer that picks
+    candidate tails from RESOURCES: the Auto Slot Finder in CMD_CTR, CMDV2
+    and CMDV3 found 0 slot combos for every SP (the 2026-07-16 incident).
+
+    Closest reconstruction the new data allows:
+    - one entry per distinct tail seen in any schedule entry (normalized
+      output uses `tail`; raw pre-normalization uses `acReg` — accept both),
+    - `acType` = the most common type recorded for that tail (robust against
+      one-off data-entry errors like a flight type landing in the AC column),
+    - `isMaint` when the tail has no booking on/after
+      today - RESOURCE_ACTIVE_LOOKBACK_DAYS (future bookings count): a tail
+      nobody has scheduled for 2+ weeks is effectively unavailable, which is
+      the closest proxy left for the old maintenance flag.
+    """
+    last_seen = {}     # tail -> latest booking date
+    type_counts = {}   # tail -> {acType: count}
+    for date, entries in schedules.items():
+        for e in entries:
+            tail = e.get("tail") or e.get("acReg")
+            if not tail or tail == "-":
+                continue
+            if date > last_seen.get(tail, ""):
+                last_seen[tail] = date
+            ac_type = e.get("type") or e.get("acType")
+            if ac_type and ac_type != "-":
+                counts = type_counts.setdefault(tail, {})
+                counts[ac_type] = counts.get(ac_type, 0) + 1
+    cutoff = (
+        datetime.strptime(today_iso, "%Y-%m-%d").date()
+        - timedelta(days=RESOURCE_ACTIVE_LOOKBACK_DAYS)
+    ).isoformat()
+    return [
+        {
+            "tail": tail,
+            "acType": max(type_counts.get(tail, {"": 0}), key=type_counts.get(tail, {"": 0}).get),
+            "isMaint": last_seen[tail] < cutoff,
+        }
+        for tail in sorted(last_seen)
+    ]
+
+
+async def _scrape_instructor_roster(user_frame):
+    """Read the instructor roster from the Timeline view's own filter
+    dropdown (#gantt-instructor) — the only fleet-adjacent roster the new
+    portal still exposes. The old feed's per-instructor `type` field has no
+    equivalent, so it's emitted as None. Non-fatal: a miss returns []."""
+    try:
+        names = await user_frame.evaluate(
+            "() => [...document.querySelectorAll('#gantt-instructor option')]"
+            ".map(o => o.textContent.trim())"
+        )
+        return [{"name": n, "type": None} for n in names if n and not n.lower().startswith("all ")]
+    except Exception as exc:
+        print(f"WARNING: instructor roster scrape failed ({exc!r}) — leaving empty", file=sys.stderr)
+        return []
+
+
 async def scrape_window(days_back, days_forward):
     """Fetch every date in [today-days_back, today+days_forward] from the
     Ops Portal, excluding any date already covered by the frozen pre-migration
-    archive. Returns (schedules, failed_dates).
+    archive. Returns (schedules, failed_dates, instructors).
 
     The upstream GAS server is intermittently unreliable under repeated
     rapid requests (observed ~25% of single-date requests silently stall or
@@ -338,6 +407,7 @@ async def scrape_window(days_back, days_forward):
 
     schedules = {}
     failed_dates = []
+    instructors = []
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         try:
@@ -353,6 +423,7 @@ async def scrape_window(days_back, days_forward):
             await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             user_frame = await _get_content_frame(page)
             await _open_timeline_view(user_frame)
+            instructors = await _scrape_instructor_roster(user_frame)
 
             for date_str in dates:
                 last_err = None
@@ -379,7 +450,7 @@ async def scrape_window(days_back, days_forward):
     if len(failed_dates) == len(dates):
         raise RuntimeError(f"All {len(dates)} dates failed — Ops Portal likely down or navigation broke")
 
-    return schedules, failed_dates
+    return schedules, failed_dates, instructors
 
 
 def _report_schema_drift(warnings):
@@ -405,8 +476,8 @@ def _report_schema_drift(warnings):
 
 
 async def main():
-    schedules, failed_dates = await scrape_window(DAYS_BACK, DAYS_FORWARD)
-    cache = {"schedules": schedules, "leaves": [], "instructors": [], "resources": []}
+    schedules, failed_dates, instructors = await scrape_window(DAYS_BACK, DAYS_FORWARD)
+    cache = {"schedules": schedules, "leaves": [], "instructors": instructors, "resources": []}
 
     warnings, errors = validate_raw_cache(cache)
     if failed_dates:
@@ -499,13 +570,25 @@ async def main():
     if frozen:
         merged_schedules.update(frozen)
 
+    # Roster fields. The new portal has no readable leave list (the Leave
+    # Request form is submit-only), so `leaves` stays empty — leave-aware
+    # filtering downstream (e.g. Auto Slot Finder) is degraded until a
+    # source for approved leaves exists again. `resources` is reconstructed
+    # from the flight data (see derive_resources); `instructors` comes from
+    # the Timeline view's filter dropdown.
+    today_iso = datetime.now(timezone.utc).astimezone(ZoneInfo(TIMEZONE)).date().isoformat()
+    resources = derive_resources(merged_schedules, today_iso)
+    print(f"Derived {len(resources)} resources "
+          f"({sum(1 for r in resources if r['isMaint'])} flagged isMaint) and "
+          f"{len(instructors)} instructors.")
+
     output = {
         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "timezone": TIMEZONE,
         "schedules": dict(sorted(merged_schedules.items())),  # chronological order
         "leaves": cache.get("leaves", []),
-        "instructors": cache.get("instructors", []),
-        "resources": cache.get("resources", []),
+        "instructors": instructors,
+        "resources": resources,
     }
 
     total_count = sum(len(v) for v in output["schedules"].values())
