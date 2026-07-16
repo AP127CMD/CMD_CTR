@@ -57,6 +57,8 @@ def transform(raw: dict) -> dict:
                 if f.get("to")      is not None: entry["to"]      = f["to"]
                 if f.get("ldg")     is not None: entry["ldg"]     = f["ldg"]
                 if f.get("inst")    is not None: entry["inst"]    = f["inst"]
+                if f.get("blockOff")is not None: entry["blockOff"]= f["blockOff"]
+                if f.get("blockOn") is not None: entry["blockOn"] = f["blockOn"]
             flights.append(entry)
 
     return {

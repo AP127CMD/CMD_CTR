@@ -51,7 +51,20 @@ REQUIRED_ENTRY_FIELDS = {
     "date", "bookingId", "status", "student", "instructor", "batch", "lesson",
     "startTime", "endTime", "duration", "condition", "acType", "acReg",
 }
-KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS
+# `actual` appears only on Completed flights (post-flight record; found
+# 2026-07-16 — the migration notes' "gone for good" verdict on actuals was
+# wrong for the read views after all). Optional, never required.
+KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS | {"actual"}
+
+# Inner fields of `actual` observed 2026-07-16 (Timeline View, window.G).
+# Times (blockOff/blockOn/takeoff/landing) are "HH:MM"; tis/duration are
+# "H:MM" durations; numTakeoffs/numLandings/instApp are ints. A new inner
+# field is drift worth a warning, same as a new top-level field.
+KNOWN_ACTUAL_FIELDS = {
+    "numTakeoffs", "blockOff", "routeFrom", "takeoff", "lesson", "remark",
+    "flightType", "leg", "duration", "landing", "routeTo", "numLandings",
+    "instructor", "blockOn", "instApp", "acReg", "acType", "tis",
+}
 
 _DURATION_RE = re.compile(r"^\d+:\d{2}$")
 _TIME_RE = re.compile(r"^\d{2}:\d{2}$")
@@ -104,6 +117,15 @@ def validate_raw_cache(cache):
             if extra:
                 new_fields.update(extra)
 
+            actual = entry.get("actual")
+            if actual is not None:
+                if isinstance(actual, dict):
+                    extra_actual = set(actual) - KNOWN_ACTUAL_FIELDS
+                    if extra_actual:
+                        new_fields.update(f"actual.{f}" for f in extra_actual)
+                else:
+                    errors.append(f"{ref}: 'actual' is not a dict (got {type(actual).__name__})")
+
             booking_id = str(entry.get("bookingId", ""))
             if not _BOOKING_ID_RE.match(booking_id):
                 warnings.append(f"{ref}: unexpected bookingId format: {booking_id!r}")
@@ -143,6 +165,15 @@ def _null_dash(value):
     return None if value in ("-", "") else value
 
 
+def _int_or_none(value):
+    """Coerce to int, or None if missing/unparseable. Unlike a bare `or`,
+    keeps a genuine 0 (e.g. zero instrument approaches)."""
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _parse_duration_min(duration_str):
     """Convert 'H:MM' to total minutes as int, or None if unparseable."""
     try:
@@ -172,12 +203,19 @@ def normalize_entry(entry, date):
     tracks lifecycle (Pending -> Completed/Canceled), instead of the old dual
     planned+actual row pair keyed by rowIdx/realRowIdx. Fields that depended
     on that old model (isActual, planDur, rowIdx/realRowIdx as distinct
-    concepts) or on post-flight detail the new portal's read views don't
-    expose (tkoff/ldgTime/airborne/to/ldg/inst, cancelReason) are kept in the
-    output shape for backward compatibility but are always None/derived —
-    see AP127_Docs README §10 (2026-07-11) for what was checked (Timeline
-    View, Daily Schedule, the Flight/Cancel Record submission schemas)
-    before concluding they're genuinely unavailable, not just unmapped.
+    concepts) are kept in the output shape for backward compatibility but are
+    always None/derived. cancelReason is likewise still unavailable (the
+    Cancel Record submission schema has a `reason` field but no read view
+    echoes it) — see AP127_Docs README §10 (2026-07-11).
+
+    Post-flight actuals, however, turned out NOT to be gone: since (at least)
+    2026-07-16 Completed flights carry an `actual{}` object on window.G
+    (blockOff/blockOn, takeoff/landing, tis, numTakeoffs/numLandings, instApp,
+    route, remark, …). It's mapped back onto the old output field names below
+    (tkoff/ldgTime/airborne/to/ldg/inst/actualType) so the frontends'
+    conditional actual-detail drawers light up again. Display detail ONLY —
+    all hours KPIs/calculations stay block time (durMin), never airborne/tis
+    (project rule, r43).
     """
     booking_id = entry.get("bookingId")
     duration_str = _zero_pad_duration(entry.get("duration") or "")
@@ -191,6 +229,12 @@ def normalize_entry(entry, date):
     raw_condition = _null_dash(entry.get("condition") or "")
     is_standby = isinstance(raw_condition, str) and "(Standby)" in raw_condition
     condition = raw_condition.replace(" (Standby)", "").strip() if is_standby else raw_condition
+
+    # Post-flight actuals (Completed flights only — see docstring). Counters
+    # use _int_or_none, not `or`: 0 takeoffs/landings/approaches is real data.
+    actual = entry.get("actual")
+    if not isinstance(actual, dict):
+        actual = {}
 
     return {
         "id": str(booking_id),
@@ -218,15 +262,20 @@ def normalize_entry(entry, date):
         # aircraft
         "type": _null_dash(ac_type),
         "tail": _null_dash(entry.get("acReg")),
-        # actuals — not exposed by the new portal's read views (checked
-        # 2026-07-11; see AP127_Docs README §10)
-        "actualType": None,
-        "tkoff": None,
-        "ldgTime": None,
-        "airborne": None,
-        "ldg": None,
-        "to": None,
-        "inst": None,
+        # actuals — from the portal's per-flight actual{} (Completed only),
+        # mapped back onto the pre-migration field names. airborne (tis) is
+        # display detail only — hours KPIs stay block time (durMin).
+        "actualType": _null_dash(actual.get("acType") or ""),
+        "tkoff": _null_dash(actual.get("takeoff") or ""),
+        "ldgTime": _null_dash(actual.get("landing") or ""),
+        "airborne": _null_dash(_zero_pad_duration(actual.get("tis") or "")),
+        "ldg": _int_or_none(actual.get("numLandings")),
+        "to": _int_or_none(actual.get("numTakeoffs")),
+        "inst": _int_or_none(actual.get("instApp")),
+        # actual block times — no pre-migration equivalent (old feed only had
+        # scheduled start/end); new fields, may differ from start/end
+        "blockOff": _null_dash(actual.get("blockOff") or ""),
+        "blockOn": _null_dash(actual.get("blockOn") or ""),
         # cancellation — Cancel Record's submission schema has a `reason`
         # field but it isn't echoed back on any read view
         "cancelReason": None,
