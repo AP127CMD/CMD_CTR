@@ -316,6 +316,147 @@ def _load_frozen_archive():
 # unavailable (isMaint) — see derive_resources().
 RESOURCE_ACTIVE_LOOKBACK_DAYS = int(os.environ.get("RESOURCE_ACTIVE_LOOKBACK_DAYS", "14"))
 
+# Max getSubmissionDetail calls per run while backfilling leave records —
+# ~385 historical leaves exist; at 60/run the backfill completes in ~7 cron
+# cycles, after which a typical run fetches 0-2 new ones.
+LEAVE_DETAIL_MAX_PER_RUN = int(os.environ.get("LEAVE_DETAIL_MAX_PER_RUN", "60"))
+
+
+# ─── Portal internal RPC API ─────────────────────────────────────────────────
+# The portal is a google.script.run SPA; its server functions are callable
+# from inside userHtmlFrame and return clean JSON — far more reliable than
+# scraping the rendered UI. Full inventory of the read-only functions (probed
+# 2026-07-16): getBatches, getInstructors, getStudents, getCurriculumLessons,
+# getStudentProgressMatrixPortal({batch}), getStatusBoardData(date?),
+# getScheduleRegs, getSofForDate({date}), getAircraftForFlightPlan,
+# getFlightPlanTemplates, getMySubmissions({studentName,batch}),
+# getSubmissionDetail({id}), getTZ. See AP127_Docs §4.1.
+# NEVER call the mutating ones (submit*/write*/fix*/backfill*/ensure*).
+_RPC_JS = """
+([fn, args, tmo]) => new Promise(resolve => {
+  const t = setTimeout(() => resolve({__err: 'timeout ' + tmo + 's'}), tmo * 1000);
+  try {
+    google.script.run
+      .withSuccessHandler(r => { clearTimeout(t); resolve({__ok: (r === undefined ? null : r)}); })
+      .withFailureHandler(e => { clearTimeout(t); resolve({__err: String((e && e.message) || e)}); })
+      [fn](...args);
+  } catch (e) { clearTimeout(t); resolve({__err: String(e)}); }
+})
+"""
+
+
+async def _rpc(user_frame, fn, *args, timeout_s=45):
+    """Call a portal server function; raises on failure/timeout."""
+    res = await user_frame.evaluate(_RPC_JS, [fn, list(args), timeout_s])
+    if not isinstance(res, dict) or "__err" in res:
+        raise RuntimeError(f"{fn} RPC failed: {(res or {}).get('__err', res)}")
+    return res.get("__ok")
+
+
+async def _fetch_rosters(user_frame, today_iso):
+    """instructors + resources via the portal RPC API.
+
+    - instructors: getInstructors() — includes the real type
+      (Flight Instructor vs Simulator Instructor).
+    - resources: getScheduleRegs() (the portal's own fleet roster — the
+      authoritative list the old portal used to expose) + per-tail
+      unavail/unavailReason from getStatusBoardData(today) as the real
+      isMaint flag (replaces the no-recent-booking heuristic).
+
+    Each part fails independently: instructors→None (caller falls back to
+    the dropdown scrape), resources→None (caller falls back to
+    derive_resources()).
+    """
+    instructors = None
+    resources = None
+    try:
+        instructors = await _rpc(user_frame, "getInstructors")
+    except Exception as exc:
+        print(f"WARNING: getInstructors RPC failed ({exc}) — falling back to dropdown scrape", file=sys.stderr)
+    try:
+        regs = await _rpc(user_frame, "getScheduleRegs")
+        unavail = {}
+        try:
+            board = await _rpc(user_frame, "getStatusBoardData", today_iso) or {}
+            for typ in (board.get("byType") or {}).values():
+                for group in ("unavail", "unused", "used"):
+                    for ac in typ.get(group) or []:
+                        if ac.get("unavail"):
+                            unavail[ac.get("reg")] = ac.get("unavailReason") or "Unavailable"
+        except Exception as exc:
+            print(f"WARNING: getStatusBoardData RPC failed ({exc}) — isMaint flags default to False", file=sys.stderr)
+        resources = [
+            {
+                "tail": r["reg"],
+                "acType": r.get("acType") or "",
+                "isMaint": r["reg"] in unavail,
+                "maintReason": unavail.get(r["reg"]),
+            }
+            for r in (regs or []) if r.get("reg")
+        ] or None
+    except Exception as exc:
+        print(f"WARNING: getScheduleRegs RPC failed ({exc}) — resources will be derived from flight data", file=sys.stderr)
+    return instructors, resources
+
+
+def _load_existing_leaves():
+    if not OUTPUT_FILE.exists():
+        return []
+    try:
+        return json.loads(OUTPUT_FILE.read_text(encoding="utf-8")).get("leaves") or []
+    except Exception:
+        return []
+
+
+async def _fetch_leaves(user_frame):
+    """Rebuild the leaves feed from Leave Request submissions.
+
+    The new portal's Leave Request form is submit-only in the UI, but the
+    RPC API can read every submission back: getMySubmissions({studentName,
+    batch}) lists all of them (id/summary/date/status) and
+    getSubmissionDetail({id}) returns the full record (name, batch,
+    startDate, endDate, duration, leaveType, reason, role).
+
+    Details are fetched incrementally: entries already present in the
+    previous output file (keyed by submission id) are reused, only new ids
+    are detail-fetched, capped at LEAVE_DETAIL_MAX_PER_RUN per run so the
+    one-time historical backfill spreads over a few cron cycles. A record
+    edited upstream after first fetch is NOT re-fetched (accepted trade-off).
+    """
+    existing = [l for l in _load_existing_leaves() if l.get("id")]
+    known = {l["id"] for l in existing}
+    subs = await _rpc(user_frame, "getMySubmissions", {"studentName": "", "batch": ""}, timeout_s=120)
+    leave_subs = [s for s in subs or [] if s.get("formType") == "Leave Request" and s.get("id")]
+    new_ids = [s["id"] for s in leave_subs if s["id"] not in known]
+    fetched = []
+    for lid in new_ids[:LEAVE_DETAIL_MAX_PER_RUN]:
+        try:
+            d = await _rpc(user_frame, "getSubmissionDetail", {"id": lid})
+            if not (d and d.get("ok")):
+                continue
+            fl = d.get("fields") or {}
+            fetched.append({
+                "id": lid,
+                "name": fl.get("name"),
+                "batch": fl.get("batch"),
+                "start": fl.get("startDate"),
+                "end": fl.get("endDate"),
+                "duration": fl.get("duration"),
+                # leavesOnDate() consumers show `reason`; the human free-text
+                # goes to `note` so the chip stays short.
+                "reason": fl.get("leaveType") or "On Leave",
+                "note": fl.get("reason") or "",
+                "role": fl.get("role"),
+            })
+        except Exception as exc:
+            print(f"WARNING: leave detail {lid} failed ({exc}) — retried next run", file=sys.stderr)
+    remaining = len(new_ids) - min(len(new_ids), LEAVE_DETAIL_MAX_PER_RUN)
+    leaves = existing + fetched
+    leaves.sort(key=lambda l: (l.get("start") or "", l.get("name") or ""))
+    print(f"Leaves: {len(existing)} cached + {len(fetched)} new = {len(leaves)}"
+          + (f" ({remaining} still backfilling)" if remaining else ""))
+    return leaves
+
 
 def derive_resources(schedules, today_iso):
     """Rebuild the aircraft roster from the flight data itself.
@@ -384,7 +525,8 @@ async def _scrape_instructor_roster(user_frame):
 async def scrape_window(days_back, days_forward):
     """Fetch every date in [today-days_back, today+days_forward] from the
     Ops Portal, excluding any date already covered by the frozen pre-migration
-    archive. Returns (schedules, failed_dates, instructors).
+    archive. Returns (schedules, failed_dates, rosters) where rosters is
+    {"instructors": [...], "resources": [...]|None, "leaves": [...]}.
 
     The upstream GAS server is intermittently unreliable under repeated
     rapid requests (observed ~25% of single-date requests silently stall or
@@ -407,7 +549,7 @@ async def scrape_window(days_back, days_forward):
 
     schedules = {}
     failed_dates = []
-    instructors = []
+    rosters = {"instructors": [], "resources": None, "leaves": _load_existing_leaves()}
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         try:
@@ -423,7 +565,15 @@ async def scrape_window(days_back, days_forward):
             await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             user_frame = await _get_content_frame(page)
             await _open_timeline_view(user_frame)
-            instructors = await _scrape_instructor_roster(user_frame)
+
+            # Rosters + leaves via the RPC API (each falls back independently)
+            instructors_rpc, resources_rpc = await _fetch_rosters(user_frame, today.isoformat())
+            rosters["instructors"] = instructors_rpc or await _scrape_instructor_roster(user_frame)
+            rosters["resources"] = resources_rpc
+            try:
+                rosters["leaves"] = await _fetch_leaves(user_frame)
+            except Exception as exc:
+                print(f"WARNING: leaves fetch failed ({exc}) — keeping previous leaves", file=sys.stderr)
 
             for date_str in dates:
                 last_err = None
@@ -450,7 +600,7 @@ async def scrape_window(days_back, days_forward):
     if len(failed_dates) == len(dates):
         raise RuntimeError(f"All {len(dates)} dates failed — Ops Portal likely down or navigation broke")
 
-    return schedules, failed_dates, instructors
+    return schedules, failed_dates, rosters
 
 
 def _report_schema_drift(warnings):
@@ -476,8 +626,9 @@ def _report_schema_drift(warnings):
 
 
 async def main():
-    schedules, failed_dates, instructors = await scrape_window(DAYS_BACK, DAYS_FORWARD)
-    cache = {"schedules": schedules, "leaves": [], "instructors": instructors, "resources": []}
+    schedules, failed_dates, rosters = await scrape_window(DAYS_BACK, DAYS_FORWARD)
+    cache = {"schedules": schedules, "leaves": rosters["leaves"],
+             "instructors": rosters["instructors"], "resources": rosters["resources"] or []}
 
     warnings, errors = validate_raw_cache(cache)
     if failed_dates:
@@ -570,24 +721,27 @@ async def main():
     if frozen:
         merged_schedules.update(frozen)
 
-    # Roster fields. The new portal has no readable leave list (the Leave
-    # Request form is submit-only), so `leaves` stays empty — leave-aware
-    # filtering downstream (e.g. Auto Slot Finder) is degraded until a
-    # source for approved leaves exists again. `resources` is reconstructed
-    # from the flight data (see derive_resources); `instructors` comes from
-    # the Timeline view's filter dropdown.
-    today_iso = datetime.now(timezone.utc).astimezone(ZoneInfo(TIMEZONE)).date().isoformat()
-    resources = derive_resources(merged_schedules, today_iso)
-    print(f"Derived {len(resources)} resources "
-          f"({sum(1 for r in resources if r['isMaint'])} flagged isMaint) and "
-          f"{len(instructors)} instructors.")
+    # Roster fields — primary source is the portal's internal RPC API
+    # (getScheduleRegs + getStatusBoardData(today) for resources with the
+    # real per-tail unavail/isMaint flag, getInstructors for instructors
+    # with real types, getMySubmissions/getSubmissionDetail for leaves).
+    # Resources fall back to derive_resources() (heuristic reconstruction
+    # from flight data) when the RPC path fails.
+    resources = rosters["resources"]
+    if not resources:
+        today_iso = datetime.now(timezone.utc).astimezone(ZoneInfo(TIMEZONE)).date().isoformat()
+        resources = derive_resources(merged_schedules, today_iso)
+        print(f"Derived {len(resources)} resources from flight data (RPC fallback).")
+    print(f"Rosters: {len(resources)} resources "
+          f"({sum(1 for r in resources if r.get('isMaint'))} isMaint), "
+          f"{len(rosters['instructors'])} instructors, {len(rosters['leaves'])} leaves.")
 
     output = {
         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "timezone": TIMEZONE,
         "schedules": dict(sorted(merged_schedules.items())),  # chronological order
-        "leaves": cache.get("leaves", []),
-        "instructors": instructors,
+        "leaves": rosters["leaves"],
+        "instructors": rosters["instructors"],
         "resources": resources,
     }
 
