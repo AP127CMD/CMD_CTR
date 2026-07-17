@@ -15,7 +15,7 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r43` (2026-06-21 — hours always use block time durMin, not airborne, across all ops views). Next → `r44`. Last change: 2026-07-16, post-flight actuals restored from the new portal's `actual{}` (scraper-only — token not bumped, per the b8e0544c precedent for changes that touch no browser-cached asset).
+**Last known:** token = `r44` (2026-07-17 — ASF rank-data primary URL repointed to `https://ap127-db001.pages.dev/cache.json`: the old primary `ap127cmd.github.io/DB001/cache.json` froze 2026-06-03 when DB001's Pages deploy job was removed but still returns 200 with June data, so the fresh fallback never fired and ASF rankings ran on 6-week-old progress). 2026-07-16: post-flight actuals restored from the new portal's `actual{}` (scraper-only — token not bumped, per the b8e0544c precedent for changes that touch no browser-cached asset). Prior r43: 2026-06-21 — hours always use block time durMin, not airborne, across all ops views. Next → `r45`.
 
 ## Key facts
 - React 18 CDN UMD + Babel Standalone — no build step; `<script type="text/babel">`

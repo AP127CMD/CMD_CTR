@@ -1,7 +1,7 @@
 // AUTO SLOT FINDER — auto-rank AP-127 SPs and find the best slot for each.
 const { useMemo: useM_asf, useState: useS_asf, useEffect: useE_asf, useRef: useR_asf, useCallback: useC_asf } = React;
 
-const ASF_CACHE_URL      = 'https://ap127cmd.github.io/DB001/cache.json';
+const ASF_CACHE_URL      = 'https://ap127-db001.pages.dev/cache.json';   // CF Pages — fresh ~60s after DB001 push (github.io Pages deploy was removed and froze 2026-06-03)
 const ASF_CACHE_FALLBACK = 'https://raw.githubusercontent.com/AP127CMD/DB001/main/cache.json';
 
 // ─── FI lookup (short code → full name used in FLIGHTS) ──────────────────
