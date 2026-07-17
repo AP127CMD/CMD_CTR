@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-17T04:15:08Z",
+  "fetched_at": "2026-07-17T04:20:12Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -131894,8 +131894,8 @@
         "isActual": false,
         "isSimulator": true,
         "isStandby": false,
-        "start": "15:00",
-        "end": "18:00",
+        "start": "09:00",
+        "end": "12:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -131928,8 +131928,8 @@
         "isActual": false,
         "isSimulator": true,
         "isStandby": false,
-        "start": "09:00",
-        "end": "12:00",
+        "start": "15:00",
+        "end": "18:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -137176,139 +137176,190 @@
   ],
   "resources": [
     {
-      "tail": "HS - TPX",
-      "acType": "Solo",
-      "isMaint": true
+      "tail": "HS-TCB",
+      "acType": "DA42TDI",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TCP",
       "acType": "DA42TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TCP (SIM)",
       "acType": "DA42 (SIM)",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPF",
       "acType": "C172",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TPG",
+      "acType": "C172",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPH",
       "acType": "C172",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPL",
       "acType": "DA42TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TPM",
+      "acType": "DA42TDI",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPN (SIM)",
-      "acType": "DA40_SIM",
-      "isMaint": false
+      "acType": "DA40 (SIM)",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPO",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPO (SIM)",
-      "acType": "DA40_SIM",
-      "isMaint": false
+      "acType": "DA40 (SIM)",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPQ",
       "acType": "DA42TDI",
-      "isMaint": true
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPR",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPT",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPU",
       "acType": "DA40TDI",
-      "isMaint": true
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPV",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPW",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPX",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVA",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TVB",
+      "acType": "DA40CS",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVC",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVD",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVE",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TVF",
+      "acType": "DA42NG",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVG",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVH",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZQ (SIM)",
-      "acType": "R44_SIM",
-      "isMaint": false
+      "acType": "R44 (SIM)",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZR",
       "acType": "R44",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TZS",
+      "acType": "R44",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZT",
       "acType": "R44",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZU",
       "acType": "R44",
-      "isMaint": false
-    },
-    {
-      "tail": "HSTZU",
-      "acType": "Dual",
-      "isMaint": true
+      "isMaint": false,
+      "maintReason": null
     }
   ]
 }
