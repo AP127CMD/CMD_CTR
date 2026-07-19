@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-19T08:08:48Z",
+  "fetched_at": "2026-07-19T08:13:05Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -128963,9 +128963,9 @@
         "date": "2026-07-18",
         "rowIdx": "BK-MRKOU7DB",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "15:00",
@@ -128981,15 +128981,15 @@
         "condition": "Sim DA40",
         "type": "DA40 (SIM)",
         "tail": "HS-TPN (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40 (SIM)",
+        "tkoff": "15:05",
+        "ldgTime": "17:55",
+        "airborne": "02:50",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "15:00",
+        "blockOn": "18:00",
         "cancelReason": null
       },
       {
@@ -140560,6 +140560,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|07/06/2026 09:40:48",
+      "name": "VASAPHON S.",
+      "batch": "AP-127",
+      "start": "2026-06-08",
+      "end": "2026-06-09",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ไม่มีตารางบิน",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row227",
       "name": "PAKORN W.",
       "batch": "AP-126",
@@ -140583,6 +140594,17 @@
     },
     {
       "id": "Leave Record|row219",
+      "name": "PATTHARADEJ S.",
+      "batch": "AP-126",
+      "start": "2026-06-10",
+      "end": "2026-06-15",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "สอบสองวิชาครับ วันที่ 11 และ 15 ขออนุญาตลาต่อเนื่องกันทีเดียวครับ",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|06/06/2026 23:15:43",
       "name": "PATTHARADEJ S.",
       "batch": "AP-126",
       "start": "2026-06-10",
@@ -141562,6 +141584,17 @@
     },
     {
       "id": "Leave Record|row272",
+      "name": "TEERAWAJ C.",
+      "batch": "AP-127",
+      "start": "2026-06-20",
+      "end": "2026-06-21",
+      "duration": "Full Day",
+      "reason": "Other",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|18/06/2026 14:32:02",
       "name": "TEERAWAJ C.",
       "batch": "AP-127",
       "start": "2026-06-20",
