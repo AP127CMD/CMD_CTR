@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-19T08:34:09Z",
+  "fetched_at": "2026-07-19T08:38:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -131590,8 +131590,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "08:30",
-        "end": "11:30",
+        "start": "08:00",
+        "end": "11:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -131671,40 +131671,6 @@
         "condition": "Solo",
         "type": "DA40CS",
         "tail": "HS-TVA",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null
-      },
-      {
-        "id": "BK-AP-127-PANI-C6EBV",
-        "date": "2026-07-20",
-        "rowIdx": "BK-AP-127-PANI-C6EBV",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "12:00",
-        "end": "13:30",
-        "duration": "01:30",
-        "durationMin": 90,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "PANITHAN V.",
-        "instructor": "EKKAPHOP R.",
-        "batch": "AP-127",
-        "lesson": "CDXV 31",
-        "condition": null,
-        "type": "DA40TDI",
-        "tail": "HS-TPW",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -132043,8 +132009,8 @@
         "batch": "FAM FI",
         "lesson": "Lesson 2 IXC",
         "condition": null,
-        "type": "DA40CS",
-        "tail": "HS-TVE",
+        "type": "DA40TDI",
+        "tail": "HS-TPW",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -138327,6 +138293,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|07/05/2026 18:49:50",
+      "name": "NAPON R.",
+      "batch": "AP-126",
+      "start": "2026-05-05",
+      "end": "2026-05-08",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row26",
       "name": "NATPAKALP K.",
       "batch": "AP-127",
@@ -138514,6 +138491,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|07/05/2026 17:09:14",
+      "name": "VASAPHON S.",
+      "batch": "AP-127",
+      "start": "2026-05-08",
+      "end": "2026-05-08",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ไม่มีตารางบิน",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row59",
       "name": "DOLSAKUL S.",
       "batch": "AP-128",
@@ -138536,6 +138524,28 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|08/05/2026 23:16:56",
+      "name": "DOLSAKUL S.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "เข้ารับพระราชทานกระบี่และปริญญาบัตร",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|07/05/2026 17:19:48",
+      "name": "DOLSAKUL S.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-24",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row63",
       "name": "EKKASIT B.",
       "batch": "AP-128",
@@ -138548,6 +138558,28 @@
     },
     {
       "id": "Leave Record|row45",
+      "name": "EKKASIT B.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-24",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|09/05/2026 13:35:22",
+      "name": "EKKASIT B.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "เข้ารับพระราชทานกระบี่และปริญญาบัตร",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|07/05/2026 17:20:03",
       "name": "EKKASIT B.",
       "batch": "AP-128",
       "start": "2026-05-11",
@@ -138591,6 +138623,28 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|09/05/2026 14:19:27",
+      "name": "KITTIPAT M.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "รับพระราชทานกระบี่",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|07/05/2026 17:20:30",
+      "name": "KITTIPAT M.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-24",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row65",
       "name": "KRIDSADA K.",
       "batch": "AP-128",
@@ -138613,6 +138667,28 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|10/05/2026 11:27:31",
+      "name": "KRIDSADA K.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "เข้ารับพระราชทานกระบี่และปริญญาบัตร",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|07/05/2026 17:20:18",
+      "name": "KRIDSADA K.",
+      "batch": "AP-128",
+      "start": "2026-05-11",
+      "end": "2026-05-24",
+      "duration": "Full Day",
+      "reason": "Official Duty",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row51",
       "name": "MARUAY B.",
       "batch": "AP-126",
@@ -138624,7 +138700,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|08/05/2026 10:25:12",
+      "name": "MARUAY B.",
+      "batch": "AP-126",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "Sick Leave",
+      "note": "หมอนัดที่กรุงเทพ",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row50",
+      "name": "NATTARAT G.",
+      "batch": "AP-126",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "ลาไปสอบ Multi Engine Rating (MER) license ที่ CAAT ครับ",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 10:16:34",
       "name": "NATTARAT G.",
       "batch": "AP-126",
       "start": "2026-05-11",
@@ -138657,7 +138755,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|10/05/2026 15:15:38",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row56",
+      "name": "PREM P.",
+      "batch": "AP-126",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "MER",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 14:13:14",
       "name": "PREM P.",
       "batch": "AP-126",
       "start": "2026-05-11",
@@ -138690,7 +138810,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|08/05/2026 11:12:15",
+      "name": "PRITASNA M.",
+      "batch": "AP-126",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row66",
+      "name": "SIWAKORN P.",
+      "batch": "AP-127",
+      "start": "2026-05-11",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Other",
+      "note": "ไม่มีตารางบิน, ศิษย์เตรียมตัวฝึกบินต่อเนื่อง",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|10/05/2026 13:44:55",
       "name": "SIWAKORN P.",
       "batch": "AP-127",
       "start": "2026-05-11",
@@ -138712,6 +138854,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|10/05/2026 21:07:20",
+      "name": "VASAPHON S.",
+      "batch": "AP-127",
+      "start": "2026-05-11",
+      "end": "2026-05-11",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ไม่มีตารางบิน",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row78",
       "name": "KORN S.",
       "batch": "AP-127",
@@ -138723,7 +138876,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 23:29:21",
+      "name": "KORN S.",
+      "batch": "AP-127",
+      "start": "2026-05-12",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ขอลาทำธุระครับ",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row76",
+      "name": "NUTTAPHAT K.",
+      "batch": "AP-127",
+      "start": "2026-05-12",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Sick Leave",
+      "note": "คัดจมูกเล็กน้อย",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|11/05/2026 20:10:05",
       "name": "NUTTAPHAT K.",
       "batch": "AP-127",
       "start": "2026-05-12",
@@ -138767,7 +138942,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 14:58:51",
+      "name": "PORNTREETRA R.",
+      "batch": "AP-126",
+      "start": "2026-05-12",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Sick Leave",
+      "note": "คออักเสบ จมูกตัน",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row75",
+      "name": "PUWADET H.",
+      "batch": "AP-127",
+      "start": "2026-05-12",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "เนื่องจากไม่มีกำหนดการบิน จึงขออนุญาตลาเพื่อเตรียมตัวสำหรับการบินในบทเรียนถัดไปครับ",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|11/05/2026 20:07:58",
       "name": "PUWADET H.",
       "batch": "AP-127",
       "start": "2026-05-12",
@@ -138789,7 +138986,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|13/05/2026 16:53:25",
+      "name": "AKARAVIT K.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Other",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row77",
+      "name": "BULASET C.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|11/05/2026 21:32:59",
       "name": "BULASET C.",
       "batch": "AP-127",
       "start": "2026-05-14",
@@ -138818,6 +139037,17 @@
       "end": "2026-05-14",
       "duration": "Full Day",
       "reason": "Other",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 10:37:37",
+      "name": "JIRAYU A.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-14",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
       "note": "",
       "role": "Student"
     },
@@ -138855,6 +139085,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 23:30:01",
+      "name": "KORN S.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ขอลาทำธุระครับ",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row96",
       "name": "PUWADET H.",
       "batch": "AP-127",
@@ -138866,7 +139107,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|13/05/2026 19:19:55",
+      "name": "PUWADET H.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "เนื่องจากไม่มีตารางบินจึงขออนุญาตลาทำธุระและทบทวนบทเรียนสำหรับเที่ยวบินถัดไปครับ",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row58",
+      "name": "RAKCHON K.",
+      "batch": "AP-126",
+      "start": "2026-05-14",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 17:11:36",
       "name": "RAKCHON K.",
       "batch": "AP-126",
       "start": "2026-05-14",
@@ -138899,6 +139162,28 @@
       "role": "Instructor"
     },
     {
+      "id": "Leave Record|key|13/05/2026 18:53:19",
+      "name": "SANTI SUK.",
+      "batch": "-",
+      "start": "2026-05-14",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 22:46:16",
+      "name": "SANTI SUK.",
+      "batch": "-",
+      "start": "2026-05-14",
+      "end": "2026-05-12",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
       "id": "Leave Record|row98",
       "name": "SIWAKORN P.",
       "batch": "AP-127",
@@ -138910,7 +139195,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|13/05/2026 22:38:13",
+      "name": "SIWAKORN P.",
+      "batch": "AP-127",
+      "start": "2026-05-14",
+      "end": "2026-05-14",
+      "duration": "Full Day",
+      "reason": "Other",
+      "note": "ไม่มีตารางบิน เตรียมตัวเพื่อฝึกบินต่อเนื่อง",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row57",
+      "name": "BULASET C.",
+      "batch": "AP-127",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 16:38:46",
       "name": "BULASET C.",
       "batch": "AP-127",
       "start": "2026-05-15",
@@ -139042,7 +139349,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|12/05/2026 23:33:28",
+      "name": "PARAMUTT C.",
+      "batch": "AP-126",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row82",
+      "name": "PARINYA B.",
+      "batch": "-",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 13:06:57",
       "name": "PARINYA B.",
       "batch": "-",
       "start": "2026-05-15",
@@ -139086,7 +139415,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|12/05/2026 23:33:54",
+      "name": "PORNTREETRA R.",
+      "batch": "AP-126",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row54",
+      "name": "PRITASNA M.",
+      "batch": "AP-126",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|08/05/2026 11:12:40",
       "name": "PRITASNA M.",
       "batch": "AP-126",
       "start": "2026-05-15",
@@ -139108,7 +139459,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 11:02:14",
+      "name": "WATCHARAPHOL V.",
+      "batch": "AP-127",
+      "start": "2026-05-15",
+      "end": "2026-05-15",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row93",
+      "name": "KRIT L.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ธุระส่วนตัว",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|13/05/2026 13:01:31",
       "name": "KRIT L.",
       "batch": "AP-127",
       "start": "2026-05-16",
@@ -139174,7 +139547,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 15:03:00",
+      "name": "PARAMUTT C.",
+      "batch": "AP-126",
+      "start": "2026-05-16",
+      "end": "2026-05-18",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "สอบ multi engine",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row74",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|11/05/2026 20:01:40",
       "name": "PICHAKORN J.",
       "batch": "AP-127",
       "start": "2026-05-16",
@@ -139196,7 +139591,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/05/2026 15:02:24",
+      "name": "PORNTREETRA R.",
+      "batch": "AP-126",
+      "start": "2026-05-16",
+      "end": "2026-05-18",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "ลาสอบ MER",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row81",
+      "name": "PRITASNA M.",
+      "batch": "AP-126",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 10:50:26",
       "name": "PRITASNA M.",
       "batch": "AP-126",
       "start": "2026-05-16",
@@ -139218,7 +139635,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|12/05/2026 14:33:24",
+      "name": "SORNSORAWITCH C.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-16",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "ซ่อมบ้าน",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row88",
+      "name": "SUPAWAN A.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 20:53:56",
       "name": "SUPAWAN A.",
       "batch": "AP-127",
       "start": "2026-05-16",
@@ -139240,7 +139679,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|13/05/2026 12:13:54",
+      "name": "TEERAWAJ C.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row87",
+      "name": "WATCHARAPHOL V.",
+      "batch": "AP-127",
+      "start": "2026-05-16",
+      "end": "2026-05-17",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 16:40:39",
       "name": "WATCHARAPHOL V.",
       "batch": "AP-127",
       "start": "2026-05-16",
@@ -139274,6 +139735,17 @@
     },
     {
       "id": "Leave Record|row97",
+      "name": "MARUAY B.",
+      "batch": "AP-126",
+      "start": "2026-05-17",
+      "end": "2026-05-18",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|13/05/2026 21:51:45",
       "name": "MARUAY B.",
       "batch": "AP-126",
       "start": "2026-05-17",
@@ -139493,6 +139965,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|09/05/2026 11:29:49",
+      "name": "SIWAKORN P.",
+      "batch": "AP-127",
+      "start": "2026-05-18",
+      "end": "2026-05-18",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row42",
       "name": "SUPAWAN A.",
       "batch": "AP-127",
@@ -139511,6 +139994,17 @@
       "end": "2026-05-19",
       "duration": "Full Day",
       "reason": "Other",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|07/05/2026 15:59:05",
+      "name": "SUPAWAN A.",
+      "batch": "AP-127",
+      "start": "2026-05-18",
+      "end": "2026-05-19",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
       "note": "",
       "role": "Student"
     },
@@ -139834,7 +140328,29 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|08/05/2026 11:13:02",
+      "name": "PRITASNA M.",
+      "batch": "AP-126",
+      "start": "2026-05-22",
+      "end": "2026-05-22",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row60",
+      "name": "SOWAN C.",
+      "batch": "-",
+      "start": "2026-05-22",
+      "end": "2026-05-22",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
+      "id": "Leave Record|key|09/05/2026 10:56:00",
       "name": "SOWAN C.",
       "batch": "-",
       "start": "2026-05-22",
@@ -139956,6 +140472,17 @@
     },
     {
       "id": "Leave Record|row83",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-05-23",
+      "end": "2026-05-24",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 13:51:17",
       "name": "PICHAKORN J.",
       "batch": "AP-127",
       "start": "2026-05-23",
@@ -140164,6 +140691,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|07/05/2026 18:14:35",
+      "name": "NAPON R.",
+      "batch": "AP-126",
+      "start": "2026-05-25",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row133",
       "name": "PONGSAKORN A.",
       "batch": "AP-126",
@@ -140187,6 +140725,17 @@
     },
     {
       "id": "Leave Record|row67",
+      "name": "TAKORN C.",
+      "batch": "AP-127",
+      "start": "2026-05-25",
+      "end": "2026-05-25",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "สอบ CAAT ครับ",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|10/05/2026 14:23:41",
       "name": "TAKORN C.",
       "batch": "AP-127",
       "start": "2026-05-25",
@@ -140505,6 +141054,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|12/05/2026 08:18:33",
+      "name": "CHANOL T.",
+      "batch": "AP-126",
+      "start": "2026-05-30",
+      "end": "2026-06-02",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row138",
       "name": "NATPAKALP K.",
       "batch": "AP-127",
@@ -140528,6 +141088,17 @@
     },
     {
       "id": "Leave Record|row85",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-05-30",
+      "end": "2026-05-30",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|12/05/2026 14:34:13",
       "name": "PICHAKORN J.",
       "batch": "AP-127",
       "start": "2026-05-30",
@@ -141099,6 +141670,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|12/05/2026 14:49:35",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-06-02",
+      "end": "2026-06-02",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row184",
       "name": "PRITASNA M.",
       "batch": "AP-126",
@@ -141210,6 +141792,17 @@
     },
     {
       "id": "Leave Record|row61",
+      "name": "SOWAN C.",
+      "batch": "-",
+      "start": "2026-06-02",
+      "end": "2026-06-02",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
+      "id": "Leave Record|key|09/05/2026 10:57:11",
       "name": "SOWAN C.",
       "batch": "-",
       "start": "2026-06-02",
