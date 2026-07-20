@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-20T07:35:20Z",
+  "fetched_at": "2026-07-20T07:42:07Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -131415,9 +131415,9 @@
         "date": "2026-07-20",
         "rowIdx": "BK-AP-127-PUWA-MJ072",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "12:00",
@@ -131433,15 +131433,15 @@
         "condition": null,
         "type": "DA40TDI",
         "tail": "HS-TPT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "12:15",
+        "ldgTime": "13:00",
+        "airborne": "00:45",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "12:05",
+        "blockOn": "13:05",
         "cancelReason": null
       },
       {
@@ -146399,6 +146399,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|20/07/2026 14:31:59",
+      "name": "PORNSKUL D.",
+      "batch": "AP-127",
+      "start": "2026-07-31",
+      "end": "2026-07-31",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "Personal Leave",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row364",
       "name": "SOWAN C.",
       "batch": "-",
@@ -146440,6 +146451,17 @@
       "duration": "Full Day",
       "reason": "Personal Leave",
       "note": "",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|20/07/2026 14:34:38",
+      "name": "PORNSKUL D.",
+      "batch": "AP-127",
+      "start": "2026-08-01",
+      "end": "2026-08-02",
+      "duration": "Full Day",
+      "reason": "Other",
+      "note": "Weekend leave",
       "role": "Student"
     },
     {
