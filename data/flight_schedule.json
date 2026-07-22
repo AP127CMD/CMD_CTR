@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-22T03:35:05Z",
+  "fetched_at": "2026-07-22T03:40:00Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -134819,9 +134819,9 @@
         "date": "2026-07-22",
         "rowIdx": "BK-AP-127-JIRA-M961Z",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
@@ -134837,15 +134837,15 @@
         "condition": null,
         "type": "DA40TDI",
         "tail": "HS-TPO",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "09:10",
+        "ldgTime": "09:55",
+        "airborne": "00:45",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "09:00",
+        "blockOn": "10:00",
         "cancelReason": null
       },
       {
