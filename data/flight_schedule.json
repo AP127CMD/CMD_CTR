@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-24T10:00:46Z",
+  "fetched_at": "2026-07-24T10:06:43Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -139060,7 +139060,7 @@
         "lesson": "CDXI 71",
         "condition": "IR/Nav",
         "type": "DA40CS",
-        "tail": "HS-TVD",
+        "tail": "HS-TVH",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -139218,8 +139218,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "11:30",
+        "start": "09:30",
+        "end": "11:00",
         "duration": "01:30",
         "durationMin": 90,
         "planDur": null,
@@ -139230,7 +139230,7 @@
         "lesson": "CDXV 29",
         "condition": null,
         "type": "DA40CS",
-        "tail": "HS-TVA",
+        "tail": "HS-TVG",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -139265,6 +139265,40 @@
         "condition": "IR/Nav",
         "type": "DA40CS",
         "tail": "HS-TVG",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null
+      },
+      {
+        "id": "BK-MRYRUUFJ",
+        "date": "2026-07-26",
+        "rowIdx": "BK-MRYRUUFJ",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:00",
+        "end": "12:00",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "PARAMUTT C.",
+        "instructor": "VASSAPON K.",
+        "batch": "AP-126",
+        "lesson": "CDXI 72",
+        "condition": "IR/Nav",
+        "type": "DA40CS",
+        "tail": "HS-TVA",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -148471,8 +148505,8 @@
     {
       "tail": "HS-TCB",
       "acType": "DA42TDI",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TCP",
@@ -148495,8 +148529,8 @@
     {
       "tail": "HS-TPG",
       "acType": "C172",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPH",
@@ -148513,8 +148547,8 @@
     {
       "tail": "HS-TPM",
       "acType": "DA42TDI",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPN (SIM)",
@@ -148549,14 +148583,14 @@
     {
       "tail": "HS-TPT",
       "acType": "DA40TDI",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPU",
       "acType": "DA40TDI",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPV",
@@ -148585,8 +148619,8 @@
     {
       "tail": "HS-TVB",
       "acType": "DA40CS",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVC",
@@ -148609,8 +148643,8 @@
     {
       "tail": "HS-TVF",
       "acType": "DA42NG",
-      "isMaint": true,
-      "maintReason": "Maintenance"
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVG",
