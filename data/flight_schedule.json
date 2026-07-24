@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-24T10:09:28Z",
+  "fetched_at": "2026-07-24T10:15:41Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -137101,9 +137101,9 @@
         "date": "2026-07-24",
         "rowIdx": "BK-AP-126-PRIT-4GVVD",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "14:00",
@@ -137119,15 +137119,15 @@
         "condition": "IR/Nav",
         "type": "DA40CS",
         "tail": "HS-TVE",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "14:10",
+        "ldgTime": "16:10",
+        "airborne": "02:00",
+        "ldg": 3,
+        "to": 3,
+        "inst": 3,
+        "blockOff": "13:50",
+        "blockOn": "16:15",
         "cancelReason": null
       },
       {
@@ -138971,40 +138971,6 @@
         "cancelReason": null
       },
       {
-        "id": "BK-MRYRDQE1",
-        "date": "2026-07-26",
-        "rowIdx": "BK-MRYRDQE1",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "06:30",
-        "end": "09:30",
-        "duration": "03:00",
-        "durationMin": 180,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "PRITASNA M.",
-        "instructor": "PHAHOLYUTH P.",
-        "batch": "AP-126",
-        "lesson": "CDXI 73",
-        "condition": "IR/Nav",
-        "type": "DA40CS",
-        "tail": "HS-TVE",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null
-      },
-      {
         "id": "BK-MRYRDV85",
         "date": "2026-07-26",
         "rowIdx": "BK-MRYRDV85",
@@ -139014,8 +138980,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "09:50",
-        "end": "11:50",
+        "start": "09:00",
+        "end": "11:00",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
@@ -139286,19 +139252,19 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "12:00",
+        "start": "06:30",
+        "end": "08:30",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
         "planDurMin": null,
         "student": "PARAMUTT C.",
-        "instructor": "VASSAPON K.",
+        "instructor": "PHAHOLYUTH P.",
         "batch": "AP-126",
         "lesson": "CDXI 72",
         "condition": "IR/Nav",
         "type": "DA40CS",
-        "tail": "HS-TVA",
+        "tail": "HS-TVE",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -148505,8 +148471,8 @@
     {
       "tail": "HS-TCB",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TCP",
@@ -148529,8 +148495,8 @@
     {
       "tail": "HS-TPG",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPH",
@@ -148547,8 +148513,8 @@
     {
       "tail": "HS-TPM",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPN (SIM)",
@@ -148583,14 +148549,14 @@
     {
       "tail": "HS-TPT",
       "acType": "DA40TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPU",
       "acType": "DA40TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPV",
@@ -148619,8 +148585,8 @@
     {
       "tail": "HS-TVB",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVC",
@@ -148643,8 +148609,8 @@
     {
       "tail": "HS-TVF",
       "acType": "DA42NG",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVG",
