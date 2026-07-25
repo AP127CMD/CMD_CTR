@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-25T05:48:34Z",
+  "fetched_at": "2026-07-25T05:55:00Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -132743,9 +132743,9 @@
         "date": "2026-07-21",
         "rowIdx": "BK-FAM FI-APIR-EPXK0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "11:30",
@@ -132761,15 +132761,15 @@
         "condition": null,
         "type": "DA40TDI",
         "tail": "HS-TPW",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "11:20",
+        "ldgTime": "13:05",
+        "airborne": "01:45",
+        "ldg": 3,
+        "to": 3,
+        "inst": 2,
+        "blockOff": "11:10",
+        "blockOn": "13:10",
         "cancelReason": null
       },
       {
