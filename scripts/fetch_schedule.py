@@ -194,7 +194,7 @@ def _zero_pad_duration(duration_str):
         return duration_str
 
 
-def normalize_entry(entry, date):
+def normalize_entry(entry, date, cancel_lookup=None):
     """
     Return a normalized schedule entry ready for dashboard consumption.
 
@@ -204,9 +204,25 @@ def normalize_entry(entry, date):
     planned+actual row pair keyed by rowIdx/realRowIdx. Fields that depended
     on that old model (isActual, planDur, rowIdx/realRowIdx as distinct
     concepts) are kept in the output shape for backward compatibility but are
-    always None/derived. cancelReason is likewise still unavailable (the
-    Cancel Record submission schema has a `reason` field but no read view
-    echoes it) — see AP127_Docs README §10 (2026-07-11).
+    always None/derived.
+
+    cancelReason turned out NOT to be gone either (corrected 2026-07-26 —
+    see AP127_Docs README §10): Cancel Record submissions are readable via
+    the portal RPC API (getMySubmissions/getSubmissionDetail, same as
+    leaves) and echo back `reason` + free-text `remarks`. `cancel_lookup`
+    (bookingId -> {"reason", "remarks"}, built from the cached cancel-records
+    list — see _fetch_cancel_records()) supplies it here for Canceled flights.
+
+    IMPORTANT — this join rarely fires on post-migration data: confirmed
+    2026-07-26 that the new portal's live Timeline never keeps a cancelled
+    booking visible with status=Canceled (it's removed/replaced instead —
+    201 Canceled rows exist across the 75 frozen pre-migration dates, ZERO
+    across ~90 post-migration dates in the accumulated dataset). The old
+    portal DID keep cancelled bookings visible, so this join still works for
+    frozen-archive dates. For anything after 2026-07-10, the cancel-records
+    list itself (exposed as `cancellations` in flight-data.js) is the only
+    real source of "why was this canceled" — this inline field is a bonus
+    when it applies, not the primary delivery.
 
     Post-flight actuals, however, turned out NOT to be gone: since (at least)
     2026-07-16 Completed flights carry an `actual{}` object on window.G
@@ -235,6 +251,8 @@ def normalize_entry(entry, date):
     actual = entry.get("actual")
     if not isinstance(actual, dict):
         actual = {}
+
+    cancel = (cancel_lookup or {}).get(str(booking_id)) if status == "Canceled" else None
 
     return {
         "id": str(booking_id),
@@ -276,9 +294,12 @@ def normalize_entry(entry, date):
         # scheduled start/end); new fields, may differ from start/end
         "blockOff": _null_dash(actual.get("blockOff") or ""),
         "blockOn": _null_dash(actual.get("blockOn") or ""),
-        # cancellation — Cancel Record's submission schema has a `reason`
-        # field but it isn't echoed back on any read view
-        "cancelReason": None,
+        # cancellation — from the matching Cancel Record submission, joined
+        # by bookingId (see cancel_lookup docstring above). Both None if no
+        # Cancel Record has been fetched yet for this booking (backfill in
+        # progress) or the flight isn't Canceled.
+        "cancelReason": (cancel or {}).get("reason"),
+        "cancelRemarks": (cancel or {}).get("remarks"),
     }
 
 
@@ -369,6 +390,9 @@ RESOURCE_ACTIVE_LOOKBACK_DAYS = int(os.environ.get("RESOURCE_ACTIVE_LOOKBACK_DAY
 # ~385 historical leaves exist; at 60/run the backfill completes in ~7 cron
 # cycles, after which a typical run fetches 0-2 new ones.
 LEAVE_DETAIL_MAX_PER_RUN = int(os.environ.get("LEAVE_DETAIL_MAX_PER_RUN", "60"))
+
+# Same pattern for Cancel Record backfill (~340 historical cancels).
+CANCEL_DETAIL_MAX_PER_RUN = int(os.environ.get("CANCEL_DETAIL_MAX_PER_RUN", "60"))
 
 
 # ─── Portal internal RPC API ─────────────────────────────────────────────────
@@ -507,6 +531,66 @@ async def _fetch_leaves(user_frame):
     return leaves
 
 
+def _load_existing_cancel_records():
+    if not OUTPUT_FILE.exists():
+        return []
+    try:
+        return json.loads(OUTPUT_FILE.read_text(encoding="utf-8")).get("cancelRecords") or []
+    except Exception:
+        return []
+
+
+async def _fetch_cancel_records(user_frame):
+    """Rebuild cancel-reason data from Cancel Record submissions.
+
+    Corrected 2026-07-26: normalize_entry()'s cancelReason=None comment said
+    this was unavailable (checked pre-RPC-API-discovery, 2026-07-11) — it
+    isn't. Same read path as leaves: getMySubmissions lists every Cancel
+    Record (id/summary/date/status), getSubmissionDetail({id}) returns the
+    full record (date, reason, remarks, instructor, student, batch, lesson,
+    acType, acReg, bookingId). Cached and backfilled incrementally exactly
+    like _fetch_leaves() (same submission-id-keyed cache, same per-run cap,
+    same accepted trade-off on upstream edits after first fetch) — see that
+    function's docstring.
+    """
+    existing = [c for c in _load_existing_cancel_records() if c.get("id")]
+    known = {c["id"] for c in existing}
+    subs = await _rpc(user_frame, "getMySubmissions", {"studentName": "", "batch": ""}, timeout_s=120)
+    cancel_subs = [s for s in subs or [] if s.get("formType") == "Cancel Record" and s.get("id")]
+    new_ids = [s["id"] for s in cancel_subs if s["id"] not in known]
+    fetched = []
+    for cid in new_ids[:CANCEL_DETAIL_MAX_PER_RUN]:
+        try:
+            d = await _rpc(user_frame, "getSubmissionDetail", {"id": cid})
+            if not (d and d.get("ok")):
+                continue
+            fl = d.get("fields") or {}
+            booking_id = fl.get("bookingId")
+            if not booking_id:
+                continue
+            fetched.append({
+                "id": cid,
+                "bookingId": str(booking_id),
+                "date": fl.get("date"),
+                "reason": fl.get("reason"),
+                "remarks": fl.get("remarks") or "",
+                "instructor": fl.get("instructor"),
+                "student": fl.get("student"),
+                "batch": fl.get("batch"),
+                "lesson": fl.get("lesson"),
+                "acType": fl.get("acType"),
+                "acReg": fl.get("acReg"),
+            })
+        except Exception as exc:
+            print(f"WARNING: cancel-record detail {cid} failed ({exc}) — retried next run", file=sys.stderr)
+    remaining = len(new_ids) - min(len(new_ids), CANCEL_DETAIL_MAX_PER_RUN)
+    records = existing + fetched
+    records.sort(key=lambda c: (c.get("date") or "", c.get("bookingId") or ""))
+    print(f"Cancel records: {len(existing)} cached + {len(fetched)} new = {len(records)}"
+          + (f" ({remaining} still backfilling)" if remaining else ""))
+    return records
+
+
 def derive_resources(schedules, today_iso):
     """Rebuild the aircraft roster from the flight data itself.
 
@@ -598,7 +682,8 @@ async def scrape_window(days_back, days_forward):
 
     schedules = {}
     failed_dates = []
-    rosters = {"instructors": [], "resources": None, "leaves": _load_existing_leaves()}
+    rosters = {"instructors": [], "resources": None, "leaves": _load_existing_leaves(),
+               "cancelRecords": _load_existing_cancel_records()}
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         try:
@@ -623,6 +708,10 @@ async def scrape_window(days_back, days_forward):
                 rosters["leaves"] = await _fetch_leaves(user_frame)
             except Exception as exc:
                 print(f"WARNING: leaves fetch failed ({exc}) — keeping previous leaves", file=sys.stderr)
+            try:
+                rosters["cancelRecords"] = await _fetch_cancel_records(user_frame)
+            except Exception as exc:
+                print(f"WARNING: cancel-records fetch failed ({exc}) — keeping previous cancel records", file=sys.stderr)
 
             for date_str in dates:
                 last_err = None
@@ -697,8 +786,12 @@ async def main():
         )
         sys.exit(1)
 
+    cancel_lookup = {
+        c["bookingId"]: {"reason": c.get("reason"), "remarks": c.get("remarks")}
+        for c in rosters["cancelRecords"] if c.get("bookingId")
+    }
     new_schedules = {
-        date: [normalize_entry(entry, date) for entry in entries]
+        date: [normalize_entry(entry, date, cancel_lookup) for entry in entries]
         for date, entries in schedules.items()
     }
 
@@ -753,6 +846,23 @@ async def main():
 
     merged_schedules = {**existing_schedules, **new_schedules}
 
+    # Backfill cancelReason/cancelRemarks onto Canceled flights normalized by
+    # a PRIOR run (before this field existed, or before the matching Cancel
+    # Record had been detail-fetched yet) — covers preserved historical dates
+    # too, not just the current fetch window. Idempotent: only touches
+    # entries that don't already have a cancelReason.
+    cancel_filled = 0
+    for entries in merged_schedules.values():
+        for entry in entries:
+            if entry.get("status") == "Canceled" and not entry.get("cancelReason"):
+                info = cancel_lookup.get(entry.get("id"))
+                if info:
+                    entry["cancelReason"] = info.get("reason")
+                    entry["cancelRemarks"] = info.get("remarks")
+                    cancel_filled += 1
+    if cancel_filled:
+        print(f"Backfilled cancelReason on {cancel_filled} previously-normalized Canceled flight(s).")
+
     new_dates  = set(new_schedules.keys())
     kept_dates = set(existing_schedules.keys()) - new_dates
     print(f"Fetched {sum(len(v) for v in new_schedules.values())} flights across {len(new_dates)} date(s).")
@@ -783,7 +893,8 @@ async def main():
         print(f"Derived {len(resources)} resources from flight data (RPC fallback).")
     print(f"Rosters: {len(resources)} resources "
           f"({sum(1 for r in resources if r.get('isMaint'))} isMaint), "
-          f"{len(rosters['instructors'])} instructors, {len(rosters['leaves'])} leaves.")
+          f"{len(rosters['instructors'])} instructors, {len(rosters['leaves'])} leaves, "
+          f"{len(rosters['cancelRecords'])} cancel records.")
 
     output = {
         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -792,6 +903,9 @@ async def main():
         "leaves": rosters["leaves"],
         "instructors": rosters["instructors"],
         "resources": resources,
+        # backfill cache only — not surfaced in flight-data.js; cancelReason/
+        # cancelRemarks are already inlined onto each Canceled schedule entry.
+        "cancelRecords": rosters["cancelRecords"],
     }
 
     total_count = sum(len(v) for v in output["schedules"].values())

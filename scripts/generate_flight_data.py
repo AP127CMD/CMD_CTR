@@ -59,6 +59,13 @@ def transform(raw: dict) -> dict:
                 if f.get("inst")    is not None: entry["inst"]    = f["inst"]
                 if f.get("blockOff")is not None: entry["blockOff"]= f["blockOff"]
                 if f.get("blockOn") is not None: entry["blockOn"] = f["blockOn"]
+            # Cancel reason/remarks — only present on Canceled flights, and
+            # only once the matching Cancel Record has been detail-fetched
+            # (incremental backfill in fetch_schedule.py — may lag briefly
+            # behind a just-canceled flight).
+            if f.get("status") == "Canceled":
+                if f.get("cancelReason")  is not None: entry["cancelReason"]  = f["cancelReason"]
+                if f.get("cancelRemarks") is not None: entry["cancelRemarks"] = f["cancelRemarks"]
             flights.append(entry)
 
     return {
@@ -68,6 +75,15 @@ def transform(raw: dict) -> dict:
         "instructors": raw.get("instructors", []),
         "resources":   raw.get("resources", []),
         "leaves":      raw.get("leaves", []),
+        # Cancellation audit log. Confirmed 2026-07-26: the new portal's live
+        # Timeline never keeps a cancelled booking visible as status=Canceled
+        # (it's removed/replaced instead) — only the pre-migration frozen
+        # archive still has real Canceled schedule rows (the old portal DID
+        # keep them visible). So cancelReason/cancelRemarks inlined on a
+        # flight (below) will only ever be populated for those frozen dates;
+        # this array is the actual source of "why was X canceled" for
+        # anything after 2026-07-10.
+        "cancellations": raw.get("cancelRecords", []),
     }
 
 
