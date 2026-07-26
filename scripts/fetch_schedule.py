@@ -382,6 +382,39 @@ async def _open_timeline_view(user_frame):
     await user_frame.wait_for_selector("#gantt-date", timeout=15_000)
 
 
+async def _return_to_home(page, user_frame, max_clicks=4):
+    """Click '‹ Back' repeatedly until the Home menu (with its "Timeline
+    View" card) is reachable, then confirm by actually opening it.
+
+    Needed because navigation depth varies by caller: Timeline is one click
+    from Home, but a sub-form like Leave Request is two (Submit Forms menu
+    -> the form itself). A single fixed-depth "click Back once" assumption
+    broke exactly this way in practice (2026-07-26): after
+    _capture_expensive_fingerprint() finished on the Leave Request form
+    (two levels deep), one Back click landed on the Submit Forms menu, not
+    Home, and the subsequent `_open_timeline_view()` call timed out
+    because "Timeline View" text doesn't exist there — which then cascaded
+    into the whole date-loop failing, since Timeline was never re-opened.
+    """
+    for _ in range(max_clicks):
+        try:
+            await _open_timeline_view(user_frame)
+            return
+        except Exception:
+            pass
+        back = user_frame.get_by_text("‹ Back")
+        if not await back.count():
+            break
+        try:
+            await back.first.click(timeout=8000)
+            await page.wait_for_timeout(1000)
+        except Exception:
+            break
+    # Last attempt — let the real error surface with a clear message if
+    # even this doesn't recover.
+    await _open_timeline_view(user_frame)
+
+
 DATE_FETCH_ATTEMPTS = int(os.environ.get("FETCH_DATE_ATTEMPTS", "3"))
 
 
@@ -594,6 +627,201 @@ async def _fetch_leaves(user_frame):
     return leaves
 
 
+# ─── Portal structure drift detection ────────────────────────────────────────
+# Complementary to validate_raw_cache() (which catches DATA-shape drift —
+# new/missing fields on schedule entries, new statuses, new booking-id
+# prefixes): this catches STRUCTURAL drift in the portal itself — its RPC
+# surface, UI mode tabs, form field options. Built 2026-07-26 after a
+# comprehensive audit (prompted by the user noting the portal "changes
+# frequently") turned up 6 RPC functions that hadn't existed on 2026-07-16 —
+# proof this class of change happens and was going undetected. Reuses the
+# existing schema-drift GitHub-issue mechanism (_report_schema_drift) rather
+# than inventing a separate alerting path.
+PORTAL_FINGERPRINT_FILE = Path(__file__).parent.parent / "data" / "portal_fingerprint.json"
+
+# How often to run the expensive checks (Submit Forms field options, Daily
+# Schedule presence) — these need real extra navigation (back -> Submit
+# Forms -> each sub-form -> back) on top of the normal scrape, unlike the
+# RPC-list/Timeline-modes checks which are one JS eval each on a frame
+# that's already open. Changes here are rare (this session found the
+# Cancel Flight reason list and Timeline mode tabs unchanged since first
+# documented; only a routine new batch value showed up), so running the
+# expensive half once a day rather than every 5-minute cron tick is a
+# deliberate cost/fragility tradeoff, not an oversight.
+STRUCTURE_CHECK_INTERVAL_HOURS = int(os.environ.get("STRUCTURE_CHECK_INTERVAL_HOURS", "24"))
+
+# Known-volatile fields intentionally NOT diffed here even though they're
+# captured: batch/student/instructor lists grow routinely as new cohorts
+# start (confirmed 2026-07-26: a new "PPL-38" batch appeared between two
+# audits, expected growth, not drift) — alerting on every addition would
+# make the mechanism noisy enough to get ignored, defeating its purpose.
+
+
+def _load_portal_fingerprint():
+    if not PORTAL_FINGERPRINT_FILE.exists():
+        return {}
+    try:
+        return json.loads(PORTAL_FINGERPRINT_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+async def _capture_cheap_fingerprint(user_frame):
+    """RPC function list + Timeline mode tabs. Near-zero cost — no
+    navigation, the Timeline frame is already open — safe to run every
+    scrape."""
+    names = await user_frame.evaluate(
+        "() => Object.keys(google.script.run).filter(k => typeof google.script.run[k]==='function').sort()"
+    )
+    modes = await user_frame.evaluate("""() => {
+      const vis = el => !!(el.offsetParent);
+      return ['gantt-mode-plan','gantt-mode-actual','gantt-mode-canceled']
+        .filter(id => { const e = document.getElementById(id); return e && vis(e); });
+    }""")
+    return {"rpc_functions": names, "timeline_modes": modes}
+
+
+async def _capture_expensive_fingerprint(page, user_frame):
+    """Submit Forms field options (Cancel Flight reasons, Leave Request
+    types) + Daily Schedule presence. Requires navigating away from
+    Timeline and back — throttled by STRUCTURE_CHECK_INTERVAL_HOURS (see
+    above), never run mid-date-loop. Each piece is independently
+    best-effort: a failure here means "couldn't confirm this run", not "the
+    portal is broken" — it doesn't affect the main schedule scrape at all."""
+    result = {}
+    try:
+        back = user_frame.get_by_text("‹ Back")
+        if await back.count():
+            await back.first.click(timeout=8000)
+            await page.wait_for_timeout(1200)
+        await user_frame.get_by_text("View Daily Schedule").click(timeout=10_000)
+        await user_frame.wait_for_selector("#sched-date", timeout=10_000)
+        result["daily_schedule_present"] = True
+    except Exception as exc:
+        result["daily_schedule_present"] = False
+        print(f"WARNING: portal-structure check could not confirm Daily Schedule ({exc}) — "
+              f"treating as absent this run, will re-check next scheduled check", file=sys.stderr)
+
+    try:
+        back = user_frame.get_by_text("‹ Back")
+        if await back.count():
+            await back.first.click(timeout=8000)
+            await page.wait_for_timeout(1200)
+        await user_frame.get_by_text("Submit Forms", exact=True).click(timeout=10_000)
+        await page.wait_for_timeout(1200)
+
+        await user_frame.get_by_text("Cancel Flight", exact=False).first.click(timeout=8000)
+        await page.wait_for_timeout(1000)
+        result["cancel_reasons"] = await user_frame.evaluate(
+            "() => [...document.querySelectorAll('#cx-reason option')].map(o=>o.textContent.trim())"
+        )
+
+        back = user_frame.get_by_text("‹ Back")
+        if await back.count():
+            await back.first.click(timeout=8000)
+            await page.wait_for_timeout(1000)
+        # Precise leaf-text match — a plain substring/get_by_text("Leave
+        # Request") also matches the menu's own subtitle paragraph
+        # ("Flight record, cancel, leave request, edit request"), which
+        # sits earlier in the DOM and silently absorbs the click instead.
+        await user_frame.evaluate("""() => {
+          const els = [...document.querySelectorAll('*')].filter(e =>
+            e.children.length === 0 && e.textContent.trim() === 'Leave Request');
+          if (els.length) els[0].click();
+        }""")
+        await page.wait_for_timeout(1000)
+        result["leave_types"] = await user_frame.evaluate(
+            "() => [...document.querySelectorAll('#lv-type option')].map(o=>o.textContent.trim())"
+        )
+    except Exception as exc:
+        print(f"WARNING: portal-structure check could not confirm Submit Forms fields ({exc}) — "
+              f"skipping this run's form-option comparison, will re-check next scheduled check", file=sys.stderr)
+
+    return result
+
+
+async def check_portal_structure(page, user_frame):
+    """Detect Ops Portal structural drift and persist a fingerprint for the
+    next run to diff against. Returns a list of human-readable warning
+    strings (empty if nothing changed, or if this is the first run and
+    there's no prior fingerprint to compare against yet — establishing the
+    baseline isn't itself drift). Warnings feed into the same
+    _report_schema_drift() GitHub-issue mechanism as data-shape drift, so a
+    real portal change surfaces the same way an unexpected field does: a
+    non-blocking, deduped issue, not a silent break someone finds out about
+    the hard way (as happened with the RPC function list — see comment
+    above this section).
+    """
+    warnings = []
+    prev = _load_portal_fingerprint()
+    first_run = not prev
+    fingerprint = dict(prev)  # start from prior state; only overwrite what we actually re-check this run
+
+    cheap = await _capture_cheap_fingerprint(user_frame)
+    if not first_run:
+        prev_rpc, cur_rpc = set(prev.get("rpc_functions") or []), set(cheap["rpc_functions"])
+        if prev_rpc != cur_rpc:
+            added, removed = sorted(cur_rpc - prev_rpc), sorted(prev_rpc - cur_rpc)
+            msg = "Ops Portal RPC function list changed since last check"
+            if added: msg += f" — added: {added}"
+            if removed: msg += f" — REMOVED (check nothing we call depends on these): {removed}"
+            warnings.append(msg)
+        prev_modes, cur_modes = set(prev.get("timeline_modes") or []), set(cheap["timeline_modes"])
+        if prev_modes != cur_modes:
+            warnings.append(f"Timeline mode tabs changed: was {sorted(prev_modes)}, now {sorted(cur_modes)}")
+    fingerprint.update(cheap)
+
+    due = True
+    last_checked = prev.get("_expensive_checked_at")
+    if last_checked:
+        try:
+            last_dt = datetime.strptime(last_checked, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+            due = (datetime.now(timezone.utc) - last_dt) >= timedelta(hours=STRUCTURE_CHECK_INTERVAL_HOURS)
+        except Exception:
+            due = True
+    if due:
+        expensive = await _capture_expensive_fingerprint(page, user_frame)
+        expensive["_expensive_checked_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        if not first_run:
+            if prev.get("daily_schedule_present") is not None and \
+               prev["daily_schedule_present"] != expensive.get("daily_schedule_present"):
+                warnings.append("Daily Schedule view presence changed: "
+                                 f"was {prev['daily_schedule_present']}, now {expensive.get('daily_schedule_present')}")
+            if prev.get("cancel_reasons") is not None and "cancel_reasons" in expensive and \
+               set(prev["cancel_reasons"]) != set(expensive["cancel_reasons"]):
+                warnings.append(f"Cancel Flight reason options changed: "
+                                 f"was {prev['cancel_reasons']}, now {expensive['cancel_reasons']}")
+            if prev.get("leave_types") is not None and "leave_types" in expensive and \
+               set(prev["leave_types"]) != set(expensive["leave_types"]):
+                warnings.append(f"Leave Request type options changed: "
+                                 f"was {prev['leave_types']}, now {expensive['leave_types']}")
+        fingerprint.update(expensive)
+        # _capture_expensive_fingerprint ends on the Leave Request FORM —
+        # two navigation levels below Home (Submit Forms menu -> the form),
+        # not one — so a single fixed "click Back once" doesn't reach Home.
+        # _return_to_home() clicks Back repeatedly until Timeline is
+        # actually reachable, whatever the real depth turns out to be.
+        try:
+            await _return_to_home(page, user_frame)
+        except Exception as exc:
+            print(f"WARNING: could not return to Timeline View after the structure check ({exc}) — "
+                  f"the date-loop fetch immediately after this will likely fail and retry", file=sys.stderr)
+
+    try:
+        PORTAL_FINGERPRINT_FILE.parent.mkdir(parents=True, exist_ok=True)
+        PORTAL_FINGERPRINT_FILE.write_text(json.dumps(fingerprint, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception as exc:
+        print(f"WARNING: could not persist portal fingerprint ({exc}) — "
+              f"structure drift check will re-establish baseline next run", file=sys.stderr)
+
+    if first_run:
+        print("Portal-structure fingerprint established (first run) — nothing to compare against yet.")
+    elif not warnings:
+        print("Portal-structure check: no drift detected"
+              + ("" if due else f" (RPC/Timeline only — Submit Forms check not due yet)") + ".")
+    return warnings
+
+
 def _load_existing_cancel_records():
     if not OUTPUT_FILE.exists():
         return []
@@ -721,8 +949,11 @@ async def _scrape_instructor_roster(user_frame):
 async def scrape_window(days_back, days_forward):
     """Fetch every date in [today-days_back, today+days_forward] from the
     Ops Portal, excluding any date already covered by the frozen pre-migration
-    archive. Returns (schedules, failed_dates, rosters) where rosters is
-    {"instructors": [...], "resources": [...]|None, "leaves": [...]}.
+    archive. Returns (schedules, failed_dates, rosters, structure_warnings)
+    where rosters is {"instructors": [...], "resources": [...]|None,
+    "leaves": [...]} and structure_warnings is a list of human-readable
+    Ops Portal structural-drift strings from check_portal_structure()
+    (empty if nothing changed).
 
     The upstream GAS server is intermittently unreliable under repeated
     rapid requests (observed ~25% of single-date requests silently stall or
@@ -762,6 +993,15 @@ async def scrape_window(days_back, days_forward):
             await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             user_frame = await _get_content_frame(page)
             await _open_timeline_view(user_frame)
+
+            structure_warnings = []
+            try:
+                structure_warnings = await check_portal_structure(page, user_frame)
+                for w in structure_warnings:
+                    print(f"WARNING: {w}", file=sys.stderr)
+            except Exception as exc:
+                print(f"WARNING: portal-structure check itself failed ({exc}) — "
+                      f"skipping this run, will retry next scheduled check", file=sys.stderr)
 
             # Rosters + leaves via the RPC API (each falls back independently)
             instructors_rpc, resources_rpc = await _fetch_rosters(user_frame, today.isoformat())
@@ -857,7 +1097,7 @@ async def scrape_window(days_back, days_forward):
     if len(failed_dates) == len(dates):
         raise RuntimeError(f"All {len(dates)} dates failed — Ops Portal likely down or navigation broke")
 
-    return schedules, failed_dates, rosters
+    return schedules, failed_dates, rosters, structure_warnings
 
 
 def _report_schema_drift(warnings):
@@ -883,11 +1123,12 @@ def _report_schema_drift(warnings):
 
 
 async def main():
-    schedules, failed_dates, rosters = await scrape_window(DAYS_BACK, DAYS_FORWARD)
+    schedules, failed_dates, rosters, structure_warnings = await scrape_window(DAYS_BACK, DAYS_FORWARD)
     cache = {"schedules": schedules, "leaves": rosters["leaves"],
              "instructors": rosters["instructors"], "resources": rosters["resources"] or []}
 
     warnings, errors = validate_raw_cache(cache)
+    warnings.extend(structure_warnings)
     if failed_dates:
         warnings.append(
             f"{len(failed_dates)} date(s) failed to fetch after {DATE_FETCH_ATTEMPTS} attempts "
