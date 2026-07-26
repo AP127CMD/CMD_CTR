@@ -213,16 +213,17 @@ def normalize_entry(entry, date, cancel_lookup=None):
     (bookingId -> {"reason", "remarks"}, built from the cached cancel-records
     list — see _fetch_cancel_records()) supplies it here for Canceled flights.
 
-    IMPORTANT — this join rarely fires on post-migration data: confirmed
-    2026-07-26 that the new portal's live Timeline never keeps a cancelled
-    booking visible with status=Canceled (it's removed/replaced instead —
-    201 Canceled rows exist across the 75 frozen pre-migration dates, ZERO
-    across ~90 post-migration dates in the accumulated dataset). The old
-    portal DID keep cancelled bookings visible, so this join still works for
-    frozen-archive dates. For anything after 2026-07-10, the cancel-records
-    list itself (exposed as `cancellations` in flight-data.js) is the only
-    real source of "why was this canceled" — this inline field is a bonus
-    when it applies, not the primary delivery.
+    IMPORTANT — this join almost never sees a Canceled status directly from
+    the live portal itself: confirmed 2026-07-26 that the new Timeline never
+    keeps a cancelled booking visible with status=Canceled (it's removed
+    from window.G.flights entirely instead — 201 Canceled rows exist across
+    the 75 frozen pre-migration dates where the OLD portal DID keep them
+    visible, ZERO were ever returned live post-migration). What actually
+    produces Canceled entries for post-2026-07-10 dates now is main()'s
+    booking-recovery step (see its docstring) re-inserting a vanished
+    booking's last-known record with status forced to Canceled — this join
+    is what then attaches the reason to that revived entry (either at
+    recovery time, or on a later run once the Cancel Record backfills).
 
     Post-flight actuals, however, turned out NOT to be gone: since (at least)
     2026-07-16 Completed flights carry an `actual{}` object on window.G
@@ -301,6 +302,54 @@ def normalize_entry(entry, date, cancel_lookup=None):
         "cancelReason": (cancel or {}).get("reason"),
         "cancelRemarks": (cancel or {}).get("remarks"),
     }
+
+
+def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
+    """Re-insert bookings the live feed silently dropped, mutating
+    new_schedules in place. Returns the count recovered.
+
+    Found 2026-07-26 investigating a report that cancelled flights vanish
+    from the schedule instead of showing as cancelled. Confirmed with git
+    history + exact timing: the new portal's Timeline does NOT keep a
+    cancelled booking visible at all — booking BK-MRZTU5CV was Pending with
+    real start/end/tail/etc across three consecutive scrapes, then gone
+    entirely 6 minutes after its Cancel Record was submitted (~07:29 UTC
+    cancel -> absent from the 07:35 UTC scrape, 2026-07-25). Since main()'s
+    merge (`{**existing_schedules, **new_schedules}`) replaces a date's
+    ENTIRE entry list with the fresh one, that real time-slot data would
+    otherwise be discarded permanently the moment the booking disappears
+    upstream — the flight vanishes from every downstream schedule/gantt view
+    instead of showing as cancelled.
+
+    For every date `new_schedules` actually covers (i.e. this run re-fetched
+    it — dates outside the window are untouched), diff prior vs fresh
+    bookingIds; anything present before and missing now (and not already
+    Canceled) is re-inserted using its last-known full record, status forced
+    to Canceled. cancelReason/cancelRemarks come from cancel_lookup if that
+    booking's Cancel Record has already been detail-fetched; if the
+    submission hasn't backfilled yet (or doesn't exist — the two-step
+    cancel-action-then-form-submission process leaves a real timing gap),
+    the reason lands automatically on a later run via main()'s retroactive
+    sweep over merged_schedules, which fills cancelReason on ANY Canceled
+    entry lacking one every time cancel_lookup gains a match — not just on
+    the run the booking first vanished.
+    """
+    recovered = 0
+    for date, fresh_entries in new_schedules.items():
+        prior_entries = existing_schedules.get(date)
+        if not prior_entries:
+            continue
+        fresh_ids = {e["id"] for e in fresh_entries}
+        for prior in prior_entries:
+            if prior.get("status") == "Canceled" or prior.get("id") in fresh_ids:
+                continue
+            revived = {**prior, "status": "Canceled", "statusOverride": None}
+            info = cancel_lookup.get(prior.get("id"))
+            revived["cancelReason"]  = (info or {}).get("reason")  or prior.get("cancelReason")
+            revived["cancelRemarks"] = (info or {}).get("remarks") or prior.get("cancelRemarks")
+            fresh_entries.append(revived)
+            recovered += 1
+    return recovered
 
 
 async def _get_content_frame(page):
@@ -813,6 +862,13 @@ async def main():
             BACKUP_FILE.write_bytes(OUTPUT_FILE.read_bytes())
         except Exception as e:
             print(f"WARNING: could not write backup: {e}", file=sys.stderr)
+
+    # Recover cancelled bookings the live feed silently omits — see
+    # recover_vanished_bookings() docstring for the full story.
+    recovered = recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup)
+    if recovered:
+        print(f"Recovered {recovered} cancelled booking(s) the live feed omitted "
+              f"(preserved last-known time slot; reason filled where already backfilled).")
 
     # Regression guard: a date going from populated to (near-)empty in a
     # single fetch is far more likely to mean the Ops Portal silently
