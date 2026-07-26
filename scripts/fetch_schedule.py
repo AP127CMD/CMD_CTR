@@ -213,17 +213,21 @@ def normalize_entry(entry, date, cancel_lookup=None):
     (bookingId -> {"reason", "remarks"}, built from the cached cancel-records
     list — see _fetch_cancel_records()) supplies it here for Canceled flights.
 
-    IMPORTANT — this join almost never sees a Canceled status directly from
-    the live portal itself: confirmed 2026-07-26 that the new Timeline never
-    keeps a cancelled booking visible with status=Canceled (it's removed
-    from window.G.flights entirely instead — 201 Canceled rows exist across
-    the 75 frozen pre-migration dates where the OLD portal DID keep them
-    visible, ZERO were ever returned live post-migration). What actually
-    produces Canceled entries for post-2026-07-10 dates now is main()'s
-    booking-recovery step (see its docstring) re-inserting a vanished
-    booking's last-known record with status forced to Canceled — this join
-    is what then attaches the reason to that revived entry (either at
-    recovery time, or on a later run once the Cancel Record backfills).
+    CORRECTED same day (2026-07-26): earlier revisions of this docstring
+    claimed the live portal never returns status=Canceled directly — that
+    was wrong, just incomplete investigation. The Timeline has a THIRD mode
+    tab ("❌ Canceled", #gantt-mode-canceled) nobody had clicked before,
+    which returns the complete real cancelled-booking list for a date (full
+    time slot, instructor, aircraft — ground truth, not a guess). Plan mode
+    (the default, and the only mode anyone had ever scraped) genuinely never
+    includes cancelled bookings — that part was correct — but that's an
+    artifact of which mode was being read, not a portal limitation. See
+    scrape_window()'s Canceled-mode pass, which now fetches this directly.
+    This join still matters for those entries (they arrive with
+    status=Canceled but no reason — Cancel Record submissions are a wholly
+    separate form/store) and additionally for anything recover_vanished_
+    bookings() has to fall back to reconstructing (see its docstring) if the
+    Canceled-mode fetch itself fails for a run.
 
     Post-flight actuals, however, turned out NOT to be gone: since (at least)
     2026-07-16 Completed flights carry an `actual{}` object on window.G
@@ -308,18 +312,28 @@ def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
     """Re-insert bookings the live feed silently dropped, mutating
     new_schedules in place. Returns the count recovered.
 
-    Found 2026-07-26 investigating a report that cancelled flights vanish
-    from the schedule instead of showing as cancelled. Confirmed with git
-    history + exact timing: the new portal's Timeline does NOT keep a
-    cancelled booking visible at all — booking BK-MRZTU5CV was Pending with
-    real start/end/tail/etc across three consecutive scrapes, then gone
-    entirely 6 minutes after its Cancel Record was submitted (~07:29 UTC
-    cancel -> absent from the 07:35 UTC scrape, 2026-07-25). Since main()'s
-    merge (`{**existing_schedules, **new_schedules}`) replaces a date's
-    ENTIRE entry list with the fresh one, that real time-slot data would
-    otherwise be discarded permanently the moment the booking disappears
-    upstream — the flight vanishes from every downstream schedule/gantt view
-    instead of showing as cancelled.
+    Originally built 2026-07-26 investigating a report that cancelled
+    flights vanish from the schedule instead of showing as cancelled.
+    Confirmed with git history + exact timing: booking BK-MRZTU5CV was
+    Pending with real start/end/tail/etc across three consecutive scrapes,
+    then gone entirely 6 minutes after its Cancel Record was submitted
+    (~07:29 UTC cancel -> absent from the 07:35 UTC scrape, 2026-07-25).
+    Since main()'s merge (`{**existing_schedules, **new_schedules}`)
+    replaces a date's ENTIRE entry list with the fresh one, that real
+    time-slot data would otherwise be discarded permanently the moment the
+    booking disappears upstream.
+
+    DEMOTED TO FALLBACK the same day: the Timeline turned out to have a
+    dedicated Canceled mode (#gantt-mode-canceled — see scrape_window())
+    that returns this exact data as ground truth, straight from the source,
+    no guessing or race window. Verified it returns the IDENTICAL real
+    record for BK-MRZTU5CV this function had reconstructed from git history.
+    scrape_window() now fetches Canceled mode directly for every date, so in
+    the normal case this function finds nothing left to do (the vanished
+    booking already reappears in `new_schedules` as a real Canceled entry
+    from that fetch). Kept as a safety net for if that Canceled-mode fetch
+    itself fails for a given run (mode-switch click failure, GAS flakiness,
+    etc.) — cheap to run (a dict/set diff) even when it has nothing to fix.
 
     For every date `new_schedules` actually covers (i.e. this run re-fetched
     it — dates outside the window are untouched), diff prior vs fresh
@@ -781,6 +795,62 @@ async def scrape_window(days_back, days_forward):
                 # Brief pacing between dates — the upstream GAS server seems to
                 # degrade (silently empty responses) under back-to-back requests.
                 await page.wait_for_timeout(1000)
+
+            # ── Canceled mode: ground-truth cancelled-booking data ──────────
+            # Found 2026-07-26 (same day as the diff-based recover_vanished_
+            # bookings() fix above): the Timeline has a THIRD mode tab, "❌
+            # Canceled" (#gantt-mode-canceled, window.G.mode='canceled'), that
+            # nobody on this project had ever clicked before. It returns the
+            # complete, real cancelled-booking list for a date — full
+            # startTime/endTime/instructor/acReg/duration/condition, status
+            # already "Canceled" — not inferred from a vanished booking's
+            # last-known state. Verified against BK-MRZTU5CV (the exact
+            # booking recover_vanished_bookings() had reconstructed via git
+            # history): Canceled mode returns the IDENTICAL real record
+            # (10:00-11:15, HS-TPV) directly, no diffing needed. Also
+            # confirmed on 2026-07-08 (17 real cancelled bookings) and
+            # 2026-07-27 (2, including one recover_vanished_bookings() never
+            # even had a chance to see). Earlier "the portal never returns
+            # Canceled status" conclusion was simply wrong — Plan mode never
+            # does, but this dedicated mode always did.
+            #
+            # Reuses _fetch_one_date() completely unchanged — it only reads
+            # window.G.date/.flights, doesn't care what mode produced them —
+            # via one extra full pass over the same date list, mode switched
+            # once beforehand (confirmed sticky across date changes within a
+            # session, no per-date re-click needed).
+            try:
+                await user_frame.locator("#gantt-mode-canceled").click(timeout=15_000)
+            except Exception as exc:
+                print(f"WARNING: could not switch to Canceled mode ({exc}) — "
+                      f"cancelled-booking recovery falls back to diff-based reconstruction only",
+                      file=sys.stderr)
+            else:
+                canceled_total = 0
+                for date_str in dates:
+                    last_err = None
+                    canceled_flights = None
+                    for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
+                        try:
+                            canceled_flights = await _fetch_one_date(page, user_frame, date_str)
+                            break
+                        except Exception as exc:
+                            last_err = exc
+                            await page.wait_for_timeout(1500)
+                    if canceled_flights is None:
+                        print(f"  {date_str}: Canceled-mode fetch FAILED after {DATE_FETCH_ATTEMPTS} "
+                              f"attempts ({last_err!r}) — recover_vanished_bookings() fallback still applies",
+                              file=sys.stderr)
+                        await page.wait_for_timeout(1000)
+                        continue
+                    if canceled_flights:
+                        existing_ids = {e.get("bookingId") for e in schedules.get(date_str, [])}
+                        fresh = [f for f in canceled_flights if f.get("bookingId") not in existing_ids]
+                        if fresh:
+                            schedules.setdefault(date_str, []).extend(fresh)
+                            canceled_total += len(fresh)
+                    await page.wait_for_timeout(1000)
+                print(f"Canceled mode: {canceled_total} real cancelled booking(s) across {len(dates)} date(s).")
         finally:
             await browser.close()
 
