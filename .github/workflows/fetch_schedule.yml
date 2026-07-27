@@ -5,6 +5,29 @@ on:
     - cron: '0 * * * *'  # hourly fallback (CF Worker dispatcher fires every 5 min)
   workflow_dispatch:          # manual trigger from GitHub UI
 
+# 2026-07-27: a single run takes 6-11 min (two full passes over every date --
+# Plan mode then Canceled mode -- each ~1-2s/date plus Playwright overhead),
+# but the CF Worker dispatcher fires a new run every 5 min. With no
+# concurrency guard, that means 2-3 independent Playwright scraper instances
+# were ALWAYS running in parallel (confirmed live: runs #14111/#14112 started
+# 2 seconds apart; every consecutive run's start-to-end window overlapped the
+# next trigger for the whole day sampled). Each push races the others via the
+# retry-with-rebase logic below, which lands every commit but does nothing to
+# stop each run from independently reading its OWN possibly-stale
+# window.G.flights snapshot -- so the merged file kept flip-flopping a
+# booking's status between whatever two runs happened to interleave last.
+# That surfaced downstream as real notification spam (AP127_V2/watchdog fired
+# duplicate Pending<->Canceled STATUS events for 36+ bookings in one day, zero
+# actually re-cancelled). This queues instead of parallelizing: a new trigger
+# arriving mid-run waits for the current one to finish rather than starting a
+# second scrape against the same file. `cancel-in-progress: false` (not
+# `true`) is deliberate -- cancelling the in-progress run instead would mean
+# a run this length practically never finishes since a new trigger arrives
+# before ~5 min every time.
+concurrency:
+  group: fetch-schedule
+  cancel-in-progress: false
+
 permissions:
   contents: write
   issues: write
