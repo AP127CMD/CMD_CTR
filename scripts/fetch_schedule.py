@@ -17,7 +17,6 @@ SCRIPT_URL = (
 )
 OUTPUT_FILE = Path(__file__).parent.parent / "data" / "flight_schedule.json"
 LOAD_TIMEOUT_MS = 90_000    # 90 s total page load budget (GAS cold-starts can be slow)
-DATE_SETTLE_TIMEOUT_S = 25  # observed per-date server round-trip: 1.5-12s, be generous
 
 # Frozen archive of the OLD portal's data (rich fields: tkoff/ldgTime/airborne/
 # planDur/isActual/cancelReason — none of which the new portal exposes). Dates
@@ -323,64 +322,6 @@ def normalize_entry(entry, date, cancel_lookup=None):
     }
 
 
-def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
-    """Re-insert bookings the live feed silently dropped, mutating
-    new_schedules in place. Returns the count recovered.
-
-    Originally built 2026-07-26 investigating a report that cancelled
-    flights vanish from the schedule instead of showing as cancelled.
-    Confirmed with git history + exact timing: booking BK-MRZTU5CV was
-    Pending with real start/end/tail/etc across three consecutive scrapes,
-    then gone entirely 6 minutes after its Cancel Record was submitted
-    (~07:29 UTC cancel -> absent from the 07:35 UTC scrape, 2026-07-25).
-    Since main()'s merge (`{**existing_schedules, **new_schedules}`)
-    replaces a date's ENTIRE entry list with the fresh one, that real
-    time-slot data would otherwise be discarded permanently the moment the
-    booking disappears upstream.
-
-    DEMOTED TO FALLBACK the same day: the Timeline turned out to have a
-    dedicated Canceled mode (#gantt-mode-canceled — see scrape_window())
-    that returns this exact data as ground truth, straight from the source,
-    no guessing or race window. Verified it returns the IDENTICAL real
-    record for BK-MRZTU5CV this function had reconstructed from git history.
-    scrape_window() now fetches Canceled mode directly for every date, so in
-    the normal case this function finds nothing left to do (the vanished
-    booking already reappears in `new_schedules` as a real Canceled entry
-    from that fetch). Kept as a safety net for if that Canceled-mode fetch
-    itself fails for a given run (mode-switch click failure, GAS flakiness,
-    etc.) — cheap to run (a dict/set diff) even when it has nothing to fix.
-
-    For every date `new_schedules` actually covers (i.e. this run re-fetched
-    it — dates outside the window are untouched), diff prior vs fresh
-    bookingIds; anything present before and missing now (and not already
-    Canceled) is re-inserted using its last-known full record, status forced
-    to Canceled. cancelReason/cancelRemarks come from cancel_lookup if that
-    booking's Cancel Record has already been detail-fetched; if the
-    submission hasn't backfilled yet (or doesn't exist — the two-step
-    cancel-action-then-form-submission process leaves a real timing gap),
-    the reason lands automatically on a later run via main()'s retroactive
-    sweep over merged_schedules, which fills cancelReason on ANY Canceled
-    entry lacking one every time cancel_lookup gains a match — not just on
-    the run the booking first vanished.
-    """
-    recovered = 0
-    for date, fresh_entries in new_schedules.items():
-        prior_entries = existing_schedules.get(date)
-        if not prior_entries:
-            continue
-        fresh_ids = {e["id"] for e in fresh_entries}
-        for prior in prior_entries:
-            if prior.get("status") == "Canceled" or prior.get("id") in fresh_ids:
-                continue
-            revived = {**prior, "status": "Canceled", "statusOverride": None}
-            info = cancel_lookup.get(prior.get("id"))
-            revived["cancelReason"]  = (info or {}).get("reason")  or prior.get("cancelReason")
-            revived["cancelRemarks"] = (info or {}).get("remarks") or prior.get("cancelRemarks")
-            fresh_entries.append(revived)
-            recovered += 1
-    return recovered
-
-
 async def _get_content_frame(page):
     """Return the userHtmlFrame nested inside GAS's sandboxFrame."""
     await page.wait_for_selector("iframe", timeout=LOAD_TIMEOUT_MS)
@@ -433,91 +374,6 @@ async def _return_to_home(page, user_frame, max_clicks=4):
 DATE_FETCH_ATTEMPTS = int(os.environ.get("FETCH_DATE_ATTEMPTS", "3"))
 
 
-MIN_SETTLE_WAIT_S = 3   # a result (esp. an empty one) landing before this is
-                        # almost certainly a stale-clear artifact, not real data
-STABILITY_RECHECK_S = 2  # re-verify an apparently-settled EMPTY result is real,
-                          # not the brief clear-state before the async reply lands
-
-
-async def _fetch_one_date(page, user_frame, date_str, forbidden_mode=None, recovery_selector=None):
-    """Set the Gantt date picker and wait for window.G to settle on that date.
-
-    Uses locator.fill() (a real, trusted browser input event) rather than a
-    plain element.dispatchEvent() from in-page JS — the latter is untrusted
-    and was observed to sometimes get silently no-op'd by the app, leaving
-    G.date updated but G.flights stuck on the previous date's data with no
-    error and no new network request at all.
-
-    window.G.date updates synchronously once the request is accepted, but
-    window.G.flights lags behind until the async server round-trip resolves
-    (observed 1.5-12s). An EMPTY flights array needs extra scrutiny: the app
-    appears to clear G.flights = [] immediately on date change, before the
-    async reply overwrites it — so a naive "flights matches target date"
-    check (trivially true for an empty array) can accept a transient clear
-    state as if it were a genuine zero-flights day. Enforce a minimum wait
-    before accepting anything, and re-verify an empty result is stable
-    before trusting it.
-
-    forbidden_mode / recovery_selector (2026-07-27): the date+flights check
-    above never validated window.G.mode — a residual read from the WRONG
-    Timeline mode (Plan vs Canceled) passes it trivially, since Canceled
-    mode returns the same real bookings for that date, just all re-labeled
-    Canceled by that view, not a different date or an empty/malformed
-    result. The Canceled-mode pass in scrape_window() switches mode ONCE
-    before its whole date loop on the (undocumented, never verified)
-    assumption that the switch stays sticky across every date change in
-    that loop — confirmed broken live: 2026-07-31 (the busiest near-future
-    date, 30 bookings, plausibly the slowest to settle and so the most
-    exposed) intermittently came back with all 30 read as Canceled where a
-    clean read shows Pending — same date, same count, status flipping
-    together, exactly what a leaked Canceled-mode read looks like, and nothing
-    the regression guard (a COUNT-drop check) could ever catch since the
-    count never moves. If forbidden_mode is set and window.G.mode matches
-    it, the read is rejected as stale/leaked and retried (re-asserting mode
-    via recovery_selector first, if given) instead of being trusted.
-    """
-    date_input = user_frame.locator("#gantt-date")
-    await date_input.fill(date_str)
-    await date_input.dispatch_event("change")
-    await page.wait_for_timeout(MIN_SETTLE_WAIT_S * 1000)
-
-    for _ in range(DATE_SETTLE_TIMEOUT_S):
-        g = await user_frame.evaluate("() => JSON.stringify(window.G)")
-        data = json.loads(g)
-        if forbidden_mode is not None and data.get("mode") == forbidden_mode:
-            print(f"  {date_str}: rejected a read still in '{forbidden_mode}' mode — "
-                  f"retrying{' (re-asserting mode)' if recovery_selector else ''}", file=sys.stderr)
-            if recovery_selector:
-                try:
-                    await user_frame.locator(recovery_selector).click(timeout=5000)
-                except Exception:
-                    pass
-            await page.wait_for_timeout(1000)
-            continue
-        if data.get("date") == date_str:
-            flights = data.get("flights", [])
-            flight_dates = {f["date"] for f in flights}
-            if flight_dates <= {date_str}:
-                if flights:
-                    if forbidden_mode is not None:
-                        # Diagnostic (2026-07-27, temporary): confirms window.G.mode is really the
-                        # right property/values to guard on — remove once the fix is confirmed live.
-                        print(f"  {date_str}: accepted read, window.G.mode={data.get('mode')!r}",
-                              file=sys.stderr)
-                    return flights
-                # Empty — could be genuine or a not-yet-loaded artifact.
-                # Re-check after a short pause; only trust it if it's stable.
-                await page.wait_for_timeout(STABILITY_RECHECK_S * 1000)
-                g2 = await user_frame.evaluate("() => JSON.stringify(window.G)")
-                data2 = json.loads(g2)
-                if data2.get("date") == date_str and not data2.get("flights"):
-                    return []
-                # It changed — loop again and re-evaluate from scratch.
-                continue
-        await page.wait_for_timeout(1000)
-    raise TimeoutError(f"Ops Portal did not settle on date {date_str} within {DATE_SETTLE_TIMEOUT_S}s")
-
-
 def _load_frozen_archive():
     """Dates the OLD portal already fully resolved (see FROZEN_ARCHIVE_FILE
     docstring above) — never re-fetched, never overwritten."""
@@ -542,13 +398,18 @@ CANCEL_DETAIL_MAX_PER_RUN = int(os.environ.get("CANCEL_DETAIL_MAX_PER_RUN", "60"
 # ─── Portal internal RPC API ─────────────────────────────────────────────────
 # The portal is a google.script.run SPA; its server functions are callable
 # from inside userHtmlFrame and return clean JSON — far more reliable than
-# scraping the rendered UI. Full inventory of the read-only functions (probed
-# 2026-07-16): getBatches, getInstructors, getStudents, getCurriculumLessons,
+# scraping the rendered UI. `getStudentSchedule({date})` is the primary
+# schedule source as of 2026-07-27 (see docs/superpowers/specs/2026-07-27-
+# rpc-based-schedule-fetch-design.md) — Pending/Completed/Canceled/Meeting
+# together in one call, no DOM/mode-switching involved. Full inventory of the
+# other read-only functions (probed 2026-07-16, re-confirmed 2026-07-27):
+# getBatches, getInstructors, getStudents, getCurriculumLessons,
 # getStudentProgressMatrixPortal({batch}), getStatusBoardData(date?),
 # getScheduleRegs, getSofForDate({date}), getAircraftForFlightPlan,
 # getFlightPlanTemplates, getMySubmissions({studentName,batch}),
-# getSubmissionDetail({id}), getTZ. See AP127_Docs §4.1.
-# NEVER call the mutating ones (submit*/write*/fix*/backfill*/ensure*).
+# getSubmissionDetail({id}), getTZ, getMyUpcomingBookings({studentName,batch}).
+# See AP127_Docs §4.1. NEVER call the mutating ones
+# (submit*/write*/fix*/backfill*/ensure*/save*).
 _RPC_JS = """
 ([fn, args, tmo]) => new Promise(resolve => {
   const t = setTimeout(() => resolve({__err: 'timeout ' + tmo + 's'}), tmo * 1000);
@@ -1085,12 +946,7 @@ async def scrape_window(days_back, days_forward):
                 last_err = None
                 for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
                     try:
-                        # forbidden_mode="canceled": this is the Plan-mode pass — reject and retry
-                        # any read caught still in Canceled mode instead of trusting it (see
-                        # _fetch_one_date()'s docstring — 2026-07-27 fix for a leaked-mode read).
-                        flights = await _fetch_one_date(page, user_frame, date_str,
-                                                          forbidden_mode="canceled",
-                                                          recovery_selector="#gantt-mode-plan")
+                        flights = await _fetch_schedule_for_date(user_frame, date_str)
                         schedules[date_str] = flights
                         print(f"  {date_str}: {len(flights)} flights"
                               + (f" (attempt {attempt})" if attempt > 1 else ""))
@@ -1106,64 +962,6 @@ async def scrape_window(days_back, days_forward):
                 # degrade (silently empty responses) under back-to-back requests.
                 await page.wait_for_timeout(1000)
 
-            # ── Canceled mode: ground-truth cancelled-booking data ──────────
-            # Found 2026-07-26 (same day as the diff-based recover_vanished_
-            # bookings() fix above): the Timeline has a THIRD mode tab, "❌
-            # Canceled" (#gantt-mode-canceled, window.G.mode='canceled'), that
-            # nobody on this project had ever clicked before. It returns the
-            # complete, real cancelled-booking list for a date — full
-            # startTime/endTime/instructor/acReg/duration/condition, status
-            # already "Canceled" — not inferred from a vanished booking's
-            # last-known state. Verified against BK-MRZTU5CV (the exact
-            # booking recover_vanished_bookings() had reconstructed via git
-            # history): Canceled mode returns the IDENTICAL real record
-            # (10:00-11:15, HS-TPV) directly, no diffing needed. Also
-            # confirmed on 2026-07-08 (17 real cancelled bookings) and
-            # 2026-07-27 (2, including one recover_vanished_bookings() never
-            # even had a chance to see). Earlier "the portal never returns
-            # Canceled status" conclusion was simply wrong — Plan mode never
-            # does, but this dedicated mode always did.
-            #
-            # Reuses _fetch_one_date() — one extra full pass over the same date list, mode switched
-            # once beforehand. That switch WAS assumed sticky across every date change in this loop
-            # with no per-date re-click needed — wrong (2026-07-27): see _fetch_one_date()'s
-            # forbidden_mode docstring for the confirmed live failure this assumption caused on the
-            # OTHER (Plan-mode) pass. Left unguarded here on purpose, not an oversight: a stray
-            # Plan-mode read leaking into THIS pass is harmless — the merge below only keeps entries
-            # whose bookingId ISN'T already in that date's Plan-mode schedule, so a Plan-mode leak
-            # just re-reads data the Plan-mode pass already has and gets filtered out as not "fresh".
-            try:
-                await user_frame.locator("#gantt-mode-canceled").click(timeout=15_000)
-            except Exception as exc:
-                print(f"WARNING: could not switch to Canceled mode ({exc}) — "
-                      f"cancelled-booking recovery falls back to diff-based reconstruction only",
-                      file=sys.stderr)
-            else:
-                canceled_total = 0
-                for date_str in dates:
-                    last_err = None
-                    canceled_flights = None
-                    for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
-                        try:
-                            canceled_flights = await _fetch_one_date(page, user_frame, date_str)
-                            break
-                        except Exception as exc:
-                            last_err = exc
-                            await page.wait_for_timeout(1500)
-                    if canceled_flights is None:
-                        print(f"  {date_str}: Canceled-mode fetch FAILED after {DATE_FETCH_ATTEMPTS} "
-                              f"attempts ({last_err!r}) — recover_vanished_bookings() fallback still applies",
-                              file=sys.stderr)
-                        await page.wait_for_timeout(1000)
-                        continue
-                    if canceled_flights:
-                        existing_ids = {e.get("bookingId") for e in schedules.get(date_str, [])}
-                        fresh = [f for f in canceled_flights if f.get("bookingId") not in existing_ids]
-                        if fresh:
-                            schedules.setdefault(date_str, []).extend(fresh)
-                            canceled_total += len(fresh)
-                    await page.wait_for_timeout(1000)
-                print(f"Canceled mode: {canceled_total} real cancelled booking(s) across {len(dates)} date(s).")
         finally:
             await browser.close()
 
@@ -1248,13 +1046,6 @@ async def main():
             BACKUP_FILE.write_bytes(OUTPUT_FILE.read_bytes())
         except Exception as e:
             print(f"WARNING: could not write backup: {e}", file=sys.stderr)
-
-    # Recover cancelled bookings the live feed silently omits — see
-    # recover_vanished_bookings() docstring for the full story.
-    recovered = recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup)
-    if recovered:
-        print(f"Recovered {recovered} cancelled booking(s) the live feed omitted "
-              f"(preserved last-known time slot; reason filled where already backfilled).")
 
     # Regression guard: a date going from populated to (near-)empty in a
     # single fetch is far more likely to mean the Ops Portal silently
