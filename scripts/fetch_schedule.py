@@ -1054,9 +1054,9 @@ async def main():
     # every date in the window, worsening across consecutive runs, while
     # requests from a normal network succeeded fine — looks like IP-based
     # throttling of the Actions runner pool) than that a real schedule
-    # dropped to near-zero bookings. _fetch_one_date()'s stability re-check
-    # only proves a response was consistent, not that it was correct, so it
-    # can't catch this on its own — compare against the last known-good
+    # dropped to near-zero bookings — a per-date fetch succeeding proves the
+    # response was consistent, not that it was correct, so it can't catch
+    # this on its own — compare against the last known-good
     # count instead. A date failing this check keeps its existing data —
     # UNLESS it's failed REGRESSION_GUARD_MAX_STREAK times in a row (see the
     # constant's comment: fixed 2026-07-27 — the guard used to have no way
