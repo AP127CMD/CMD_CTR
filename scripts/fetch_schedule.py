@@ -485,6 +485,8 @@ async def _fetch_one_date(page, user_frame, date_str, forbidden_mode=None, recov
         g = await user_frame.evaluate("() => JSON.stringify(window.G)")
         data = json.loads(g)
         if forbidden_mode is not None and data.get("mode") == forbidden_mode:
+            print(f"  {date_str}: rejected a read still in '{forbidden_mode}' mode — "
+                  f"retrying{' (re-asserting mode)' if recovery_selector else ''}", file=sys.stderr)
             if recovery_selector:
                 try:
                     await user_frame.locator(recovery_selector).click(timeout=5000)
@@ -497,6 +499,11 @@ async def _fetch_one_date(page, user_frame, date_str, forbidden_mode=None, recov
             flight_dates = {f["date"] for f in flights}
             if flight_dates <= {date_str}:
                 if flights:
+                    if forbidden_mode is not None:
+                        # Diagnostic (2026-07-27, temporary): confirms window.G.mode is really the
+                        # right property/values to guard on — remove once the fix is confirmed live.
+                        print(f"  {date_str}: accepted read, window.G.mode={data.get('mode')!r}",
+                              file=sys.stderr)
                     return flights
                 # Empty — could be genuine or a not-yet-loaded artifact.
                 # Re-check after a short pause; only trust it if it's stable.
