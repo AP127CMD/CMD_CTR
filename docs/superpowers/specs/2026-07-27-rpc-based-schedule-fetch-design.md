@@ -150,8 +150,9 @@ might sit unread while the schedule goes stale.
 - `validate_raw_cache()` and the regression guard already have their own coverage —
   unaffected by the fetch-mechanism swap, no new tests needed there.
 - No live Playwright test access outside of manual local runs (as done for this
-  investigation) or GitHub Actions. Rollout plan: implement, run locally against the live
-  portal to confirm output matches current `data/flight_schedule.json` shape and counts for
-  a handful of known dates (same spot-check method used in this investigation), then deploy
-  and monitor the next several CI runs before removing the pre-migration safety nets
-  entirely (they're cheap to leave one extra run cycle if there's any doubt).
+  investigation) or GitHub Actions. Rollout plan: implement with the old fallback machinery
+  removed outright (per the Decision above — not kept as a transitional safety net), run
+  locally against the live portal to confirm output matches current
+  `data/flight_schedule.json` shape and counts for a handful of known dates (same spot-check
+  method used in this investigation), then hold the push to `main` for an explicit
+  confirmation checkpoint before the change reaches the live CI/production pipeline.
