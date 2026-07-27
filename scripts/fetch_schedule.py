@@ -439,7 +439,7 @@ STABILITY_RECHECK_S = 2  # re-verify an apparently-settled EMPTY result is real,
                           # not the brief clear-state before the async reply lands
 
 
-async def _fetch_one_date(page, user_frame, date_str):
+async def _fetch_one_date(page, user_frame, date_str, forbidden_mode=None, recovery_selector=None):
     """Set the Gantt date picker and wait for window.G to settle on that date.
 
     Uses locator.fill() (a real, trusted browser input event) rather than a
@@ -457,6 +457,24 @@ async def _fetch_one_date(page, user_frame, date_str):
     state as if it were a genuine zero-flights day. Enforce a minimum wait
     before accepting anything, and re-verify an empty result is stable
     before trusting it.
+
+    forbidden_mode / recovery_selector (2026-07-27): the date+flights check
+    above never validated window.G.mode — a residual read from the WRONG
+    Timeline mode (Plan vs Canceled) passes it trivially, since Canceled
+    mode returns the same real bookings for that date, just all re-labeled
+    Canceled by that view, not a different date or an empty/malformed
+    result. The Canceled-mode pass in scrape_window() switches mode ONCE
+    before its whole date loop on the (undocumented, never verified)
+    assumption that the switch stays sticky across every date change in
+    that loop — confirmed broken live: 2026-07-31 (the busiest near-future
+    date, 30 bookings, plausibly the slowest to settle and so the most
+    exposed) intermittently came back with all 30 read as Canceled where a
+    clean read shows Pending — same date, same count, status flipping
+    together, exactly what a leaked Canceled-mode read looks like, and nothing
+    the regression guard (a COUNT-drop check) could ever catch since the
+    count never moves. If forbidden_mode is set and window.G.mode matches
+    it, the read is rejected as stale/leaked and retried (re-asserting mode
+    via recovery_selector first, if given) instead of being trusted.
     """
     date_input = user_frame.locator("#gantt-date")
     await date_input.fill(date_str)
@@ -466,6 +484,14 @@ async def _fetch_one_date(page, user_frame, date_str):
     for _ in range(DATE_SETTLE_TIMEOUT_S):
         g = await user_frame.evaluate("() => JSON.stringify(window.G)")
         data = json.loads(g)
+        if forbidden_mode is not None and data.get("mode") == forbidden_mode:
+            if recovery_selector:
+                try:
+                    await user_frame.locator(recovery_selector).click(timeout=5000)
+                except Exception:
+                    pass
+            await page.wait_for_timeout(1000)
+            continue
         if data.get("date") == date_str:
             flights = data.get("flights", [])
             flight_dates = {f["date"] for f in flights}
@@ -1035,7 +1061,12 @@ async def scrape_window(days_back, days_forward):
                 last_err = None
                 for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
                     try:
-                        flights = await _fetch_one_date(page, user_frame, date_str)
+                        # forbidden_mode="canceled": this is the Plan-mode pass — reject and retry
+                        # any read caught still in Canceled mode instead of trusting it (see
+                        # _fetch_one_date()'s docstring — 2026-07-27 fix for a leaked-mode read).
+                        flights = await _fetch_one_date(page, user_frame, date_str,
+                                                          forbidden_mode="canceled",
+                                                          recovery_selector="#gantt-mode-plan")
                         schedules[date_str] = flights
                         print(f"  {date_str}: {len(flights)} flights"
                               + (f" (attempt {attempt})" if attempt > 1 else ""))
@@ -1069,11 +1100,14 @@ async def scrape_window(days_back, days_forward):
             # Canceled status" conclusion was simply wrong — Plan mode never
             # does, but this dedicated mode always did.
             #
-            # Reuses _fetch_one_date() completely unchanged — it only reads
-            # window.G.date/.flights, doesn't care what mode produced them —
-            # via one extra full pass over the same date list, mode switched
-            # once beforehand (confirmed sticky across date changes within a
-            # session, no per-date re-click needed).
+            # Reuses _fetch_one_date() — one extra full pass over the same date list, mode switched
+            # once beforehand. That switch WAS assumed sticky across every date change in this loop
+            # with no per-date re-click needed — wrong (2026-07-27): see _fetch_one_date()'s
+            # forbidden_mode docstring for the confirmed live failure this assumption caused on the
+            # OTHER (Plan-mode) pass. Left unguarded here on purpose, not an oversight: a stray
+            # Plan-mode read leaking into THIS pass is harmless — the merge below only keeps entries
+            # whose bookingId ISN'T already in that date's Plan-mode schedule, so a Plan-mode leak
+            # just re-reads data the Plan-mode pass already has and gets filtered out as not "fresh".
             try:
                 await user_frame.locator("#gantt-mode-canceled").click(timeout=15_000)
             except Exception as exc:
