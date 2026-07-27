@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-27T01:27:08Z",
+  "fetched_at": "2026-07-27T01:30:02Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -140157,9 +140157,9 @@
         "date": "2026-07-27",
         "rowIdx": "BK-AP-127-SIWA-LUQCQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:40",
@@ -140175,15 +140175,15 @@
         "condition": null,
         "type": "DA40TDI",
         "tail": "HS-TPT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "06:57",
+        "ldgTime": "07:44",
+        "airborne": "00:47",
+        "ldg": 4,
+        "to": 4,
+        "inst": 0,
+        "blockOff": "06:48",
+        "blockOn": "07:48",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -140499,8 +140499,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": "Expect to be low visibility during flight"
       }
     ],
     "2026-07-28": [],
@@ -154405,6 +154405,19 @@
       "lesson": "CDXV 29",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MS122N0N|27/07/2026 08:22:12",
+      "bookingId": "BK-MS122N0N",
+      "date": "2026-07-27",
+      "reason": "Weather (WX)",
+      "remarks": "Expect to be low visibility during flight",
+      "instructor": "ITTIPOL P.",
+      "student": "KHOBPONG W.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 39",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
     },
     {
       "id": "Flight Cancels Record|key|BK-MS19IQ58|26/07/2026 11:27:40",
