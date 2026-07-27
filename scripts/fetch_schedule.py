@@ -570,23 +570,12 @@ async def _rpc(user_frame, fn, *args, timeout_s=45):
     return res.get("__ok")
 
 
-# 2026-07-27: primary schedule fetch, replacing the Timeline (window.G) DOM
-# approach entirely — see docs/superpowers/specs/2026-07-27-rpc-based-schedule-
-# fetch-design.md. getStudentSchedule({date}) returns Pending/Completed/
-# Canceled/Meeting for a date in one clean JSON response (no mode-switching,
-# no DOM settling races), confirmed live to match Daily Schedule/Timeline
-# counts exactly across 4 known dates including the actual{} post-flight
-# block. Cold (never-touched-this-session) dates observed up to ~27s;
-# repeats ~1-1.5s — timeout is set well above the worst cold case.
+# Primary schedule fetch (replaces Timeline DOM mode-switching) — see docs/superpowers/specs/2026-07-27-rpc-based-schedule-fetch-design.md.
 RPC_FETCH_TIMEOUT_S = int(os.environ.get("FETCH_RPC_TIMEOUT_S", "45"))
 
 
 async def _fetch_schedule_for_date(user_frame, date_str, timeout_s=None):
-    """Fetch one date's full schedule via getStudentSchedule. Raises (loud,
-    retriable by the caller) on RPC failure/timeout, or if a returned entry's
-    date doesn't match date_str — a wrong-date response would otherwise look
-    like valid data and merge silently wrong, the same class of risk the old
-    Timeline mode-leak had."""
+    """Fetch one date's schedule via getStudentSchedule; raises on RPC failure or mismatched-date response (both loud, retriable by caller)."""
     flights = await _rpc(user_frame, "getStudentSchedule", {"date": date_str},
                           timeout_s=timeout_s or RPC_FETCH_TIMEOUT_S)
     flights = flights or []
