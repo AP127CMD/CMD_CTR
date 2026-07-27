@@ -39,6 +39,21 @@ RETRY_DELAY_S = int(os.environ.get("FETCH_RETRY_DELAY",  "20"))
 DAYS_BACK    = int(os.environ.get("FETCH_DAYS_BACK",    "7"))
 DAYS_FORWARD = int(os.environ.get("FETCH_DAYS_FORWARD", "10"))
 
+# 2026-07-27: the regression guard below (added 2026-07-11) had no escape hatch — once a date
+# tripped it, `existing_schedules[date]` never gets refreshed again (each run compares fresh data
+# against that same frozen baseline), so a date stuck this way can NEVER self-correct, even long
+# after whatever originally caused the bad reads has cleared up. Confirmed live: 2026-07-31 got
+# wedged at "30 flights, all Canceled" starting ~12:40 that day and stayed wedged for hours,
+# continuing to reject every single fresh fetch even after the actual cause (overlapping scraper
+# runs racing on the same output file, see fetch_schedule.yml's concurrency fix) was resolved,
+# because the guard itself has no way back once triggered. A real Ops Portal check confirmed the
+# frozen data was wrong — the live schedule genuinely had 30 Pending flights, not Canceled.
+# REGRESSION_GUARD_MAX_STREAK consecutive rejections for the same date now forces acceptance of
+# the fresh (low) data instead of freezing forever — still absorbs the kind of short-lived,
+# worsening-then-clearing throttling blip the guard was originally built for (2026-07-11), but no
+# longer gets permanently stuck once that blip's cause is gone.
+REGRESSION_GUARD_MAX_STREAK = int(os.environ.get("FETCH_REGRESSION_GUARD_MAX_STREAK", "3"))
+
 TIMEZONE = "Asia/Bangkok"
 VALID_STATUSES = {"Pending", "Completed", "Canceled"}
 
@@ -1162,10 +1177,12 @@ async def main():
     BACKUP_FILE = OUTPUT_FILE.with_name("flight_schedule.backup.json")
 
     existing_schedules = {}
+    regression_streaks = {}
     if OUTPUT_FILE.exists():
         try:
             existing = json.loads(OUTPUT_FILE.read_text(encoding="utf-8"))
             existing_schedules = existing.get("schedules", {})
+            regression_streaks = existing.get("_regressionStreaks", {})
         except Exception as e:
             print(f"WARNING: could not read existing file for merge: {e}", file=sys.stderr)
 
@@ -1191,23 +1208,48 @@ async def main():
     # dropped to near-zero bookings. _fetch_one_date()'s stability re-check
     # only proves a response was consistent, not that it was correct, so it
     # can't catch this on its own — compare against the last known-good
-    # count instead. A date failing this check keeps its existing data.
+    # count instead. A date failing this check keeps its existing data —
+    # UNLESS it's failed REGRESSION_GUARD_MAX_STREAK times in a row (see the
+    # constant's comment: fixed 2026-07-27 — the guard used to have no way
+    # back once triggered, so a date could get permanently wedged on stale
+    # data long after whatever caused the bad reads had cleared up).
     suspicious_dates = []
+    forced_accepts = []
+    new_regression_streaks = {}
     for date, entries in list(new_schedules.items()):
         existing_count = len(existing_schedules.get(date, []))
         new_count = len(entries)
         if existing_count >= 5 and new_count < existing_count * 0.2:
-            suspicious_dates.append((date, existing_count, new_count))
-            del new_schedules[date]
+            streak = regression_streaks.get(date, 0) + 1
+            if streak >= REGRESSION_GUARD_MAX_STREAK:
+                # Escape hatch: this many consecutive low reads means it's persistent, not a
+                # transient blip — trust the fresh data (whatever it is) and let it through.
+                # Streak intentionally NOT carried into new_regression_streaks — resets to 0.
+                forced_accepts.append((date, existing_count, new_count, streak))
+            else:
+                suspicious_dates.append((date, existing_count, new_count, streak))
+                del new_schedules[date]
+                new_regression_streaks[date] = streak
+        # else: date passed the check this run — streak resets to 0 (not carried forward).
+    regression_streaks = new_regression_streaks
     if suspicious_dates:
         drift_msg = (
             f"{len(suspicious_dates)} date(s) looked like a fetch regression "
             f"(existing→fresh count dropped sharply, likely a blocked/bad Ops Portal response "
             f"rather than a real schedule change) — kept existing data instead: "
-            + ", ".join(f"{d} ({e}→{n})" for d, e, n in suspicious_dates)
+            + ", ".join(f"{d} ({e}→{n}, streak {s}/{REGRESSION_GUARD_MAX_STREAK})"
+                        for d, e, n, s in suspicious_dates)
         )
         print(f"WARNING: {drift_msg}", file=sys.stderr)
         warnings.append(drift_msg)
+    if forced_accepts:
+        accept_msg = (
+            f"{len(forced_accepts)} date(s) hit {REGRESSION_GUARD_MAX_STREAK} consecutive "
+            f"low reads — accepting the fresh data instead of freezing forever: "
+            + ", ".join(f"{d} ({e}→{n})" for d, e, n, s in forced_accepts)
+        )
+        print(f"WARNING: {accept_msg}", file=sys.stderr)
+        warnings.append(accept_msg)
 
     _report_schema_drift(warnings)
 
@@ -1273,6 +1315,10 @@ async def main():
         # backfill cache only — not surfaced in flight-data.js; cancelReason/
         # cancelRemarks are already inlined onto each Canceled schedule entry.
         "cancelRecords": rosters["cancelRecords"],
+        # Regression-guard state (see REGRESSION_GUARD_MAX_STREAK) — internal bookkeeping only,
+        # not surfaced in flight-data.js. Only ever holds dates currently mid-streak; a date that
+        # passed its check (or wasn't fetched this run) is simply absent, not zeroed.
+        "_regressionStreaks": regression_streaks,
     }
 
     total_count = sum(len(v) for v in output["schedules"].values())
