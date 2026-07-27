@@ -236,12 +236,11 @@ def normalize_entry(entry, date, cancel_lookup=None):
     (the default, and the only mode anyone had ever scraped) genuinely never
     includes cancelled bookings — that part was correct — but that's an
     artifact of which mode was being read, not a portal limitation. See
-    scrape_window()'s Canceled-mode pass, which now fetches this directly.
-    This join still matters for those entries (they arrive with
-    status=Canceled but no reason — Cancel Record submissions are a wholly
-    separate form/store) and additionally for anything recover_vanished_
-    bookings() has to fall back to reconstructing (see its docstring) if the
-    Canceled-mode fetch itself fails for a run.
+    getStudentSchedule (see docs/superpowers/specs/2026-07-27-rpc-based-schedule-
+    fetch-design.md — replaced the Timeline-based fetch entirely, 2026-07-27)
+    returns Canceled entries inline for every date. This join still matters
+    for those entries: they arrive with status=Canceled but no reason — Cancel
+    Record submissions are a wholly separate form/store.
 
     Post-flight actuals, however, turned out NOT to be gone: since (at least)
     2026-07-16 Completed flights carry an `actual{}` object on window.G
