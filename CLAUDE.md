@@ -1,94 +1,5 @@
 # CMD CTR — Claude Code Context
 
-## 🔴 HANDOFF (2026-07-27, ~15:30 UTC) — read this first, then §"Last known" below for full history
-
-**User explicitly asked to hand this investigation off to a new session — read this whole block before
-touching anything.** Telegram notifications for AP127 (in AP127_V2/watchdog) are **currently turned OFF
-by the user** as a stopgap — do not tell them it's safe to re-enable until you've verified stability
-yourself (see "How to check current state" below). This is the live end of a same-day chain of fixes; do
-not re-litigate the earlier ones (concurrency guard, regression-guard escape hatch) — they're confirmed
-correct and deployed. This handoff is about the LAST, still-open piece.
-
-**The open bug:** `2026-07-31` (currently the busiest near-future date, 30 real bookings) has been
-intermittently flip-flopping its `status` between all-Pending and all-Canceled across scrapes — count
-stays at exactly 30 the whole time, only `status` changes, and it changes for all 30 bookings together.
-This is a genuinely different bug from the two fixed earlier today (the `fetch_schedule.yml` concurrency
-race, and the regression guard's missing escape hatch) — neither of those mechanisms can produce a
-same-count status flip, and both are confirmed working correctly.
-
-**Root cause (strong evidence, not fully proven live):** `_fetch_one_date()` in `scripts/fetch_schedule.py`
-validates `window.G.date` and that every returned flight matches that date, but never validated
-`window.G.mode`. The Canceled-mode second pass (`scrape_window()`) switches Timeline into Canceled mode
-ONCE before its whole date loop, on a documented-but-never-verified assumption that the switch "stays
-sticky across date changes... no per-date re-click needed." If that assumption breaks for even one date —
-plausibly the busiest one, likely the slowest to settle — a stale Canceled-mode read for that date passes
-the existing date/flights check completely undetected, since Canceled mode returns the SAME real bookings
-for that date, just all re-labeled Canceled by that view. That exactly matches the observed symptom.
-
-**What's been done about it (commits, newest first, all pushed to `main`):**
-- `f1f9051a0` — **temporary diagnostic logging** (still live). Prints `window.G.mode` on every accepted
-  Plan-mode read and a message whenever the guard rejects a leaked-mode read. **Remove this once the fix
-  is confirmed stable** — it adds ~10-90 extra log lines per run.
-- `a13f075a7` — **the actual fix**: `_fetch_one_date()` gained `forbidden_mode`/`recovery_selector`
-  params. The Plan-mode pass now rejects (and retries, re-clicking `#gantt-mode-plan`) any read caught
-  still in Canceled mode instead of trusting it. The Canceled-mode pass is deliberately left unguarded —
-  a stray Plan-mode leak there is harmless (the merge step only keeps entries not already in that date's
-  Plan-mode schedule, so it just gets filtered out). Verified with a standalone Python simulation of the
-  retry control-flow (no live Playwright access) — NOT yet verified against a real triggering event live.
-- Confirmed via run `30279156647`'s logs: `window.G.mode` really is the right property, and `'plan'` is a
-  real observed value (`2026-07-31: accepted read, window.G.mode='plan'`) — the property-name hypothesis
-  is now directly confirmed, not just circumstantial.
-- **Not yet confirmed:** whether the fix actually *catches* a leak when one happens — no rejection has
-  been logged yet in any post-fix run. Two consecutive post-fix reads of `2026-07-31` came back Pending
-  (clean), which is encouraging but not proof — the bug is intermittent and a clean run doesn't rule it
-  out recurring.
-
-**How to check current state (run these before doing anything else):**
-```bash
-# Is it still flapping? Pull latest and check 2026-07-31's status + count.
-cd /Users/nugui/flight-schedule-feed && git pull --rebase -q
-python3 -c "
-import json
-from collections import Counter
-t = open('flight-data.js', encoding='utf-8').read()
-i = t.index('window.FLIGHT_DATA =')
-s = t[i+len('window.FLIGHT_DATA ='):].strip().rstrip(';')
-d = json.loads(s)
-jul31 = [f for f in d['flights'] if f['date']=='2026-07-31']
-print('count=', len(jul31), 'status=', dict(Counter(f['status'] for f in jul31)), 'fetchedAt=', d.get('fetchedAt'))
-"
-# Has the guard ever actually caught a leak? (look for "rejected a read still in")
-gh api "repos/AP127CMD/CMD_CTR/actions/workflows/fetch_schedule.yml/runs?per_page=10" \
-  -q '.workflow_runs[] | select(.conclusion=="success") | "\(.id) \(.run_started_at)"' | \
-  while read id ts; do gh run view "$id" --repo AP127CMD/CMD_CTR --log 2>&1 | grep -H "rejected a read still in\|2026-07-31: accepted" | sed "s/^/$ts: /"; done
-```
-If several consecutive runs show `status={'Pending': 30}` AND you've seen at least one real
-"rejected a read still in 'canceled' mode" log line (proving the guard caught a genuine leak and
-corrected it), the patch is confirmed working — safe to tell the user they can re-enable notifications,
-and worth removing the temporary diagnostic logging (`f1f9051a0`) at that point.
-
-**The proposed next step, NOT YET STARTED — user's own idea, already validated by prior investigation:**
-Switch the core per-date fetch from Timeline (`window.G`, needs mode-switching) to Daily Schedule
-(`window.SD`) instead. This was independently investigated and confirmed viable the day before all of
-today's incidents — see the `ee5d829df` commit / CLAUDE.md's "Last known" history below: `window.SD.flights`
-returns Pending + Completed + Canceled + Meeting **together in one query per date**, same field shape as
-Timeline, verified against 3 real dates matching known counts exactly. It was flagged as "not yet wired
-into the scraper... pending decision on whether to take on that refactor" — that refactor was never done.
-
-Doing this would eliminate the ENTIRE mode-switching bug class structurally (no second mode to leak from,
-since there's no Canceled-mode pass needed at all), AND roughly halve every run's duration (one query per
-date instead of two), which also reduces exposure to the original concurrency-race class of issue.
-
-**Scope/risk if you take this on:** `_fetch_one_date()`'s Daily Schedule equivalent doesn't exist yet —
-only a lightweight presence check (`#sched-date` exists) was ever built, never real per-date fetching. You
-cannot test against the live Playwright/Ops Portal session directly (no such access) — a wrong selector
-or wrong settling assumption could break EVERY date's fetch, not just one, which is a worse failure mode
-than the current bug. **Recommended approach discussed with the user but not yet approved in detail:**
-implement the Daily Schedule fetch as primary, with automatic fallback to the existing Timeline-based
-fetch per-date if the Daily Schedule read fails for that date — don't delete the Timeline path outright.
-Confirm this approach (or your own risk-mitigation plan) with the user before implementing, given the
-blast radius if something goes wrong.
-
 ## ⚠️ Update rule — do this after EVERY code change
 1. Bump cache token in `index.html` — next must be `r44`
 2. Update the Verify section below with the new token + change summary
@@ -104,7 +15,24 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r44` (2026-07-27 — **regression guard given an escape hatch + a stuck date manually
+**Last known:** token = `r44` (2026-07-27 — **root cause of the 2026-07-31 status flip-flop fixed:
+scraper switched from Timeline mode-switching to the `getStudentSchedule` RPC** (scraper-only — token
+not bumped, per the b8e0544c precedent below). The flip-flop was traced to `scrape_window()`'s
+Canceled-mode second pass assuming the Timeline's mode switch stays sticky across every date change in
+its loop — never verified, confirmed broken live for `2026-07-31`. A live audit (same day) found an
+undocumented RPC, `getStudentSchedule({date})`, that returns Pending/Completed/Canceled/Meeting for a
+date in one clean JSON call — verified against 4 known dates matching exact counts, `actual{}` intact.
+Replaced the entire Timeline DOM-polling fetch (`_fetch_one_date()`, the Canceled-mode pass,
+`recover_vanished_bookings()`, the `forbidden_mode` guard from earlier today) with this RPC as the sole
+fetch mechanism — no Timeline fallback, per explicit decision (a future RPC failure gets fixed, not
+silently degraded around). RPC failures are now loud (timeout/exception) instead of silently-wrong-data,
+which is why the fallback machinery could be deleted rather than kept. Also added a fatal check
+(`CriticalRPCMissingError`) in `check_portal_structure()` — if `getStudentSchedule` ever disappears from
+the portal's RPC surface, the run now aborts loudly instead of silently fetching nothing; ordinary
+structural drift stays non-fatal (warn-and-continue) as before. New unit tests in `scripts/tests/`
+(this repo's first test suite — `requirements-dev.txt`, `pytest.ini`). See
+`docs/superpowers/specs/2026-07-27-rpc-based-schedule-fetch-design.md` for the full investigation and
+design.) (2026-07-27 — **regression guard given an escape hatch + a stuck date manually
 corrected** (scraper/data-only — token not bumped). Follow-on same day: found the earlier concurrency
 fix (below) didn't actually cause any new problem, but tracing it exposed a SEPARATE, pre-existing bug —
 the regression guard (added 2026-07-11, `existing→fresh count dropped sharply` check) had no escape
