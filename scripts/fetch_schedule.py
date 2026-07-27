@@ -581,6 +581,28 @@ STRUCTURE_CHECK_INTERVAL_HOURS = int(os.environ.get("STRUCTURE_CHECK_INTERVAL_HO
 # audits, expected growth, not drift) — alerting on every addition would
 # make the mechanism noisy enough to get ignored, defeating its purpose.
 
+# 2026-07-27: ordinary structural drift (below) is deliberately non-fatal —
+# warn and continue. getStudentSchedule is different: it's the schedule
+# pipeline's sole data source now (see docs/superpowers/specs/2026-07-27-
+# rpc-based-schedule-fetch-design.md), so its disappearance means every date
+# would silently fetch nothing rather than surfacing as an obvious failure.
+# This must abort the run instead of quietly warning.
+CRITICAL_RPC_FUNCTIONS = {"getStudentSchedule"}
+
+
+class CriticalRPCMissingError(RuntimeError):
+    pass
+
+
+def _check_critical_rpcs(rpc_functions):
+    missing = CRITICAL_RPC_FUNCTIONS - set(rpc_functions)
+    if missing:
+        raise CriticalRPCMissingError(
+            f"Ops Portal RPC function(s) required for schedule fetching are missing: "
+            f"{sorted(missing)} — the portal has changed and the scraper cannot "
+            f"function until this is fixed."
+        )
+
 
 def _load_portal_fingerprint():
     if not PORTAL_FINGERPRINT_FILE.exists():
@@ -683,6 +705,7 @@ async def check_portal_structure(page, user_frame):
     fingerprint = dict(prev)  # start from prior state; only overwrite what we actually re-check this run
 
     cheap = await _capture_cheap_fingerprint(user_frame)
+    _check_critical_rpcs(cheap["rpc_functions"])
     if not first_run:
         prev_rpc, cur_rpc = set(prev.get("rpc_functions") or []), set(cheap["rpc_functions"])
         if prev_rpc != cur_rpc:
@@ -924,6 +947,11 @@ async def scrape_window(days_back, days_forward):
                 structure_warnings = await check_portal_structure(page, user_frame)
                 for w in structure_warnings:
                     print(f"WARNING: {w}", file=sys.stderr)
+            except CriticalRPCMissingError:
+                # Fatal — do NOT swallow like an ordinary structure-check failure. Propagates up
+                # through main() to main_with_retry(), which retries then exits non-zero, tripping
+                # the existing "Report failure as GitHub issue" CI step.
+                raise
             except Exception as exc:
                 print(f"WARNING: portal-structure check itself failed ({exc}) — "
                       f"skipping this run, will retry next scheduled check", file=sys.stderr)
