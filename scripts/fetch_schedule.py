@@ -235,10 +235,10 @@ def normalize_entry(entry, date, cancel_lookup=None):
     time slot, instructor, aircraft — ground truth, not a guess). Plan mode
     (the default, and the only mode anyone had ever scraped) genuinely never
     includes cancelled bookings — that part was correct — but that's an
-    artifact of which mode was being read, not a portal limitation. See
-    getStudentSchedule (see docs/superpowers/specs/2026-07-27-rpc-based-schedule-
+    artifact of which mode was being read, not a portal limitation.
+    getStudentSchedule (docs/superpowers/specs/2026-07-27-rpc-based-schedule-
     fetch-design.md — replaced the Timeline-based fetch entirely, 2026-07-27)
-    returns Canceled entries inline for every date. This join still matters
+    now returns Canceled entries inline for every date. This join still matters
     for those entries: they arrive with status=Canceled but no reason — Cancel
     Record submissions are a wholly separate form/store.
 
@@ -431,18 +431,18 @@ async def _rpc(user_frame, fn, *args, timeout_s=45):
 
 
 # Primary schedule fetch (replaces Timeline DOM mode-switching) — see docs/superpowers/specs/2026-07-27-rpc-based-schedule-fetch-design.md.
-RPC_FETCH_TIMEOUT_S = int(os.environ.get("FETCH_RPC_TIMEOUT_S", "45"))
+RPC_FETCH_TIMEOUT_S = int(os.environ.get("FETCH_RPC_TIMEOUT_S", "45"))  # 45s — well above the ~27s worst observed cold-date latency
 
 
 async def _fetch_schedule_for_date(user_frame, date_str, timeout_s=None):
     """Fetch one date's schedule via getStudentSchedule; raises on RPC failure or mismatched-date response (both loud, retriable by caller)."""
     flights = await _rpc(user_frame, "getStudentSchedule", {"date": date_str},
-                          timeout_s=timeout_s or RPC_FETCH_TIMEOUT_S)
+                          timeout_s=RPC_FETCH_TIMEOUT_S if timeout_s is None else timeout_s)
     flights = flights or []
     bad_dates = {f.get("date") for f in flights} - {date_str}
     if bad_dates:
         raise ValueError(
-            f"getStudentSchedule({date_str!r}) returned mismatched date(s): {sorted(bad_dates)!r}"
+            f"getStudentSchedule({date_str!r}) returned mismatched date(s): {sorted(bad_dates, key=str)!r}"
         )
     return flights
 
@@ -595,6 +595,8 @@ class CriticalRPCMissingError(RuntimeError):
 
 
 def _check_critical_rpcs(rpc_functions):
+    if not rpc_functions:
+        return  # couldn't enumerate the RPC surface at all — a check-itself-failed case, not proof getStudentSchedule was removed
     missing = CRITICAL_RPC_FUNCTIONS - set(rpc_functions)
     if missing:
         raise CriticalRPCMissingError(

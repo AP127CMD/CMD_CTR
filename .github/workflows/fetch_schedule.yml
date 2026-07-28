@@ -5,8 +5,12 @@ on:
     - cron: '0 * * * *'  # hourly fallback (CF Worker dispatcher fires every 5 min)
   workflow_dispatch:          # manual trigger from GitHub UI
 
-# 2026-07-27: a single run takes 6-11 min (two full passes over every date --
-# Plan mode then Canceled mode -- each ~1-2s/date plus Playwright overhead),
+# 2026-07-27: a single run took 6-11 min under the original two-pass Timeline
+# DOM-scraping fetch (since replaced with one getStudentSchedule RPC call per
+# date — see docs/superpowers/specs/2026-07-27-rpc-based-schedule-fetch-
+# design.md; a live verification run of the new mechanism took ~10 min for 18
+# dates, ~33s/date, since every CI run is a fresh browser session so every
+# date is a cold RPC call),
 # but the CF Worker dispatcher fires a new run every 5 min. With no
 # concurrency guard, that means 2-3 independent Playwright scraper instances
 # were ALWAYS running in parallel (confirmed live: runs #14111/#14112 started
