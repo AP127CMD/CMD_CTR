@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-01T04:22:12Z",
+  "fetched_at": "2026-08-01T04:31:08Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -143071,7 +143071,7 @@
         "date": "2026-08-02",
         "rowIdx": "BK-AP-126-PORN-MO6XN",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -143098,8 +143098,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": "Covid19"
       },
       {
         "id": "BK-AP-127-PANI-ZGB9S",
@@ -157476,6 +157476,19 @@
       "lesson": "CDXI 75",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-PORN-MO6XN|01/08/2026 11:22:16",
+      "bookingId": "BK-AP-126-PORN-MO6XN",
+      "date": "2026-08-02",
+      "reason": "Student Sick",
+      "remarks": "Covid19",
+      "instructor": "APIRATKUNPAK K.",
+      "student": "PORNTREETRA R.",
+      "batch": "AP-126",
+      "lesson": "CDXI 74",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     }
   ],
   "_regressionStreaks": {}
