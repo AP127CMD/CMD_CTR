@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-04T01:31:44Z",
+  "fetched_at": "2026-08-04T01:41:33Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -145105,7 +145105,7 @@
         "date": "2026-08-04",
         "rowIdx": "BK-AP-126-GRAV-JBWWC",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -145132,8 +145132,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Alternator fail"
       },
       {
         "id": "BK-AP-126-KANA-5QW10",
@@ -160516,6 +160516,19 @@
       "lesson": "CDXI 74",
       "acType": "DA40CS",
       "acReg": "HS-TVH"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-GRAV-JBWWC|04/08/2026 08:28:43",
+      "bookingId": "BK-AP-126-GRAV-JBWWC",
+      "date": "2026-08-04",
+      "reason": "Aircraft Trouble",
+      "remarks": "Alternator fail",
+      "instructor": "SANTI SUK.",
+      "student": "GRAVITAT C.",
+      "batch": "AP-126",
+      "lesson": "CDXI 75",
+      "acType": "DA40CS",
+      "acReg": "HS-TVD"
     }
   ],
   "_regressionStreaks": {}
