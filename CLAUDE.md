@@ -15,7 +15,24 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r44` (2026-07-27 — **root cause of the 2026-07-31 status flip-flop fixed:
+**Last known:** token = `r44` (2026-08-06 — **restored `recover_vanished_bookings()`, removed during
+the RPC migration below, for bookings that vanish via a portal path other than the Cancel Flight form**
+(scraper-only — token not bumped). Real user report, notifications had just been turned back on:
+recent Watchdog cancel notices showed no reason. Traced 4 real bookings (e.g. `BK-AP-127-TEER-FKTRW`)
+that went Pending → absent between two consecutive scrapes with `getStudentSchedule` never showing
+them as Canceled and no Cancel Record ever submitted for them — most likely removed via the portal's
+Edit Request "delete this record entirely" option, a path that never surfaces as status=Canceled
+anywhere. The RPC migration's removal of `recover_vanished_bookings()` assumed `getStudentSchedule`
+always shows Canceled inline, which is true for Cancel-Flight cancellations but not this path.
+Restored the same diff-based safety net (pure, no Playwright dependency — it never actually needed
+removing) with a new `recovered` flag, true only when no cancel reason is found anywhere; the
+existing retroactive cancelReason-backfill sweep in `main()` now also clears it if a matching Cancel
+Record eventually appears. `generate_flight_data.py` passes `recovered` through when true.
+AP127_V2/watchdog renders `recovered` entries as a distinct "🗑️ Removed" notice (with an explanatory
+line) instead of a normal "❌ Cancelled" one, per explicit user request to not mix the two up — scoped
+to the notification only, dashboards still show these as Canceled (lowest-risk option, doesn't touch
+any dashboard's status-rendering logic). 8 new tests. Live commit: `4bc893bf7`.) (2026-07-27 — **root
+cause of the 2026-07-31 status flip-flop fixed:
 scraper switched from Timeline mode-switching to the `getStudentSchedule` RPC** (scraper-only — token
 not bumped, per the b8e0544c precedent below). The flip-flop was traced to `scrape_window()`'s
 Canceled-mode second pass assuming the Timeline's mode switch stays sticky across every date change in
