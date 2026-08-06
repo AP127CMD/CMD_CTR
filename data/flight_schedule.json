@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-06T00:01:11Z",
+  "fetched_at": "2026-08-06T00:13:07Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -148294,7 +148294,7 @@
         "date": "2026-08-06",
         "rowIdx": "BK-AP-126-NUTT-LUTLN",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -148321,8 +148321,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "AHRS FAILED, ECU BACKUP ENSAFE LIGHT DOES NOT EXTINGUISHED "
       },
       {
         "id": "BK-AP-126-PAKO-EYU3Y",
@@ -149631,8 +149631,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "13:30",
-        "end": "16:30",
+        "start": "10:00",
+        "end": "13:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -149643,7 +149643,7 @@
         "lesson": "CDXI 78",
         "condition": "IR/Nav",
         "type": "DA40TDI",
-        "tail": "HS-TPX",
+        "tail": "HS-TPW",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -149952,10 +149952,10 @@
         "durationMin": 180,
         "planDur": null,
         "planDurMin": null,
-        "student": "NABHADR P.",
-        "instructor": "SANTI SUK.",
+        "student": "WATTIKORN K.",
+        "instructor": "WUTTHICHAI L.",
         "batch": "AP-126",
-        "lesson": "CDXI 81",
+        "lesson": "CDXI 80",
         "condition": "IR/Nav",
         "type": "DA40TDI",
         "tail": "HS-TPV",
@@ -150016,8 +150016,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "13:00",
+        "start": "13:30",
+        "end": "16:30",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -165021,6 +165021,19 @@
       "lesson": "CDXI 75",
       "acType": "DA40CS",
       "acReg": "HS-TVD"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-NUTT-LUTLN|06/08/2026 06:56:25",
+      "bookingId": "BK-AP-126-NUTT-LUTLN",
+      "date": "2026-08-06",
+      "reason": "Aircraft Trouble",
+      "remarks": "AHRS FAILED, ECU BACKUP ENSAFE LIGHT DOES NOT EXTINGUISHED ",
+      "instructor": "WISANU T.",
+      "student": "NUTTAWAT R.",
+      "batch": "AP-126",
+      "lesson": "CDXI 79",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-VIPH-23JGB|05/08/2026 19:02:45",
