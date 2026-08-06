@@ -49,6 +49,12 @@ def transform(raw: dict) -> dict:
                 "type":       f.get("type") or None,
                 "tail":       f.get("tail") or None,
             }
+            # recover_vanished_bookings() flag — only present (and only true) on Canceled
+            # entries the scraper synthesized with no confirmed cancel reason found anywhere.
+            # Watchdog uses this to render a distinct "Removed" notice instead of "Cancelled".
+            if f.get("recovered"):
+                entry["recovered"] = True
+
             # Operational data — only present on Completed flights
             if f.get("status") == "Completed":
                 if f.get("tkoff")   is not None: entry["tkoff"]   = f["tkoff"]

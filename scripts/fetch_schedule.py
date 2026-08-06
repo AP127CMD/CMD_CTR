@@ -321,6 +321,43 @@ def normalize_entry(entry, date, cancel_lookup=None):
     }
 
 
+def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
+    """Re-insert bookings the live feed silently dropped (status forced to Canceled),
+    mutating new_schedules in place. Returns the count recovered.
+
+    2026-08-06: restored after being removed during the 2026-07-27 RPC migration, on the
+    (incomplete) assumption that getStudentSchedule always shows Canceled inline so this
+    diff-based fallback could never be needed. True for bookings cancelled via the Cancel
+    Flight form — false for bookings removed by some other portal path (e.g. an Edit
+    Request's "delete this record entirely" option) that never gets a Cancel Record and
+    never surfaces as status=Canceled anywhere: getStudentSchedule just stops returning
+    them. Confirmed live: BK-AP-127-TEER-FKTRW and 3 others went Pending -> absent between
+    two consecutive scrapes, no Canceled status ever recorded, no Cancel Record ever
+    submitted. `recovered=True` on an entry marks exactly this case (no confirmed reason
+    found anywhere) — see main()'s retroactive sweep, which clears it back to False the
+    same run a matching Cancel Record eventually backfills, and see AP127_V2/watchdog,
+    which renders `recovered` entries as a distinct "Removed" notice instead of a normal
+    "Cancelled" one, since there's no reason to show.
+    """
+    recovered = 0
+    for date, fresh_entries in new_schedules.items():
+        prior_entries = existing_schedules.get(date)
+        if not prior_entries:
+            continue
+        fresh_ids = {e["id"] for e in fresh_entries}
+        for prior in prior_entries:
+            if prior.get("status") == "Canceled" or prior.get("id") in fresh_ids:
+                continue
+            revived = {**prior, "status": "Canceled", "statusOverride": None}
+            info = cancel_lookup.get(prior.get("id"))
+            revived["cancelReason"]  = (info or {}).get("reason")  or prior.get("cancelReason")
+            revived["cancelRemarks"] = (info or {}).get("remarks") or prior.get("cancelRemarks")
+            revived["recovered"] = not revived["cancelReason"]
+            fresh_entries.append(revived)
+            recovered += 1
+    return recovered
+
+
 async def _get_content_frame(page):
     """Return the userHtmlFrame nested inside GAS's sandboxFrame."""
     await page.wait_for_selector("iframe", timeout=LOAD_TIMEOUT_MS)
@@ -1076,6 +1113,13 @@ async def main():
         except Exception as e:
             print(f"WARNING: could not write backup: {e}", file=sys.stderr)
 
+    # Recover bookings the live feed silently dropped without ever marking them
+    # Canceled — see recover_vanished_bookings() docstring for the full story.
+    recovered = recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup)
+    if recovered:
+        print(f"Recovered {recovered} vanished booking(s) with no confirmed cancellation "
+              f"reason (marked 'recovered' — Watchdog renders these as 'Removed', not 'Cancelled').")
+
     # Regression guard: a date going from populated to (near-)empty in a
     # single fetch is far more likely to mean the Ops Portal silently
     # returned a bad/blocked response for that date (confirmed 2026-07-11:
@@ -1137,7 +1181,10 @@ async def main():
     # a PRIOR run (before this field existed, or before the matching Cancel
     # Record had been detail-fetched yet) — covers preserved historical dates
     # too, not just the current fetch window. Idempotent: only touches
-    # entries that don't already have a cancelReason.
+    # entries that don't already have a cancelReason. Also clears `recovered`
+    # (see recover_vanished_bookings()) once a real reason shows up, so a
+    # booking's stored data doesn't keep claiming "no reason found" forever
+    # after one actually backfills.
     cancel_filled = 0
     for entries in merged_schedules.values():
         for entry in entries:
@@ -1146,6 +1193,7 @@ async def main():
                 if info:
                     entry["cancelReason"] = info.get("reason")
                     entry["cancelRemarks"] = info.get("remarks")
+                    entry["recovered"] = False
                     cancel_filled += 1
     if cancel_filled:
         print(f"Backfilled cancelReason on {cancel_filled} previously-normalized Canceled flight(s).")
