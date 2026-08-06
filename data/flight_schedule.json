@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-06T05:42:23Z",
+  "fetched_at": "2026-08-06T05:51:47Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -147909,7 +147909,7 @@
         "date": "2026-08-06",
         "rowIdx": "BK-AP-126-PRAN-8ZIV1",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -147936,8 +147936,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "ชั่วโมงเครื่องหมด"
       },
       {
         "id": "BK-AP-126-PRIT-2KJGK",
@@ -164988,6 +164988,19 @@
       "lesson": "CDXI 77",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-PRAN-8ZIV1|06/08/2026 12:39:27",
+      "bookingId": "BK-AP-126-PRAN-8ZIV1",
+      "date": "2026-08-06",
+      "reason": "Aircraft Trouble",
+      "remarks": "ชั่วโมงเครื่องหมด",
+      "instructor": "PARINYA B.",
+      "student": "PRAN P.",
+      "batch": "AP-126",
+      "lesson": "CDXI 76",
+      "acType": "DA40CS",
+      "acReg": "HS-TVE"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-128-KITT-XVET1|06/08/2026 10:07:13",
