@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-07T15:04:09Z",
+  "fetched_at": "2026-08-07T15:20:35Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -150888,7 +150888,7 @@
         "date": "2026-08-08",
         "rowIdx": "BK-AP-127-BULA-4H8FM",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -150915,8 +150915,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-126-PORN-07I49",
@@ -167240,6 +167240,19 @@
       "lesson": "CSGL 30",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-BULA-4H8FM|07/08/2026 22:01:09",
+      "bookingId": "BK-AP-127-BULA-4H8FM",
+      "date": "2026-08-08",
+      "reason": "Other",
+      "remarks": "",
+      "instructor": "SANTI SUK.",
+      "student": "BULASET C.",
+      "batch": "AP-127",
+      "lesson": "CDXV 31",
+      "acType": "DA40CS",
+      "acReg": "HS-TVA"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-NUTT-3QC30|07/08/2026 14:28:39",
