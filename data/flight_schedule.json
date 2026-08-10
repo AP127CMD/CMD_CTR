@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-10T05:20:12Z",
+  "fetched_at": "2026-08-10T05:28:57Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -152957,7 +152957,7 @@
         "date": "2026-08-10",
         "rowIdx": "BK-AP-129-TORN-2PVSD",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -152984,8 +152984,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Aircraft problem - Door warning light does not extinguish when in position 1."
       },
       {
         "id": "BK-AP-126-PORN-9KEG2",
@@ -168764,6 +168764,19 @@
       "lesson": "CDGL 07",
       "acType": "DA40TDI",
       "acReg": "HS-TPV"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-TORN-2PVSD|10/08/2026 12:21:37",
+      "bookingId": "BK-AP-129-TORN-2PVSD",
+      "date": "2026-08-10",
+      "reason": "Aircraft Trouble",
+      "remarks": "Aircraft problem - Door warning light does not extinguish when in position 1.",
+      "instructor": "SANTI PO.",
+      "student": "TORN M.",
+      "batch": "AP-129",
+      "lesson": "CDGL 06",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-VIPH-SPND1|10/08/2026 09:00:49",
