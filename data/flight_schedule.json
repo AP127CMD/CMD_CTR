@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-11T15:31:19Z",
+  "fetched_at": "2026-08-11T15:42:49Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -155494,7 +155494,7 @@
         "planDur": null,
         "planDurMin": null,
         "student": "SARACH C.",
-        "instructor": "PREECHA K.",
+        "instructor": "APIRATKUNPAK K.",
         "batch": "AP-126",
         "lesson": "CDXI 80",
         "condition": "IR / Nav",
@@ -155657,7 +155657,7 @@
         "date": "2026-08-13",
         "rowIdx": "BK-AP-126-PORN-P5IFX",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -155684,8 +155684,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": "Mentally sick"
       },
       {
         "id": "BK-AP-126-WATT-LAQS9",
@@ -171393,6 +171393,19 @@
       "lesson": "CDGL 03",
       "acType": "DA40CS",
       "acReg": "HS-TVH"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-PORN-P5IFX|11/08/2026 22:32:59",
+      "bookingId": "BK-AP-126-PORN-P5IFX",
+      "date": "2026-08-13",
+      "reason": "Student Sick",
+      "remarks": "Mentally sick",
+      "instructor": "SANTI PO.",
+      "student": "PORNTREETRA R.",
+      "batch": "AP-126",
+      "lesson": "UPRT 83",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     }
   ],
   "_regressionStreaks": {}
