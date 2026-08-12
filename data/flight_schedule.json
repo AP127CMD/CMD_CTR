@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-12T17:00:22Z",
+  "fetched_at": "2026-08-12T17:15:31Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -155832,7 +155832,7 @@
         "date": "2026-08-13",
         "rowIdx": "BK-AP-128-KITT-3SFT0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -155859,8 +155859,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": "เป็นโรคลมพิษ"
       },
       {
         "id": "BK-AP-128-KRID-SC80K",
@@ -156712,7 +156712,8 @@
     "2026-08-19": [],
     "2026-08-20": [],
     "2026-08-21": [],
-    "2026-08-22": []
+    "2026-08-22": [],
+    "2026-08-23": []
   },
   "leaves": [
     {
@@ -166805,8 +166806,8 @@
     {
       "tail": "HS-TCB",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TCP",
@@ -166823,14 +166824,14 @@
     {
       "tail": "HS-TPF",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPG",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPH",
@@ -166847,8 +166848,8 @@
     {
       "tail": "HS-TPM",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPN (SIM)",
@@ -166877,8 +166878,8 @@
     {
       "tail": "HS-TPR",
       "acType": "DA40TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPT",
@@ -166919,8 +166920,8 @@
     {
       "tail": "HS-TVB",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVC",
@@ -166931,8 +166932,8 @@
     {
       "tail": "HS-TVD",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVE",
@@ -166943,8 +166944,8 @@
     {
       "tail": "HS-TVF",
       "acType": "DA42NG",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVG",
@@ -171734,6 +171735,19 @@
       "lesson": "UPRT 83",
       "acType": "DA40TDI",
       "acReg": "HS-TPW"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-128-KITT-3SFT0|13/08/2026 00:01:09",
+      "bookingId": "BK-AP-128-KITT-3SFT0",
+      "date": "2026-08-13",
+      "reason": "Student Sick",
+      "remarks": "เป็นโรคลมพิษ",
+      "instructor": "SANTI PO.",
+      "student": "KITTIPAT M.",
+      "batch": "AP-128",
+      "lesson": "CDXV 31",
+      "acType": "C172",
+      "acReg": "HS-TPH"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-NALA-ME9IW|12/08/2026 20:09:42",
