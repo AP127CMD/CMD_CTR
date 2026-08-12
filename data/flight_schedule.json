@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-12T13:14:31Z",
+  "fetched_at": "2026-08-12T13:24:59Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -155024,9 +155024,9 @@
         "date": "2026-08-11",
         "rowIdx": "BK-MSNAQL67",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "08:30",
@@ -155042,15 +155042,15 @@
         "condition": null,
         "type": "R44",
         "tail": "HS-TZU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44",
+        "tkoff": "08:35",
+        "ldgTime": "09:30",
+        "airborne": "00:55",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "08:30",
+        "blockOn": "09:30",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -156112,7 +156112,7 @@
         "date": "2026-08-13",
         "rowIdx": "BK-AP-129-NALA-ME9IW",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -156139,8 +156139,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-AP-129-RAVE-A6HGJ",
@@ -156479,7 +156479,7 @@
         "lesson": "LS 84",
         "condition": null,
         "type": "R44",
-        "tail": "HS-TZR",
+        "tail": "HS-TZT",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -171698,6 +171698,19 @@
       "lesson": "UPRT 83",
       "acType": "DA40TDI",
       "acReg": "HS-TPW"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-NALA-ME9IW|12/08/2026 20:09:42",
+      "bookingId": "BK-AP-129-NALA-ME9IW",
+      "date": "2026-08-13",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "THAWATANAN P.",
+      "student": "NALAT S.",
+      "batch": "AP-129",
+      "lesson": "CDGL 10",
+      "acType": "DA40CS",
+      "acReg": "HS-TVE"
     }
   ],
   "_regressionStreaks": {}
