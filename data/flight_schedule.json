@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-13T05:54:29Z",
+  "fetched_at": "2026-08-13T06:05:20Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -156497,7 +156497,7 @@
         "date": "2026-08-13",
         "rowIdx": "BK-MSQ3PSH4",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -156524,8 +156524,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-MSQ3PVD1",
@@ -171783,6 +171783,19 @@
       "lesson": "CDGL 10",
       "acType": "DA40CS",
       "acReg": "HS-TVE"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MSQ3PSH4|13/08/2026 12:51:44",
+      "bookingId": "BK-MSQ3PSH4",
+      "date": "2026-08-13",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "KAMONVICH O.",
+      "student": "PRECHAWUT N.",
+      "batch": "HP-57",
+      "lesson": "LS 89",
+      "acType": "R44",
+      "acReg": "HS-TZT"
     },
     {
       "id": "Flight Cancels Record|key|BK-MSQ3Q53P|13/08/2026 12:37:57",
