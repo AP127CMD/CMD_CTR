@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-14T04:57:51Z",
+  "fetched_at": "2026-08-14T05:05:33Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -157759,9 +157759,9 @@
         "date": "2026-08-14",
         "rowIdx": "BK-FAM FI-CHAW-WLLNW",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:30",
@@ -157777,15 +157777,15 @@
         "condition": "IR",
         "type": "DA42TDI",
         "tail": "HS-TCP",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42TDI",
+        "tkoff": "10:41",
+        "ldgTime": "11:25",
+        "airborne": "00:44",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "10:29",
+        "blockOn": "11:29",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -158144,7 +158144,7 @@
         "date": "2026-08-14",
         "rowIdx": "BK-MSSGPOE9",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -158172,7 +158172,8 @@
         "blockOff": null,
         "blockOn": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-08-15": [],
