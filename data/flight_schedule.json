@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-14T07:19:25Z",
+  "fetched_at": "2026-08-14T07:26:56Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -157024,9 +157024,9 @@
         "date": "2026-08-14",
         "rowIdx": "BK-AP-126-PRIT-EGD4S",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:00",
@@ -157042,15 +157042,15 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "10:20",
+        "ldgTime": "13:30",
+        "airborne": "03:10",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "10:10",
+        "blockOn": "13:35",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -157506,8 +157506,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Late Aircraft Arrival / Runway Closed 14:00 LT / Last Period Arrival 13:29 LT"
       },
       {
         "id": "BK-AP-126-RAKC-XMWFP",
@@ -174154,6 +174154,19 @@
       "lesson": "LS 88",
       "acType": "R44",
       "acReg": "HS-TZU"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-SARA-FGIG7|14/08/2026 14:13:02",
+      "bookingId": "BK-AP-126-SARA-FGIG7",
+      "date": "2026-08-14",
+      "reason": "Other",
+      "remarks": "Late Aircraft Arrival / Runway Closed 14:00 LT / Last Period Arrival 13:29 LT",
+      "instructor": "NAPATTORN S.",
+      "student": "SARACH C.",
+      "batch": "AP-126",
+      "lesson": "CDXI 81",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
     }
   ],
   "_regressionStreaks": {}
