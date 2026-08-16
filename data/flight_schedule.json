@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-16T05:15:07Z",
+  "fetched_at": "2026-08-16T05:22:10Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -159513,9 +159513,9 @@
         "date": "2026-08-16",
         "rowIdx": "BK-AP-126-PORN-C7XI0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "08:00",
@@ -159828,9 +159828,9 @@
         "date": "2026-08-16",
         "rowIdx": "BK-MSTTNESU",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
@@ -159846,15 +159846,15 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "08:36",
+        "ldgTime": "11:16",
+        "airborne": "02:40",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "08:21",
+        "blockOn": "11:21",
         "cancelReason": null,
         "cancelRemarks": null
       }
@@ -160557,8 +160557,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Leave for CAAT exam, apologize for the late submission of my leave request. 🙏"
       },
       {
         "id": "BK-AP-126-SIWA-WXDYR",
@@ -171423,6 +171423,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|16/08/2026 12:11:47",
+      "name": "DOLSAKUL S.",
+      "batch": "AP-128",
+      "start": "2026-08-17",
+      "end": "2026-08-17",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|key|20/07/2026 14:46:50",
       "name": "JIRAYU A.",
       "batch": "AP-127",
@@ -176952,6 +176963,19 @@
       "lesson": "CSPXI 88",
       "acType": "DA40TDI",
       "acReg": "HS-TPX"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-128-DOLS-YO1N5|16/08/2026 12:11:05",
+      "bookingId": "BK-AP-128-DOLS-YO1N5",
+      "date": "2026-08-17",
+      "reason": "Other",
+      "remarks": "Leave for CAAT exam, apologize for the late submission of my leave request. 🙏",
+      "instructor": "PARINYA B.",
+      "student": "DOLSAKUL S.",
+      "batch": "AP-128",
+      "lesson": "CDXV 31",
+      "acType": "C172",
+      "acReg": "HS-TPH"
     }
   ],
   "_regressionStreaks": {}
