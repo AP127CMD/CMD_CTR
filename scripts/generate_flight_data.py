@@ -5,11 +5,19 @@ Run: python3 scripts/generate_flight_data.py
 
 import json
 import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 SRC  = ROOT / "data" / "flight_schedule.json"
 DEST = ROOT / "flight-data.js"
+RECENT_DEST = ROOT / "flight-data-recent.js"
+
+# 2026-08-16: watchdog-only pre-window, generous vs. the watchdog's own exact -3d/+14d window
+# (AP127_V2/watchdog/src/window.js SNAPSHOT_LOOKBACK_MS/SNAPSHOT_LOOKAHEAD_MS) so this coarse
+# date-only cut can never clip something the watchdog's own precise time-aware filter would keep.
+RECENT_LOOKBACK_DAYS = 4
+RECENT_LOOKAHEAD_DAYS = 15
 
 
 def parse_dur(hhmm: str) -> int:
@@ -93,6 +101,29 @@ def transform(raw: dict) -> dict:
     }
 
 
+def _bkk_date_str(now_utc: datetime) -> str:
+    # Mirrors AP127_V2/watchdog/src/window.js's bangkokDateStr() exactly (Bangkok is UTC+7, no DST).
+    return (now_utc + timedelta(hours=7)).strftime("%Y-%m-%d")
+
+
+# Produces a small, watchdog-ONLY feed: flights outside a generous rolling window are dropped
+# before they're ever written to disk, and instructors/resources/leaves are omitted entirely
+# (the watchdog never reads them — confirmed by grep across AP127_V2/watchdog/src/). Cancellations
+# are kept in full (unwindowed) — they're a small array (hundreds, not thousands) and the watchdog
+# only ever looks one up by an id that's already in its own windowed snapshot, so a cancellation
+# outside the window can never match anything anyway; windowing it too would save nothing.
+# See the test file's header comment for the "why this exists" incident history.
+def filter_recent(data: dict, now_utc: datetime) -> dict:
+    lower = (now_utc - timedelta(days=RECENT_LOOKBACK_DAYS)).strftime("%Y-%m-%d")
+    upper = (now_utc + timedelta(days=RECENT_LOOKAHEAD_DAYS)).strftime("%Y-%m-%d")
+    return {
+        "fetchedAt": data.get("fetchedAt", ""),
+        "tz": data.get("tz", "Asia/Bangkok"),
+        "flights": [f for f in data.get("flights", []) if lower <= f.get("date", "") <= upper],
+        "cancellations": data.get("cancellations", []),
+    }
+
+
 def main():
     raw = json.loads(SRC.read_text())
     data = transform(raw)
@@ -100,6 +131,20 @@ def main():
     DEST.write_text(js)
     n = len(data["flights"])
     print(f"✓ flight-data.js written — {n} flights across {len(set(f['date'] for f in data['flights']))} dates")
+
+    # Watchdog-only slim feed (see filter_recent's docstring) — cuts the file ap127-watchdog
+    # fetches+parses every 5 min from 2+ MB / 5000+ flights down to a rolling window's worth,
+    # fixing the recurring "Exceeded CPU Limit" incidents on its Workers Free plan.
+    recent = filter_recent(data, datetime.now(timezone.utc))
+    recent_js = (
+        "// Auto-generated from data/flight_schedule.json — watchdog-only, filtered to a rolling "
+        f"-{RECENT_LOOKBACK_DAYS}d/+{RECENT_LOOKAHEAD_DAYS}d window. Do not edit directly, and do "
+        "not point any other consumer at this file — it deliberately omits instructors/resources/"
+        "leaves and only carries a partial flight history. See AP127_V2/watchdog/CLAUDE.md.\n"
+        f"window.FLIGHT_DATA = {json.dumps(recent, ensure_ascii=False, separators=(',', ':'))};\n"
+    )
+    RECENT_DEST.write_text(recent_js)
+    print(f"✓ flight-data-recent.js written — {len(recent['flights'])} flights (watchdog window)")
 
 
 if __name__ == "__main__":
