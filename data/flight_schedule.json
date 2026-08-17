@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-17T05:12:09Z",
+  "fetched_at": "2026-08-17T05:20:29Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -160565,9 +160565,9 @@
         "date": "2026-08-17",
         "rowIdx": "BK-AP-126-PONG-QS4KA",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
@@ -160583,15 +160583,15 @@
         "condition": "XC / IR",
         "type": "DA40TDI",
         "tail": "HS-TPU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "09:21",
+        "ldgTime": "10:57",
+        "airborne": "01:36",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "09:05",
+        "blockOn": "11:05",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -160810,7 +160810,7 @@
         "date": "2026-08-17",
         "rowIdx": "BK-AP-128-EKKA-U9XTO",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -160837,8 +160837,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-FAM FI-NUNT-IE68R",
@@ -177067,6 +177067,19 @@
       "student": "DOLSAKUL S.",
       "batch": "AP-128",
       "lesson": "CDXV 31",
+      "acType": "C172",
+      "acReg": "HS-TPH"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-128-EKKA-U9XTO|17/08/2026 12:10:47",
+      "bookingId": "BK-AP-128-EKKA-U9XTO",
+      "date": "2026-08-17",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "CHAROENCHAI U.",
+      "student": "EKKASIT B.",
+      "batch": "AP-128",
+      "lesson": "CDGL 34",
       "acType": "C172",
       "acReg": "HS-TPH"
     },
