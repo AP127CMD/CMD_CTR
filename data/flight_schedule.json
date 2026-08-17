@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-17T10:16:58Z",
+  "fetched_at": "2026-08-17T10:25:16Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -160635,9 +160635,9 @@
         "date": "2026-08-17",
         "rowIdx": "BK-AP-126-PRAN-27075",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "13:30",
@@ -160653,15 +160653,15 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "13:55",
+        "ldgTime": "16:32",
+        "airborne": "02:37",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "13:31",
+        "blockOn": "16:37",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -173494,6 +173494,17 @@
       "duration": "Full Day",
       "reason": "CAAT Exam",
       "note": "Exam, 24 Aug",
+      "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|17/08/2026 17:13:57",
+      "name": "MATHANAPHADA P.",
+      "batch": "AP-129",
+      "start": "2026-08-27",
+      "end": "2026-08-28",
+      "duration": "Full Day",
+      "reason": "Annual Leave",
+      "note": "",
       "role": "Student"
     },
     {
