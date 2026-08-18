@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-18T09:31:12Z",
+  "fetched_at": "2026-08-18T09:39:30Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -163960,41 +163960,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-126-SIWA-ZIHQP",
-        "date": "2026-08-19",
-        "rowIdx": "BK-AP-126-SIWA-ZIHQP",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "06:30",
-        "end": "08:30",
-        "duration": "02:00",
-        "durationMin": 120,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "SIWAT C.",
-        "instructor": "PORNTEP B.",
-        "batch": "AP-126",
-        "lesson": "CSPXI 85",
-        "condition": "XC / IR",
-        "type": "DA40CS",
-        "tail": "HS-TVD",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-129-RAVE-B4KS5",
         "date": "2026-08-19",
         "rowIdx": "BK-AP-129-RAVE-B4KS5",
@@ -164984,14 +164949,14 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "13:30",
-        "end": "16:30",
+        "start": "06:30",
+        "end": "09:30",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
         "planDurMin": null,
         "student": "RAKCHON K.",
-        "instructor": "TANAKRIT V.",
+        "instructor": "PORNTEP B.",
         "batch": "AP-126",
         "lesson": "CDXI 82",
         "condition": "XC / IR",
@@ -165096,12 +165061,12 @@
         "planDur": null,
         "planDurMin": null,
         "student": "PAKORN W.",
-        "instructor": "SOWAN C.",
+        "instructor": "TANAKRIT V.",
         "batch": "AP-126",
         "lesson": "CSPXI 88",
         "condition": "XC / IR",
         "type": "DA40CS",
-        "tail": "HS-TVH",
+        "tail": "HS-TVD",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -165148,6 +165113,42 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-126-SIWA-ZIHQP",
+        "date": "2026-08-19",
+        "rowIdx": "BK-AP-126-SIWA-ZIHQP",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:30",
+        "end": "08:30",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "SIWAT C.",
+        "instructor": "PORNTEP B.",
+        "batch": "AP-126",
+        "lesson": "CSPXI 85",
+        "condition": "XC / IR",
+        "type": "DA40CS",
+        "tail": "HS-TVD",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-08-20": [],
@@ -175381,8 +175382,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -175411,8 +175412,8 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -175435,14 +175436,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -175453,8 +175454,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -175471,20 +175472,20 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
-    },
-    {
-      "isPartTime": false,
-      "name": "SORRAWUT P.",
-      "category": "Airplane",
+      "category": "Helicopter",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "PORNTEP B.",
+      "name": "SORRAWUT P.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PORNTEP B.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -175513,8 +175514,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
