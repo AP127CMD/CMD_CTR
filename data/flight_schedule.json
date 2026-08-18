@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-18T03:28:12Z",
+  "fetched_at": "2026-08-18T03:57:17Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -160985,9 +160985,9 @@
         "date": "2026-08-17",
         "rowIdx": "BK-AP-126-PATC-JWZ8O",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "13:30",
@@ -161003,15 +161003,15 @@
         "condition": "XC / IR",
         "type": "DA40TDI",
         "tail": "HS-TPX",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "13:34",
+        "ldgTime": "16:20",
+        "airborne": "02:46",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "13:25",
+        "blockOn": "16:25",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -162142,9 +162142,9 @@
         "date": "2026-08-18",
         "rowIdx": "BK-AP-126-NATT-HFGPQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -162160,15 +162160,15 @@
         "condition": null,
         "type": "DA40TDI",
         "tail": "HS-TPX",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "06:30",
+        "ldgTime": "07:50",
+        "airborne": "01:20",
+        "ldg": 3,
+        "to": 3,
+        "inst": 3,
+        "blockOff": "06:25",
+        "blockOn": "07:55",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -162422,9 +162422,9 @@
         "date": "2026-08-18",
         "rowIdx": "BK-FAM FI-ATHI-BB10C",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
@@ -162440,15 +162440,15 @@
         "condition": "IR",
         "type": "DA42TDI",
         "tail": "HS-TPQ",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42TDI",
+        "tkoff": "09:14",
+        "ldgTime": "10:00",
+        "airborne": "00:46",
+        "ldg": 3,
+        "to": 3,
+        "inst": 1,
+        "blockOff": "09:04",
+        "blockOn": "10:14",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -162702,7 +162702,7 @@
         "date": "2026-08-18",
         "rowIdx": "BK-AP-126-NANJ-MT90K",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -162729,8 +162729,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Voltage low"
       },
       {
         "id": "BK-AP-126-SIWA-F8XLJ",
@@ -173607,14 +173607,14 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173625,14 +173625,14 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173643,8 +173643,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173661,8 +173661,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173673,8 +173673,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173691,50 +173691,50 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -173745,20 +173745,20 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -173775,8 +173775,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -178933,6 +178933,19 @@
       "lesson": "UPRT 83",
       "acType": "DA40TDI",
       "acReg": "HS-TPO"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-NANJ-MT90K|18/08/2026 10:39:14",
+      "bookingId": "BK-AP-126-NANJ-MT90K",
+      "date": "2026-08-18",
+      "reason": "Aircraft Trouble",
+      "remarks": "Voltage low",
+      "instructor": "NUNTAPOB T.",
+      "student": "NANJITRA D.",
+      "batch": "AP-126",
+      "lesson": "CSPXI 87",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-126-PATT-RSLFF|18/08/2026 04:50:30",
