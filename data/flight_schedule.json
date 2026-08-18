@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-18T08:20:26Z",
+  "fetched_at": "2026-08-18T08:30:21Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -161819,8 +161819,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Aircraft problem - Low volt show in the air"
       },
       {
         "id": "BK-AP-129-WANU-34HSI",
@@ -173618,8 +173618,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -173630,14 +173630,14 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -173677,12 +173677,6 @@
     },
     {
       "isPartTime": false,
-      "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "THAWATANAN P.",
       "type": "Flight Instructor",
       "category": "Airplane"
@@ -173702,8 +173696,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -173714,8 +173708,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -173750,8 +173744,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -173780,8 +173774,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -173792,8 +173786,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -178976,6 +178970,19 @@
       "lesson": "CDXI 81",
       "acType": "DA40CS",
       "acReg": "HS-TVD"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-TORN-E45W9|18/08/2026 15:14:15",
+      "bookingId": "BK-AP-129-TORN-E45W9",
+      "date": "2026-08-18",
+      "reason": "Aircraft Trouble",
+      "remarks": "Aircraft problem - Low volt show in the air",
+      "instructor": "SANTI PO.",
+      "student": "TORN M.",
+      "batch": "AP-129",
+      "lesson": "CDGL 09",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     }
   ],
   "_regressionStreaks": {}
