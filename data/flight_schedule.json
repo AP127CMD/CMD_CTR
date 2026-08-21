@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-21T12:16:05Z",
+  "fetched_at": "2026-08-21T12:30:15Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -168555,7 +168555,7 @@
         "date": "2026-08-22",
         "rowIdx": "BK-AP-128-KITT-IRDZK",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -168582,8 +168582,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Prepare CATC Exam"
       },
       {
         "id": "BK-AP-129-CHAI-E2DCZ",
@@ -180098,8 +180098,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180110,8 +180110,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180128,8 +180128,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180140,8 +180140,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180152,8 +180152,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180164,20 +180164,20 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "JIRAT R.",
       "category": "Airplane",
       "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
+      "name": "JIRAT R.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -185510,6 +185510,19 @@
       "student": "EKKASIT B.",
       "batch": "AP-128",
       "lesson": "CSPGL 37",
+      "acType": "C172",
+      "acReg": "HS-TPF"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-128-KITT-IRDZK|21/08/2026 19:14:37",
+      "bookingId": "BK-AP-128-KITT-IRDZK",
+      "date": "2026-08-22",
+      "reason": "Other",
+      "remarks": "Prepare CATC Exam",
+      "instructor": "SANTI PO.",
+      "student": "KITTIPAT M.",
+      "batch": "AP-128",
+      "lesson": "CSPGL 36",
       "acType": "C172",
       "acReg": "HS-TPF"
     }
