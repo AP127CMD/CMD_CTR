@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-21T02:01:17Z",
+  "fetched_at": "2026-08-21T02:10:48Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -167123,8 +167123,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "13:00",
+        "start": "13:30",
+        "end": "16:30",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -167135,7 +167135,7 @@
         "lesson": "CSPXIC 90",
         "condition": "XC / IR",
         "type": "DA40TDI",
-        "tail": "HS-TPU",
+        "tail": "HS-TPO",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -167678,13 +167678,13 @@
         "date": "2026-08-21",
         "rowIdx": "BK-AP-126-NAPA-JZ8BQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "13:30",
-        "end": "16:30",
+        "start": "10:00",
+        "end": "13:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -167695,7 +167695,7 @@
         "lesson": "CSPXI 87",
         "condition": "XC / IR",
         "type": "DA40TDI",
-        "tail": "HS-TPO",
+        "tail": "HS-TPU",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -167705,8 +167705,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-126-NANJ-DIQ15",
@@ -178557,8 +178557,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -178571,12 +178571,6 @@
       "name": "KOONPHOL U.",
       "type": "Flight Instructor",
       "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -178599,14 +178593,14 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -178659,8 +178653,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -178683,8 +178677,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -178701,14 +178695,14 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -183924,6 +183918,19 @@
       "lesson": "CSGL 16",
       "acType": "DA40TDI",
       "acReg": "HS-TPO"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-NAPA-JZ8BQ|21/08/2026 09:02:16",
+      "bookingId": "BK-AP-126-NAPA-JZ8BQ",
+      "date": "2026-08-21",
+      "reason": "Aircraft Trouble",
+      "remarks": "",
+      "instructor": "WUTTHICHAI L.",
+      "student": "WATTIKORN K.",
+      "batch": "AP-126",
+      "lesson": "CSPXI 87",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPU"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-CHAI-J71CW|21/08/2026 08:39:33",
