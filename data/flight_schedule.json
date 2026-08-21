@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-21T09:15:26Z",
+  "fetched_at": "2026-08-21T09:25:10Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -169498,41 +169498,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-128-KITT-I5862",
-        "date": "2026-08-23",
-        "rowIdx": "BK-AP-128-KITT-I5862",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "08:30",
-        "end": "10:30",
-        "duration": "02:00",
-        "durationMin": 120,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "KITTIPAT M.",
-        "instructor": "SANTI PO.",
-        "batch": "AP-128",
-        "lesson": "CSPXV 38",
-        "condition": "XC",
-        "type": "C172",
-        "tail": "HS-TPH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-126-NUTT-PVLRS",
         "date": "2026-08-23",
         "rowIdx": "BK-AP-126-NUTT-PVLRS",
@@ -169613,15 +169578,15 @@
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
-        "end": "11:00",
-        "duration": "02:00",
-        "durationMin": 120,
+        "end": "12:00",
+        "duration": "03:00",
+        "durationMin": 180,
         "planDur": null,
         "planDurMin": null,
-        "student": "KANTAPONG A.",
+        "student": "PRAN P.",
         "instructor": "THAWATANAN P.",
         "batch": "AP-126",
-        "lesson": "CSPXI 85",
+        "lesson": "CSPXI 87",
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVH",
@@ -169741,6 +169706,42 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-128-KITT-I5862",
+        "date": "2026-08-23",
+        "rowIdx": "BK-AP-128-KITT-I5862",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:30",
+        "end": "10:30",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "KITTIPAT M.",
+        "instructor": "SANTI PO.",
+        "batch": "AP-128",
+        "lesson": "CSPXV 38",
+        "condition": "XC",
+        "type": "C172",
+        "tail": "HS-TPH",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-08-24": [],
@@ -180121,8 +180122,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180133,8 +180134,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180169,8 +180170,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180181,8 +180182,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180217,8 +180218,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -180229,8 +180230,8 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180283,8 +180284,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
