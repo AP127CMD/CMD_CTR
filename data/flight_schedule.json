@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-21T07:33:34Z",
+  "fetched_at": "2026-08-21T07:44:54Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -167223,9 +167223,9 @@
         "date": "2026-08-21",
         "rowIdx": "BK-AP-126-RAKC-J6GZQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "11:00",
@@ -167241,15 +167241,15 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVD",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "11:00",
+        "ldgTime": "13:00",
+        "airborne": "02:00",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "11:00",
+        "blockOn": "13:05",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -167608,9 +167608,9 @@
         "date": "2026-08-21",
         "rowIdx": "BK-FAM FI-NANT-UJ95W",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "11:30",
@@ -167626,15 +167626,15 @@
         "condition": null,
         "type": "DA40CS",
         "tail": "HS-TVH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "12:11",
+        "ldgTime": "12:26",
+        "airborne": "00:15",
+        "ldg": 5,
+        "to": 5,
+        "inst": 0,
+        "blockOff": "12:03",
+        "blockOn": "13:33",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -167993,9 +167993,9 @@
         "date": "2026-08-21",
         "rowIdx": "BK-MT1AXXGO",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "11:50",
@@ -168011,15 +168011,15 @@
         "condition": "Solo",
         "type": "R44",
         "tail": "HS-TZT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44",
+        "tkoff": "12:00",
+        "ldgTime": "12:50",
+        "airborne": "00:50",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "11:50",
+        "blockOn": "12:50",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -178567,8 +178567,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -178579,8 +178579,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -178627,8 +178627,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -178639,6 +178639,12 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "WUTTHICHAI L.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
@@ -178669,8 +178675,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -178681,26 +178687,26 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PORNTEP B.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -178717,20 +178723,20 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
-      "name": "VASSAPON K.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
-      "isPartTime": false,
-      "name": "NUNTAPOB T.",
+      "isPartTime": true,
+      "name": "VASSAPON K.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -178741,8 +178747,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
