@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-22T05:45:03Z",
+  "fetched_at": "2026-08-22T05:53:44Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -168905,9 +168905,9 @@
         "date": "2026-08-22",
         "rowIdx": "BK-AP-128-DOLS-2PIBR",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "08:40",
@@ -168923,15 +168923,15 @@
         "condition": null,
         "type": "C172",
         "tail": "HS-TPH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "C172",
+        "tkoff": "09:00",
+        "ldgTime": "09:35",
+        "airborne": "00:35",
+        "ldg": 5,
+        "to": 5,
+        "inst": 0,
+        "blockOff": "08:40",
+        "blockOn": "09:40",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -168940,9 +168940,9 @@
         "date": "2026-08-22",
         "rowIdx": "BK-AP-128-DOLS-XS7OW",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:30",
@@ -168958,15 +168958,15 @@
         "condition": null,
         "type": "C172",
         "tail": "HS-TPH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "C172",
+        "tkoff": "10:40",
+        "ldgTime": "11:40",
+        "airborne": "01:00",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "10:30",
+        "blockOn": "11:45",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -180192,14 +180192,14 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180216,14 +180216,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -180251,15 +180251,9 @@
     },
     {
       "isPartTime": false,
-      "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -180324,14 +180318,14 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
