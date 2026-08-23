@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-23T06:02:41Z",
+  "fetched_at": "2026-08-23T06:10:08Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -170826,8 +170826,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": "ขออนุญาตลาป่วย เนื่องจากยังไม่หายจากไข้หวัด พอไปบินแล้วอาการหูบล็อคครับ"
       },
       {
         "id": "BK-AP-126-PARA-HP8CI",
@@ -181784,8 +181784,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -181804,12 +181804,6 @@
       "name": "SOWAN C.",
       "category": "Airplane",
       "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -181862,8 +181856,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -181874,14 +181868,14 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -181892,8 +181886,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -181922,8 +181916,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -187199,6 +187193,19 @@
       "lesson": "CSPGL 36",
       "acType": "C172",
       "acReg": "HS-TPF"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-NATT-WOC38|23/08/2026 12:57:35",
+      "bookingId": "BK-AP-126-NATT-WOC38",
+      "date": "2026-08-24",
+      "reason": "Student Sick",
+      "remarks": "ขออนุญาตลาป่วย เนื่องจากยังไม่หายจากไข้หวัด พอไปบินแล้วอาการหูบล็อคครับ",
+      "instructor": "NUNTAPOB T.",
+      "student": "NATTARAT G.",
+      "batch": "AP-126",
+      "lesson": "CSPXI 87",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPO"
     }
   ],
   "_regressionStreaks": {}
