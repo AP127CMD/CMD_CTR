@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-23T05:37:18Z",
+  "fetched_at": "2026-08-23T05:46:10Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -169871,7 +169871,7 @@
         "lesson": "LS 82 (SIM)",
         "condition": "Sim R44",
         "type": "R44 (SIM)",
-        "tail": null,
+        "tail": "HS-TZQ (SIM)",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -169906,7 +169906,7 @@
         "lesson": "LS 85 (SIM)",
         "condition": "Sim R44",
         "type": "R44 (SIM)",
-        "tail": null,
+        "tail": "HS-TZQ (SIM)",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -170795,41 +170795,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-126--DO8E3",
-        "date": "2026-08-24",
-        "rowIdx": "BK-AP-126--DO8E3",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "10:30",
-        "end": "13:00",
-        "duration": "02:30",
-        "durationMin": 150,
-        "planDur": null,
-        "planDurMin": null,
-        "student": null,
-        "instructor": "ATIDTAN P.",
-        "batch": "AP-126",
-        "lesson": "CATC CONSTRUCTION",
-        "condition": null,
-        "type": null,
-        "tail": null,
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-126-NATT-WOC38",
         "date": "2026-08-24",
         "rowIdx": "BK-AP-126-NATT-WOC38",
@@ -171353,6 +171318,42 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-126--DO8E3",
+        "date": "2026-08-24",
+        "rowIdx": "BK-AP-126--DO8E3",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:30",
+        "end": "13:00",
+        "duration": "02:30",
+        "durationMin": 150,
+        "planDur": null,
+        "planDurMin": null,
+        "student": null,
+        "instructor": "ATIDTAN P.",
+        "batch": "AP-126",
+        "lesson": "CATC CONSTRUCTION",
+        "condition": null,
+        "type": null,
+        "tail": null,
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-08-25": [],
@@ -181807,8 +181808,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -181825,32 +181826,32 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "THAWATANAN P.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -181861,8 +181862,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -181885,14 +181886,14 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -181921,8 +181922,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -181933,8 +181934,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -181945,14 +181946,14 @@
     {
       "isPartTime": false,
       "name": "KEVIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
