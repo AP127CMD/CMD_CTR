@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-23T10:48:19Z",
+  "fetched_at": "2026-08-23T10:57:51Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -170690,41 +170690,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-128-DOLS-HPPFD",
-        "date": "2026-08-24",
-        "rowIdx": "BK-AP-128-DOLS-HPPFD",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "08:00",
-        "end": "09:15",
-        "duration": "01:15",
-        "durationMin": 75,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "DOLSAKUL S.",
-        "instructor": "PARINYA B.",
-        "batch": "AP-128",
-        "lesson": "CSPGL 37",
-        "condition": null,
-        "type": "C172",
-        "tail": "HS-TPH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-126--XUZO3",
         "date": "2026-08-24",
         "rowIdx": "BK-AP-126--XUZO3",
@@ -171318,6 +171283,42 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-128-DOLS-HPPFD",
+        "date": "2026-08-24",
+        "rowIdx": "BK-AP-128-DOLS-HPPFD",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:00",
+        "end": "09:15",
+        "duration": "01:15",
+        "durationMin": 75,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "DOLSAKUL S.",
+        "instructor": "PARINYA B.",
+        "batch": "AP-128",
+        "lesson": "CSPGL 37",
+        "condition": null,
+        "type": "C172",
+        "tail": "HS-TPH",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-08-25": [],
@@ -181788,14 +181789,14 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -181818,20 +181819,20 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "SOWAN C.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "THAWATANAN P.",
+      "name": "SOWAN C.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "THAWATANAN P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -181854,14 +181855,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -181908,8 +181909,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
