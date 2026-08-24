@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-24T16:09:42Z",
+  "fetched_at": "2026-08-24T16:22:54Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -169257,9 +169257,9 @@
         "date": "2026-08-23",
         "rowIdx": "BK-AP-126-RAKC-T72SE",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -169275,15 +169275,15 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVE",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "06:35",
+        "ldgTime": "08:15",
+        "airborne": "01:40",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "06:20",
+        "blockOn": "08:20",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -171991,9 +171991,9 @@
         "date": "2026-08-25",
         "rowIdx": "BK-AP-126-RAKC-JIWXR",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:00",
@@ -172008,16 +172008,16 @@
         "lesson": "CSPXI 88",
         "condition": "XC / IR",
         "type": "DA40CS",
-        "tail": "HS-TVA",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "tail": "HS-TVC",
+        "actualType": "DA40CS",
+        "tkoff": "10:15",
+        "ldgTime": "12:55",
+        "airborne": "02:40",
+        "ldg": 3,
+        "to": 3,
+        "inst": 3,
+        "blockOff": "10:00",
+        "blockOn": "13:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -183249,8 +183249,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -183285,8 +183285,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -183303,8 +183303,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -183321,14 +183321,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -183339,8 +183339,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -183351,8 +183351,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -183363,8 +183363,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -183381,8 +183381,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -183393,8 +183393,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
