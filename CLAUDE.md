@@ -14,8 +14,28 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 ```bash
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
+gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-25 — **`docker/` — Orange Pi 4 Pro deployment prepared, NOT YET
+**Last known:** token = `r44` (2026-08-26 — **`fetch_schedule.yml` DISABLED, dispatcher paused — stopping
+the failing fetch until the Orange Pi 4 Pro is live** (scraper/workflow/infra-only — token not bumped).
+Every run has been failing on the Google sign-in wall (see the entry below) since 2026-08-25 04:29 UTC;
+the backoff fix throttled it to a run every 15-30 min, but it was still failing every time it ran, for
+no benefit — nothing will succeed until either the Pi is live or someone manually re-authenticates.
+Stopped cleanly rather than left to keep failing quietly: `gh workflow disable "Fetch Flight Schedule &
+Deploy" -R AP127CMD/CMD_CTR` (stops both the hourly `schedule:` fallback and any `workflow_dispatch`
+call — reversible with `gh workflow enable`, same command). The 3 in-flight/queued runs at the time were
+cancelled (`gh run cancel`) rather than left to finish and fail. **Also paused the CF dispatcher's own
+trigger** — `AP127CMD/DB001`'s `dispatcher/worker.js` had this workflow as a `workflow_dispatch` target
+on its 5-min cron; left in place it would have kept POSTing to a disabled workflow's dispatch endpoint
+(a 403), which the dispatcher's own failure-handling would treat as "failed to trigger" and open a
+`dispatcher-failure` issue on DB001 — commented out (not deleted, with a clear re-enable note) instead,
+redeployed via the existing `deploy-dispatcher.yml` auto-deploy-on-push. CMDV2's own downstream trigger
+(dispatched by this workflow on success) is correspondingly quiet too now — noted in that comment.
+**To re-enable once the Pi is live and proven:** uncomment the target in `dispatcher/worker.js` (push to
+redeploy), then `gh workflow enable "Fetch Flight Schedule & Deploy" -R AP127CMD/CMD_CTR`. Nothing about
+the fetch code itself changed this round — `docker/` from the entry below is still the actual fix, this
+was just stopping the now-pointless CI churn while it isn't live yet.)
+(2026-08-25 — **`docker/` — Orange Pi 4 Pro deployment prepared, NOT YET
 LIVE** (scraper/infra-only — token not bumped). Root cause of the whole day's outage turned out to be
 deeper than portal slowness: the Ops Portal now requires Google sign-in, and Google's bot-detection
 permanently blocks a Playwright-launched Chromium from completing that sign-in (confirmed, not a
