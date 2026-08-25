@@ -45,6 +45,30 @@ deploying — not yet observed live against a real recovery (today's outage was 
 time). **`REGRESSION_GUARD_MAX_STREAK`(=3, per-date, inside `fetch_schedule.py`) is a different, unrelated
 guard** — that one decides whether to trust a single date's fresh-vs-existing flight count within one
 run; this new backoff decides whether to attempt a run **at all**, at the workflow level, across runs.)
+**CORRECTION, same day: the GH-Actions-run-history design above had a real bug — replaced with
+persisted state before it ever got wide exposure.** Live proof, ~25 min after the first deploy: the
+first backoff-triggered skip at 12:25 UTC worked exactly as designed (job finished in 14s), but the
+VERY NEXT trigger (12:30) went right back to a full 3-min failing attempt, and every 5-min trigger
+after that did too — the throttling lasted exactly one cycle. Root cause: a **skipped** run's own
+GitHub Actions conclusion is `"success"` (no step failed) — completely indistinguishable, when read
+back via `gh api .../runs`, from a genuinely successful fetch. The streak-counting loop stopped at the
+first non-`"failure"` conclusion, so the 12:25 skip itself reset the apparent streak to 0 for 12:30's
+read, and backoff never re-armed. **Fix:** moved the state out of GH Actions run history entirely,
+into a small persisted file, `data/backoff_state.json` (`{consecutiveFailures, lastAttemptAt}`) —
+matches the existing `portal_fingerprint.json` precedent. `scripts/fetch_schedule.py`'s
+`main_with_retry()` now writes it directly: reset to 0 on success (but ONLY if a streak actually
+existed to clear — writing every healthy run would defeat "Commit updated data"'s skip-if-unchanged
+fast path, since the timestamp differs every run), incremented on a fully-exhausted failure. The
+workflow's "Check portal-outage backoff" step now just reads this file via `jq` (no `gh api`/`GH_TOKEN`
+needed any more — `actions: read` permission removed). Checkout moved to the very first step
+(unconditional now — the backoff check needs the file from the repo). "Commit updated data" changed
+to `if: always() && ...` (was implicitly success-only) so the incremented counter gets committed+pushed
+even when the fetch itself failed — safe, because the OTHER data files it also stages are provably
+untouched on this failure mode (the scraper never reaches its output-write call when `userHtmlFrame`
+never appears). 7 new tests in `scripts/tests/test_backoff_state.py` (31 total passing) cover the
+missing-file/malformed-JSON/round-trip cases and, critically, both `main_with_retry()` branches this
+bug came from: success-resets-an-existing-streak and failure-increments-from-prior-state. Not yet
+re-verified live at time of writing (deploying now) — watch the next few dispatcher cycles.)
 (2026-08-06 — **restored `recover_vanished_bookings()`, removed during
 the RPC migration below, for bookings that vanish via a portal path other than the Cancel Flight form**
 (scraper-only — token not bumped). Real user report, notifications had just been turned back on:

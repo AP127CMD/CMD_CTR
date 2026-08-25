@@ -18,6 +18,23 @@ SCRIPT_URL = (
 OUTPUT_FILE = Path(__file__).parent.parent / "data" / "flight_schedule.json"
 LOAD_TIMEOUT_MS = 90_000    # 90 s total page load budget (GAS cold-starts can be slow)
 
+# 2026-08-25: cross-RUN backoff state (see .github/workflows/fetch_schedule.yml's
+# "Check portal-outage backoff" step, which reads this file BEFORE Playwright
+# even starts). NOT the same thing as the internal MAX_ATTEMPTS retry loop
+# below, which is all one CI run — this tracks how many CONSECUTIVE CI runs
+# in a row have failed, across dispatches, so a sustained Ops Portal outage
+# can be detected and throttled instead of hammering it every 5 min forever.
+# Deliberately a small standalone file, not a field inside flight_schedule.json
+# (matches the existing portal_fingerprint.json precedent) — written on every
+# invocation's outcome (reset to 0 on success, incremented on final failure).
+# Originally this was going to be reconstructed from GitHub Actions run
+# history instead (via `gh api .../runs`), but a run's own conclusion can't
+# distinguish "backoff skipped this run" (conclusion: success) from "the
+# fetch genuinely succeeded" (also conclusion: success) — the streak silently
+# reset to 0 after exactly one skip, defeating the whole mechanism after 5
+# min. Persisted state sidesteps that ambiguity entirely.
+BACKOFF_STATE_FILE = Path(__file__).parent.parent / "data" / "backoff_state.json"
+
 # Frozen archive of the OLD portal's data (rich fields: tkoff/ldgTime/airborne/
 # planDur/isActual/cancelReason — none of which the new portal exposes). Dates
 # in this archive are fully resolved (every flight already flown/cancelled as
@@ -1255,6 +1272,30 @@ async def main():
     print(f"Saved → {OUTPUT_FILE}")
 
 
+def _write_backoff_state(consecutive_failures: int) -> None:
+    """Persist BACKOFF_STATE_FILE — see the comment at its declaration."""
+    state = {
+        "consecutiveFailures": consecutive_failures,
+        "lastAttemptAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    BACKOFF_STATE_FILE.write_text(
+        json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def _read_prior_backoff_failures() -> int:
+    if not BACKOFF_STATE_FILE.exists():
+        return 0
+    try:
+        return int(
+            json.loads(BACKOFF_STATE_FILE.read_text(encoding="utf-8")).get(
+                "consecutiveFailures", 0
+            )
+        )
+    except Exception:
+        return 0
+
+
 async def main_with_retry():
     """Run main() up to MAX_ATTEMPTS times with exponential-ish backoff.
 
@@ -1271,9 +1312,19 @@ async def main_with_retry():
     for attempt in range(1, MAX_ATTEMPTS + 1):
         try:
             await main()
+            # Only rewrite (and thus give the CI workflow something new to
+            # commit) when there's an actual streak to clear — a healthy run
+            # after a healthy run has nothing meaningful to record, and
+            # writing every run would defeat "Commit updated data"'s
+            # skip-if-nothing-changed fast path (every run's timestamp
+            # differs, so it'd commit+push every 5 min forever).
+            if _read_prior_backoff_failures() != 0:
+                _write_backoff_state(0)
             return  # success
         except SystemExit as exc:
             if exc.code == 0:
+                if _read_prior_backoff_failures() != 0:
+                    _write_backoff_state(0)
                 return
             last_exc = exc
             exit_code = exc.code if isinstance(exc.code, int) else 1
@@ -1294,6 +1345,9 @@ async def main_with_retry():
                 f"All {MAX_ATTEMPTS} attempts failed ({last_exc!r}). Giving up.",
                 file=sys.stderr,
             )
+    # This whole CI run failed (all MAX_ATTEMPTS exhausted) — bump the
+    # cross-run streak so the workflow's backoff step can see it next time.
+    _write_backoff_state(_read_prior_backoff_failures() + 1)
     sys.exit(exit_code)
 
 

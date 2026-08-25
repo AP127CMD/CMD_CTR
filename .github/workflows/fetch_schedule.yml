@@ -40,7 +40,6 @@ concurrency:
 permissions:
   contents: write
   issues: write
-  actions: read
 
 jobs:
   fetch-and-deploy:
@@ -48,19 +47,32 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      # Checkout runs unconditionally and first — the backoff check right
+      # after it needs data/backoff_state.json from the repo.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # 2026-08-25: the Ops Portal itself went unresponsive for 7.5+ hours
       # (Playwright's wait for userHtmlFrame never completed) while the CF
       # dispatcher kept firing a fresh run every 5 min regardless — ~90
       # consecutive failed runs, each burning a full Playwright session
-      # against an already-struggling portal. This step runs BEFORE checkout/
-      # Playwright setup and short-circuits the rest of the job once we've
-      # been failing for a while, so a sustained portal outage doesn't keep
-      # getting hammered every 5 min. `force: true` (manual dispatch only —
-      # the CF dispatcher never sets it) always bypasses this.
+      # against an already-struggling portal. This step short-circuits the
+      # rest of the job once we've been failing for a while, so a sustained
+      # portal outage doesn't keep getting hammered every 5 min. `force: true`
+      # (manual dispatch only — the CF dispatcher never sets it) bypasses it.
+      #
+      # Reads data/backoff_state.json (written by scripts/fetch_schedule.py's
+      # main_with_retry() after every run — reset to 0 on success, incremented
+      # on a fully-exhausted failure) rather than reconstructing anything from
+      # GitHub Actions run history. That was the first design tried, and it
+      # had a real bug: a SKIPPED run's own conclusion is "success" (no step
+      # failed), which is indistinguishable from a genuinely successful fetch
+      # when read back from `gh api .../runs` — the very first skip reset the
+      # apparent streak to 0, so the next trigger 5 min later saw "no failures"
+      # and retried immediately, hammering the portal again after exactly one
+      # throttled cycle. Persisted state has no such ambiguity.
       - name: Check portal-outage backoff
         id: backoff
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "Manual force-run — skipping backoff check."
@@ -68,26 +80,18 @@ jobs:
             exit 0
           fi
 
-          # Newest-first conclusion/created_at of the last 30 COMPLETED runs
-          # of this workflow (excludes the current in-progress run).
-          RUNS=$(gh api "repos/${{ github.repository }}/actions/workflows/fetch_schedule.yml/runs?status=completed&per_page=30" \
-            --jq '.workflow_runs | sort_by(.created_at) | reverse | .[] | [.conclusion, .created_at] | @tsv')
+          if [ ! -f data/backoff_state.json ]; then
+            echo "No backoff state on disk yet — retrying normally."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          STREAK=0
-          LAST_CREATED=""
-          while IFS=$'\t' read -r CONCLUSION CREATED; do
-            [ -z "$CONCLUSION" ] && continue
-            [ -z "$LAST_CREATED" ] && LAST_CREATED="$CREATED"
-            if [ "$CONCLUSION" = "failure" ]; then
-              STREAK=$((STREAK + 1))
-            else
-              break
-            fi
-          done <<< "$RUNS"
+          STREAK=$(jq -r '.consecutiveFailures // 0' data/backoff_state.json)
+          LAST_ATTEMPT=$(jq -r '.lastAttemptAt // empty' data/backoff_state.json)
 
-          echo "Consecutive prior failures: $STREAK (most recent run: ${LAST_CREATED:-none})"
+          echo "Consecutive prior failures: $STREAK (last attempt: ${LAST_ATTEMPT:-none})"
 
-          if [ "$STREAK" -lt 6 ]; then
+          if [ "$STREAK" -lt 6 ] || [ -z "$LAST_ATTEMPT" ]; then
             echo "Under ~30 min of failures — retry normally."
             echo "skip=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -97,7 +101,7 @@ jobs:
           # 30-90 min down -> retry roughly every 15 min. 90+ min -> every 30 min.
           if [ "$STREAK" -lt 18 ]; then MIN_GAP_S=900; else MIN_GAP_S=1800; fi
 
-          LAST_EPOCH=$(date -u -d "$LAST_CREATED" +%s)
+          LAST_EPOCH=$(date -u -d "$LAST_ATTEMPT" +%s)
           NOW_EPOCH=$(date -u +%s)
           ELAPSED=$((NOW_EPOCH - LAST_EPOCH))
 
@@ -112,10 +116,6 @@ jobs:
       - name: Skipped this run — portal-outage backoff active
         if: steps.backoff.outputs.skip == 'true'
         run: echo "::notice::No fetch attempted this run — see 'Check portal-outage backoff' step above for the streak/timing."
-
-      - name: Checkout repository
-        if: steps.backoff.outputs.skip != 'true'
-        uses: actions/checkout@v4
 
       - name: Set up Python
         if: steps.backoff.outputs.skip != 'true'
@@ -162,12 +162,21 @@ jobs:
       # overlap). On a non-fast-forward rejection we replay our single commit on
       # top of the new remote tip, always keeping OUR freshly generated data
       # (`-X theirs` resolves any conflict on the regenerated file in our favour).
+      #
+      # Runs on `always()` (not just success) — unlike the other data files,
+      # data/backoff_state.json is meant to be committed EVEN WHEN the fetch
+      # failed, since that's exactly when its updated consecutiveFailures/
+      # lastAttemptAt matters for the next run's backoff decision. The other
+      # files are untouched on a failed run (fetch_schedule.py never reaches
+      # its OUTPUT_FILE.write_text() when the whole run fails this early —
+      # userHtmlFrame never even appears — so `git add`ing them is harmless).
       - name: Commit updated data
-        if: steps.backoff.outputs.skip != 'true'
+        if: always() && steps.backoff.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/flight_schedule.json flight-data.js flight-data-recent.js data/portal_fingerprint.json
+          if [ -f data/backoff_state.json ]; then git add data/backoff_state.json; fi
           if git diff --cached --quiet; then
             echo "No data changes — skipping commit."
           else
