@@ -15,7 +15,37 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r44` (2026-08-06 — **restored `recover_vanished_bookings()`, removed during
+**Last known:** token = `r44` (2026-08-25 — **portal-outage backoff + stale-issue cleanup**
+(scraper/workflow-only — token not bumped). Real incident: the Ops Portal itself went unresponsive
+(`userHtmlFrame never appeared`, 90s×3 attempts) for **7.5+ hours straight** (04:29→~12:00 UTC), and
+the CF dispatcher kept firing `fetch_schedule.yml` every 5 min the whole time regardless — ~90
+consecutive failed runs, each burning a fresh Playwright session against an already-unresponsive
+portal, which is exactly the kind of load an outage doesn't need more of. Also found: the workflow's
+own `fetch-failure` issue-dedup (`if (issues.length === 0)`) had been silently defeated for over a
+month — issue #8 sat open since 2026-07-18 (never closed, nobody's job to close it), so this entire
+7.5h incident generated **zero** fresh GitHub issues, only raw per-run Actions failure emails (which
+is what actually got noticed). Same stale-issue gap found in CMD_CTR #7 (schema-drift) and DB001
+#3/#4 (dispatcher/update-cache) — all four closed manually as a one-time cleanup.
+Fix, `.github/workflows/fetch_schedule.yml`: (1) **new "Check portal-outage backoff" step**, first in
+the job (before checkout, so a skip costs ~nothing) — queries the last 30 completed runs of this same
+workflow via `gh api`, counts the consecutive-failure streak at the head of the list; under 6
+(<~30 min down) retries normally every trigger, 6–17 (~30–90 min down) throttles to ~once per 15 min,
+18+ (90+ min down) throttles to ~once per 30 min — all computed by comparing elapsed time since the
+last attempt against a tier-based `MIN_GAP_S`, no new state/KV needed since GH Actions run history IS
+the state. All steps from Checkout through Commit/Trigger-CMDV2 gated
+`if: steps.backoff.outputs.skip != 'true'`. New `workflow_dispatch` input `force` (boolean, default
+false) bypasses backoff entirely for a manual run — the CF dispatcher's API call never sets it, so only
+a human clicking "Run workflow" with the box checked can force through. (2) **new "Close stale
+fetch-failure issue on success" step** — on a successful (non-skipped) run, auto-closes+comments any
+open `fetch-failure` issue, so the dedup check can never again be silently defeated by an issue nobody
+closed. New permission `actions: read` added (needed for the `gh api .../runs` call in the backoff
+step). Verified: YAML parses, `if:` conditions on every gated step, and the streak/elapsed-gap boundary
+math (all 6/18-streak and 900s/1800s-gap edge cases) checked against a standalone simulation before
+deploying — not yet observed live against a real recovery (today's outage was still ongoing at deploy
+time). **`REGRESSION_GUARD_MAX_STREAK`(=3, per-date, inside `fetch_schedule.py`) is a different, unrelated
+guard** — that one decides whether to trust a single date's fresh-vs-existing flight count within one
+run; this new backoff decides whether to attempt a run **at all**, at the workflow level, across runs.)
+(2026-08-06 — **restored `recover_vanished_bookings()`, removed during
 the RPC migration below, for bookings that vanish via a portal path other than the Cancel Flight form**
 (scraper-only — token not bumped). Real user report, notifications had just been turned back on:
 recent Watchdog cancel notices showed no reason. Traced 4 real bookings (e.g. `BK-AP-127-TEER-FKTRW`)

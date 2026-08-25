@@ -3,7 +3,12 @@ name: Fetch Flight Schedule & Deploy
 on:
   schedule:
     - cron: '0 * * * *'  # hourly fallback (CF Worker dispatcher fires every 5 min)
-  workflow_dispatch:          # manual trigger from GitHub UI
+  workflow_dispatch:          # manual trigger from GitHub UI, or the CF dispatcher
+    inputs:
+      force:
+        description: 'Bypass the portal-outage backoff and fetch right now'
+        type: boolean
+        default: false
 
 # 2026-07-27: a single run took 6-11 min under the original two-pass Timeline
 # DOM-scraping fetch (since replaced with one getStudentSchedule RPC call per
@@ -35,6 +40,7 @@ concurrency:
 permissions:
   contents: write
   issues: write
+  actions: read
 
 jobs:
   fetch-and-deploy:
@@ -42,21 +48,90 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      # 2026-08-25: the Ops Portal itself went unresponsive for 7.5+ hours
+      # (Playwright's wait for userHtmlFrame never completed) while the CF
+      # dispatcher kept firing a fresh run every 5 min regardless — ~90
+      # consecutive failed runs, each burning a full Playwright session
+      # against an already-struggling portal. This step runs BEFORE checkout/
+      # Playwright setup and short-circuits the rest of the job once we've
+      # been failing for a while, so a sustained portal outage doesn't keep
+      # getting hammered every 5 min. `force: true` (manual dispatch only —
+      # the CF dispatcher never sets it) always bypasses this.
+      - name: Check portal-outage backoff
+        id: backoff
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            echo "Manual force-run — skipping backoff check."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Newest-first conclusion/created_at of the last 30 COMPLETED runs
+          # of this workflow (excludes the current in-progress run).
+          RUNS=$(gh api "repos/${{ github.repository }}/actions/workflows/fetch_schedule.yml/runs?status=completed&per_page=30" \
+            --jq '.workflow_runs | sort_by(.created_at) | reverse | .[] | [.conclusion, .created_at] | @tsv')
+
+          STREAK=0
+          LAST_CREATED=""
+          while IFS=$'\t' read -r CONCLUSION CREATED; do
+            [ -z "$CONCLUSION" ] && continue
+            [ -z "$LAST_CREATED" ] && LAST_CREATED="$CREATED"
+            if [ "$CONCLUSION" = "failure" ]; then
+              STREAK=$((STREAK + 1))
+            else
+              break
+            fi
+          done <<< "$RUNS"
+
+          echo "Consecutive prior failures: $STREAK (most recent run: ${LAST_CREATED:-none})"
+
+          if [ "$STREAK" -lt 6 ]; then
+            echo "Under ~30 min of failures — retry normally."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Sustained outage: throttle how often we actually hit the portal.
+          # 30-90 min down -> retry roughly every 15 min. 90+ min -> every 30 min.
+          if [ "$STREAK" -lt 18 ]; then MIN_GAP_S=900; else MIN_GAP_S=1800; fi
+
+          LAST_EPOCH=$(date -u -d "$LAST_CREATED" +%s)
+          NOW_EPOCH=$(date -u +%s)
+          ELAPSED=$((NOW_EPOCH - LAST_EPOCH))
+
+          if [ "$ELAPSED" -lt "$MIN_GAP_S" ]; then
+            echo "::notice::Portal has failed $STREAK straight runs — backing off (last attempt ${ELAPSED}s ago, need ${MIN_GAP_S}s). Skipping this run rather than hammering an unresponsive portal."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Backoff window elapsed (${ELAPSED}s >= ${MIN_GAP_S}s) — retrying."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skipped this run — portal-outage backoff active
+        if: steps.backoff.outputs.skip == 'true'
+        run: echo "::notice::No fetch attempted this run — see 'Check portal-outage backoff' step above for the streak/timing."
+
       - name: Checkout repository
+        if: steps.backoff.outputs.skip != 'true'
         uses: actions/checkout@v4
 
       - name: Set up Python
+        if: steps.backoff.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
       - name: Install Python dependencies
+        if: steps.backoff.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
       # Cache the Playwright browser binary — avoids a ~200 MB download every run.
       # Cache key includes the Playwright version so it rebuilds after upgrades.
       - name: Cache Playwright browsers
+        if: steps.backoff.outputs.skip != 'true'
         id: playwright-cache
         uses: actions/cache@v4
         with:
@@ -67,10 +142,12 @@ jobs:
       # When the cache is warm the binary already exists and Playwright skips
       # the download — making this step take ~10 s instead of ~2 min.
       - name: Install Playwright browser
+        if: steps.backoff.outputs.skip != 'true'
         run: playwright install chromium --with-deps
 
       # Fetch with up to 3 attempts before failing the job.
       - name: Fetch flight schedule
+        if: steps.backoff.outputs.skip != 'true'
         id: fetch
         run: python scripts/fetch_schedule.py
         env:
@@ -78,6 +155,7 @@ jobs:
           FETCH_RETRY_DELAY: '20'
 
       - name: Generate flight-data.js
+        if: steps.backoff.outputs.skip != 'true'
         run: python scripts/generate_flight_data.py
 
       # Push with retry to survive concurrent runs (cron + dispatcher + manual
@@ -85,6 +163,7 @@ jobs:
       # top of the new remote tip, always keeping OUR freshly generated data
       # (`-X theirs` resolves any conflict on the regenerated file in our favour).
       - name: Commit updated data
+        if: steps.backoff.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -111,7 +190,7 @@ jobs:
       # By the time Playwright + scrape finishes (~3–4 min), DB001 is also done
       # so CMDV2 gets fresh data from both upstream sources in one shot.
       - name: Trigger CMDV2 refresh
-        if: success()
+        if: success() && steps.backoff.outputs.skip != 'true'
         run: |
           curl -sf -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_PAT_WORKFLOW }}" \
@@ -139,6 +218,35 @@ jobs:
                 title,
                 body: `Workflow run failed: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nCheck logs and re-run manually once fixed.`,
                 labels: ['fetch-failure'],
+              });
+            }
+
+      # Auto-close a stale fetch-failure issue once a run succeeds again. The
+      # step above only opens a NEW issue if none is already open, which means
+      # an issue nobody closed silently swallows every future alert forever —
+      # exactly what happened 2026-07-18→08-25: issue #8 sat open for 5+
+      # weeks, so a real 7.5h portal outage on 08-25 generated zero fresh
+      # alerts (only bare per-run GitHub Actions failure emails). Closing it
+      # here as soon as we're healthy again keeps the dedup check meaningful.
+      - name: Close stale fetch-failure issue on success
+        if: success() && steps.backoff.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'fetch-failure',
+            });
+            for (const issue of issues) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Resolved — run ${context.runId} fetched successfully. Auto-closing.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
               });
             }
 
