@@ -376,9 +376,26 @@ def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
 
 
 async def _get_content_frame(page):
-    """Return the userHtmlFrame nested inside GAS's sandboxFrame."""
+    """Return the userHtmlFrame nested inside GAS's sandboxFrame.
+
+    2026-08-25: found the REAL cause of the day's 9+ hour outage here, not
+    just worked around it upstream. `wait_for_selector("iframe", ...)` above
+    correctly honors LOAD_TIMEOUT_MS (90s) for the FIRST (sandbox) iframe to
+    attach — but the inner poll for the nested userHtmlFrame specifically was
+    hardcoded to `range(40)` x 500ms = a flat 20s, completely ignoring
+    LOAD_TIMEOUT_MS. A portal slow enough to take >20s (but <90s) to finish
+    attaching userHtmlFrame — confirmed live: the user could load it manually
+    in a browser the whole time, just slowly — would fail here every single
+    time no matter how generous LOAD_TIMEOUT_MS was raised, which is exactly
+    what a local reproduction showed: monkeypatching LOAD_TIMEOUT_MS to 300s
+    still failed in ~24s, pinning it to this loop, not the outer wait or
+    MAX_ATTEMPTS/RETRY_DELAY_S. Now uses a wall-clock deadline against the
+    SAME LOAD_TIMEOUT_MS budget as the outer wait, so raising that one
+    constant actually has an effect here too.
+    """
     await page.wait_for_selector("iframe", timeout=LOAD_TIMEOUT_MS)
-    for _ in range(40):
+    deadline = asyncio.get_event_loop().time() + LOAD_TIMEOUT_MS / 1000
+    while asyncio.get_event_loop().time() < deadline:
         for frame in page.frames:
             if frame.name == "userHtmlFrame":
                 return frame
@@ -983,18 +1000,47 @@ async def scrape_window(days_back, days_forward):
     rosters = {"instructors": [], "resources": None, "leaves": _load_existing_leaves(),
                "cancelRecords": _load_existing_cancel_records()}
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        # 2026-08-25: the Ops Portal's Google Workspace policy requires sign-in
+        # ("Anyone with Google account"), and Google's own bot-detection blocks
+        # a fresh Playwright-launched Chromium from ever COMPLETING that sign-in
+        # ("This browser or app may not be secure") — no timeout or retry count
+        # fixes that, it's not a timing issue. Workaround, not a workaround-around
+        # the org's access policy: a completely plain, unflagged Chrome window
+        # (no --enable-automation, launched by the OS `open` command, NOT by
+        # Playwright) does the interactive human sign-in normally — Google has
+        # no reason to flag it, since it isn't one. Once that's done, THIS
+        # script attaches to that already-authenticated browser over CDP
+        # (`connect_over_cdp`, set via FETCH_CDP_ENDPOINT, e.g.
+        # "http://localhost:9222") and reuses its already-logged-in page rather
+        # than launching (and then failing to log into) its own. Cookies never
+        # leave the local machine; nothing is stored, exported, or committed.
+        # Unset (the CI/default case): behavior is 100% unchanged.
+        cdp_endpoint = os.environ.get("FETCH_CDP_ENDPOINT")
+        owns_browser = not cdp_endpoint
+        if cdp_endpoint:
+            browser = await p.chromium.connect_over_cdp(cdp_endpoint)
+        else:
+            browser = await p.chromium.launch(headless=True)
         try:
-            context = await browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/124.0.0.0 Safari/537.36"
+            if cdp_endpoint:
+                context = browser.contexts[0] if browser.contexts else await browser.new_context()
+                page = context.pages[0] if context.pages else await context.new_page()
+                if SCRIPT_URL not in page.url:
+                    print(f"Navigating to {SCRIPT_URL} …")
+                    await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
+                else:
+                    print(f"Reusing already-authenticated tab at {page.url}")
+            else:
+                context = await browser.new_context(
+                    user_agent=(
+                        "Mozilla/5.0 (X11; Linux x86_64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    )
                 )
-            )
-            page = await context.new_page()
-            print(f"Navigating to {SCRIPT_URL} …")
-            await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
+                page = await context.new_page()
+                print(f"Navigating to {SCRIPT_URL} …")
+                await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             user_frame = await _get_content_frame(page)
             await _open_timeline_view(user_frame)
 
@@ -1046,7 +1092,13 @@ async def scrape_window(days_back, days_forward):
                 await page.wait_for_timeout(1000)
 
         finally:
-            await browser.close()
+            # Never call browser.close() on a CDP-attached connection — unlike a
+            # Playwright-launched browser, that's known to be able to kill the
+            # REAL underlying browser process, not just disconnect (version-
+            # dependent, and not a risk worth taking against the user's actual
+            # Chrome window). Only close what we ourselves launched and own.
+            if owns_browser:
+                await browser.close()
 
     if len(failed_dates) == len(dates):
         raise RuntimeError(f"All {len(dates)} dates failed — Ops Portal likely down or navigation broke")
