@@ -6,3 +6,9 @@ __pycache__/
 node_modules/
 # Rolling backup written before each fetch — not worth tracking in git
 data/flight_schedule.backup.json
+
+# docker/ runtime state (Orange Pi 4 Pro deployment) — never commit the
+# authenticated Chromium profile or the nested repo checkout it pushes from
+docker/chromium-config/
+docker/repo/
+docker/.env

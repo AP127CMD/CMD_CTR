@@ -15,7 +15,20 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 ```
-**Last known:** token = `r44` (2026-08-25 — **portal-outage backoff + stale-issue cleanup**
+**Last known:** token = `r44` (2026-08-25 — **`docker/` — Orange Pi 4 Pro deployment prepared, NOT YET
+LIVE** (scraper/infra-only — token not bumped). Root cause of the whole day's outage turned out to be
+deeper than portal slowness: the Ops Portal now requires Google sign-in, and Google's bot-detection
+permanently blocks a Playwright-launched Chromium from completing that sign-in (confirmed, not a
+timeout issue — tested up to a 300s budget). GitHub Actions can never pass this, so the backoff fix
+above (still correct and still deployed) can throttle the damage but not cure it. Durable fix: a
+persistent, real, manually-signed-in Chromium on dedicated hardware (an Orange Pi 4 Pro, 4GB, arriving
+2026-08-26) that `fetch_schedule.py` attaches to over CDP via `FETCH_CDP_ENDPOINT` (added same day —
+see the `_get_content_frame()` docstring) — the exact code path proven working in a manual run that
+fetched 358 flights across 18 dates on the first try. `docker/` (compose file, `fetch-cron/` Dockerfile
++ `run_fetch.sh`, `README.md`) is written and reviewed but **unverified end-to-end** — the hardware
+hasn't arrived yet. Full setup runbook at `/Users/nugui/CLAUDE/HomeServer/RUNBOOK.md`. Does not disable
+or replace the CI workflow — that keeps running as a fallback, now cheap thanks to the backoff fix.)
+(2026-08-25 — **portal-outage backoff + stale-issue cleanup**
 (scraper/workflow-only — token not bumped). Real incident: the Ops Portal itself went unresponsive
 (`userHtmlFrame never appeared`, 90s×3 attempts) for **7.5+ hours straight** (04:29→~12:00 UTC), and
 the CF dispatcher kept firing `fetch_schedule.yml` every 5 min the whole time regardless — ~90

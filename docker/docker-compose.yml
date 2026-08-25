@@ -1,0 +1,81 @@
+# AP127 fetch pipeline, running on the Orange Pi 4 Pro instead of GitHub
+# Actions — built 2026-08-25 to durably fix the Ops Portal's Google sign-in
+# wall (see CLAUDE.md's 2026-08-25 entries + AP127_Docs README §10 for the
+# full incident). CI's Playwright-launched Chromium gets blocked by Google's
+# bot-detection at the sign-in screen itself, every time, no matter what — a
+# plain, persistently-signed-in real Chromium instance doesn't have that
+# problem, so this runs one 24/7 and points the existing fetch_schedule.py at
+# it over CDP (FETCH_CDP_ENDPOINT — the exact code path proven working
+# manually on 2026-08-25).
+#
+# NOT YET DEPLOYED as of the file's creation — the Pi hasn't arrived yet.
+# See docker/README.md for the one-time setup (Pi arrival → first
+# `docker compose up` → interactive Google login) and ongoing operation.
+#
+# This does NOT replace the GitHub Actions workflow — that keeps running on
+# its own schedule as a redundant fallback (harmless now that its backoff
+# logic exists; it'll mostly just report "skip=true" once this Pi is doing
+# the real work). Consider disabling/slowing the CF dispatcher once this has
+# been reliable for a while — not done yet, deliberately, until this is
+# proven.
+
+services:
+  # Persistent, real Chromium — signed into Google once, interactively, via
+  # its own web GUI (port 3000). Never launched by Playwright, so Google's
+  # automation-detection has nothing to flag. CDP is exposed on the internal
+  # docker network only (never published to the host/internet) — the fetch
+  # service is the only thing that talks to it.
+  chromium:
+    image: lscr.io/linuxserver/chromium:latest
+    container_name: ap127-chromium
+    security_opt:
+      - seccomp:unconfined   # Chromium's own sandbox needs this in most container runtimes
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Bangkok
+      # --remote-debugging-address=0.0.0.0 is required (not just the port) —
+      # Chrome binds CDP to 127.0.0.1 only by default, which other containers
+      # on this same docker network could never reach otherwise. Safe here
+      # because the port is never published outside the ap127net bridge
+      # network (see chromium service's lack of a `ports:` CDP entry below —
+      # only 3000 for the login GUI is exposed).
+      - CHROME_CLI=--remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 https://script.google.com/macros/s/AKfycbx-8p8MWbDAeJkTBPt4Yy_6cH0azSv-5VXcrzVhIUGM6XEJRtMBQNku-WybzNlhq9zN/exec
+    volumes:
+      - ./chromium-config:/config   # persists the signed-in profile across restarts — the whole point
+    ports:
+      - "3000:3000"    # web GUI, for the one-time login and any future re-login
+    shm_size: "1gb"     # default docker 64MB /dev/shm starves Chromium badly
+    restart: unless-stopped
+    networks:
+      - ap127net
+
+  # Runs fetch_schedule.py on a fixed interval against the chromium service
+  # above (over CDP, never launching its own browser), then commits + pushes
+  # any changed data and pings CMDV2's refresh workflow — mirrors what
+  # .github/workflows/fetch_schedule.yml's later steps do, minus the
+  # GH-Actions-specific backoff/issue-reporting (see run_fetch.sh's header
+  # comment for why that's an acceptable simplification here).
+  fetch:
+    build: ./fetch-cron
+    container_name: ap127-fetch
+    depends_on:
+      - chromium
+    environment:
+      - FETCH_CDP_ENDPOINT=http://chromium:9222
+      - TZ=Asia/Bangkok
+      - FETCH_INTERVAL_SECONDS=300   # 5 min, matching the CF dispatcher's old cadence
+      # GH_PAT: fine-grained PAT, Contents:write on AP127CMD/CMD_CTR +
+      # Actions:write on AP127CMD/CMDV2 (same scopes as the existing
+      # GH_PAT_WORKFLOW secret CI uses) — put the real value in docker/.env
+      # (gitignored), NEVER in this file or committed anywhere.
+      - GH_PAT=${GH_PAT}
+    volumes:
+      - ./repo:/repo   # `git clone https://github.com/AP127CMD/CMD_CTR /repo` once, then this stays in sync via the container's own `git pull`
+    restart: unless-stopped
+    networks:
+      - ap127net
+
+networks:
+  ap127net:
+    driver: bridge
