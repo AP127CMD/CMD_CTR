@@ -16,7 +16,24 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-26 — **`fetch_schedule.yml` DISABLED, dispatcher paused — stopping
+**Last known:** token = `r44` (2026-08-26 — **manual-refresh tool + Orange Pi Zero 2W pivot** (scraper/
+infra-only — token not bumped). Two changes: (1) `scripts/manual_refresh.sh` — one command
+(`./scripts/manual_refresh.sh`) that does the entire 2026-08-25 manual-fix dance automatically: opens/
+reuses a persistent, real, unmodified Chrome window (`~/.ap127-manual-chrome-profile` — sign into Google
+once, ever, not once per run), waits for it to reach the portal, runs `fetch_schedule.py` against it
+over CDP, commits+pushes any changes, triggers CMDV2's refresh. Requires Chrome + an authenticated `gh`
+CLI, nothing else. Verified live the same day it was written — see AP127_Docs §10 for the run's actual
+numbers. (2) **User decided to dedicate an Orange Pi Zero 2W (1GB) to this job instead of the Orange Pi
+4 Pro** (that board stays for its other general home-server plans — see `/Users/nugui/CLAUDE/HomeServer/`
+— just no longer tied to AP127 specifically) — new `pi-native/` folder, a **native** (no Docker)
+systemd-based port of the same idea, deliberately leaner than `docker/`'s approach since Docker's own
+daemon overhead is real weight a dedicated 1GB board can't spare: `ap127-chromium.service` (Xvfb on a
+fixed `:99` + Chromium with memory-conscious flags) + `ap127-fetch.timer` (5-min cadence) +
+`install.sh`. OS choice: **DietPi**, not Armbian — leaner idle footprint than Armbian, which matters
+more here than it did for the (still-Armbian-planned) Pi 4 Pro. `docker/` is left in place, unused for
+now — still valid if ever revisited. **Status: written, NOT yet deployed** — hardware not yet flashed/
+set up. Full setup: `pi-native/README.md`.)
+(2026-08-26 — **`fetch_schedule.yml` DISABLED, dispatcher paused — stopping
 the failing fetch until the Orange Pi 4 Pro is live** (scraper/workflow/infra-only — token not bumped).
 Every run has been failing on the Google sign-in wall (see the entry below) since 2026-08-25 04:29 UTC;
 the backoff fix throttled it to a run every 15-30 min, but it was still failing every time it ran, for

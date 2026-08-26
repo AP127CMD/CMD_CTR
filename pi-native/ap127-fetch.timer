@@ -1,0 +1,12 @@
+[Unit]
+Description=Run ap127-fetch every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+# Spread slightly so it doesn't always land exactly when ap127-chromium.service
+# might be mid-restart after a crash.
+AccuracySec=30sec
+
+[Install]
+WantedBy=timers.target

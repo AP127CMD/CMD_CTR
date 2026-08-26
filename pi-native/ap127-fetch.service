@@ -1,0 +1,12 @@
+[Unit]
+Description=AP127 fetch run (one cycle)
+After=ap127-chromium.service
+Requires=ap127-chromium.service
+
+[Service]
+Type=oneshot
+User=__USER__
+WorkingDirectory=__HOME__/flight-schedule-feed
+EnvironmentFile=__HOME__/flight-schedule-feed/pi-native/.env
+Environment=FETCH_CDP_ENDPOINT=http://127.0.0.1:9222
+ExecStart=__HOME__/flight-schedule-feed/pi-native/run_fetch.sh
