@@ -16,7 +16,27 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-27 — **Timeline View opening removed from the critical path
+**Last known:** token = `r44` (2026-08-27 — **`scripts/launchd/` — background auto-refresh on the Mac**
+(scraper/infra-only — token not bumped). User: "keep it auto refresh on my macbook... run it in
+background... as long as my mac is turned on, keep the fetching alive" (and separately asked about an
+iOS app for this — declined: Apple requires WebKit not Chromium, and iOS deliberately suspends
+background apps, making a persistent authenticated-session poller impossible there — the Pi remains the
+right tool if "always on regardless of the Mac" is the real goal). Built with three `launchd`
+LaunchAgents (macOS's native background-service system): `com.ap127.chromium` (persistent, auto-
+restarting signed-in Chrome, direct `ProgramArguments` at the binary — no wrapper needed),
+`com.ap127.chromium-hide` (a SEPARATE one-shot agent that hides the window ~8s after each restart —
+tried backgrounding this step inside the chromium job first, confirmed live it never actually ran under
+launchd, no error, just silently didn't fire), `com.ap127.fetch` (runs `manual_refresh.sh` every 5 min,
+`EnvironmentVariables.PATH` set explicitly since launchd jobs don't source shell rc files). `install.sh`/
+`uninstall.sh` + `README.md`. Two real bugs found only by testing live, not assumed: (1) Chrome's
+`miniaturized` AppleScript property errors on current Chrome ("Can't make miniaturized of window 1 into
+type specifier") — `visible` works and is what's used. (2) `launchctl bootstrap` right after `bootout`
+of the same label reliably fails ("Input/output error") without a real pause — needs 3s + a retry, 1s
+wasn't enough. Added a lock guard (mkdir-based mutex, stale-PID aware) to `manual_refresh.sh` itself so
+overlapping timer-triggered runs can't race the same Chrome tab. **Verified live end-to-end multiple
+times**, including a full clean reinstall: hidden window confirmed, 300+ flights fetched and pushed,
+CMDV2 triggered, all clean.)
+(2026-08-27 — **Timeline View opening removed from the critical path
 entirely — it was vestigial** (scraper-only — token not bumped). User asked, correctly: "we no longer
 use the method of Timeline view clicking anymore?" — checked, and every actual data fetch (the date
 loop, rosters, leaves, cancel records) is a pure `google.script.run` RPC call; none of them read
