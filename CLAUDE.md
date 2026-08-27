@@ -16,7 +16,19 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-27 — **three real reliability fixes to the CDP-attach path, found
+**Last known:** token = `r44` (2026-08-27 — **Timeline View opening removed from the critical path
+entirely — it was vestigial** (scraper-only — token not bumped). User asked, correctly: "we no longer
+use the method of Timeline view clicking anymore?" — checked, and every actual data fetch (the date
+loop, rosters, leaves, cancel records) is a pure `google.script.run` RPC call; none of them read
+Timeline's DOM or need any view open. The entire reload/wrong-element/mouse-coordinate-click saga just
+below this entry was all spent keeping alive a step nothing downstream actually needed. Fix: `scrape_window()`
+no longer opens Timeline View at all. The one thing that genuinely still needs it — Timeline mode-tab
+visibility, a minor structural-drift signal — moved into `_capture_expensive_fingerprint()`, already
+throttled to once/`STRUCTURE_CHECK_INTERVAL_HOURS` (24h) — so this fragility now matters once a day
+instead of every single run. Verified live: clean run, first attempt, no Timeline-related output at all
+in the log. `check_portal_structure()`'s diff logic and `_return_to_home()`'s warning message updated
+to match (the latter is no longer a predictor of the next step failing — the date loop doesn't care).)
+(2026-08-27 — **three real reliability fixes to the CDP-attach path, found
 via `manual_refresh.sh`'s first several real-world runs** (scraper-only — token not bumped). All apply
 equally to `pi-native/`'s and `docker/`'s deployments (same `fetch_schedule.py`), not just manual runs.
 (1) A tab left open for many hours (the normal state for ANY persistent-Chromium deployment — the whole
