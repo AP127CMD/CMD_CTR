@@ -713,28 +713,38 @@ def _load_portal_fingerprint():
 
 
 async def _capture_cheap_fingerprint(user_frame):
-    """RPC function list + Timeline mode tabs. Near-zero cost — no
-    navigation, the Timeline frame is already open — safe to run every
-    scrape."""
+    """RPC function list only. Near-zero cost — pure JS eval against
+    `google.script.run`, needs no navigation and no particular view open, so
+    safe to run every scrape. (Used to also read Timeline mode-tab
+    visibility here, which DID need Timeline View open — moved into
+    `_capture_expensive_fingerprint` 2026-08-27 when Timeline-opening was
+    dropped from the critical path entirely; see `scrape_window()`'s
+    comment for why.)"""
     names = await user_frame.evaluate(
         "() => Object.keys(google.script.run).filter(k => typeof google.script.run[k]==='function').sort()"
     )
-    modes = await user_frame.evaluate("""() => {
-      const vis = el => !!(el.offsetParent);
-      return ['gantt-mode-plan','gantt-mode-actual','gantt-mode-canceled']
-        .filter(id => { const e = document.getElementById(id); return e && vis(e); });
-    }""")
-    return {"rpc_functions": names, "timeline_modes": modes}
+    return {"rpc_functions": names}
 
 
 async def _capture_expensive_fingerprint(page, user_frame):
     """Submit Forms field options (Cancel Flight reasons, Leave Request
-    types) + Daily Schedule presence. Requires navigating away from
-    Timeline and back — throttled by STRUCTURE_CHECK_INTERVAL_HOURS (see
-    above), never run mid-date-loop. Each piece is independently
+    types) + Daily Schedule presence + Timeline mode tabs. Requires
+    navigating away from Home — throttled by STRUCTURE_CHECK_INTERVAL_HOURS
+    (see above), never run mid-date-loop. Each piece is independently
     best-effort: a failure here means "couldn't confirm this run", not "the
     portal is broken" — it doesn't affect the main schedule scrape at all."""
     result = {}
+    try:
+        await _open_timeline_view(user_frame)
+        result["timeline_modes"] = await user_frame.evaluate("""() => {
+          const vis = el => !!(el.offsetParent);
+          return ['gantt-mode-plan','gantt-mode-actual','gantt-mode-canceled']
+            .filter(id => { const e = document.getElementById(id); return e && vis(e); });
+        }""")
+    except Exception as exc:
+        print(f"WARNING: portal-structure check could not open Timeline View ({exc}) — "
+              f"skipping this run's mode-tab comparison, will re-check next scheduled check", file=sys.stderr)
+
     try:
         back = user_frame.get_by_text("‹ Back")
         if await back.count():
@@ -813,9 +823,6 @@ async def check_portal_structure(page, user_frame):
             if added: msg += f" — added: {added}"
             if removed: msg += f" — REMOVED (check nothing we call depends on these): {removed}"
             warnings.append(msg)
-        prev_modes, cur_modes = set(prev.get("timeline_modes") or []), set(cheap["timeline_modes"])
-        if prev_modes != cur_modes:
-            warnings.append(f"Timeline mode tabs changed: was {sorted(prev_modes)}, now {sorted(cur_modes)}")
     fingerprint.update(cheap)
 
     due = True
@@ -830,6 +837,10 @@ async def check_portal_structure(page, user_frame):
         expensive = await _capture_expensive_fingerprint(page, user_frame)
         expensive["_expensive_checked_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         if not first_run:
+            if prev.get("timeline_modes") is not None and "timeline_modes" in expensive and \
+               set(prev["timeline_modes"]) != set(expensive["timeline_modes"]):
+                warnings.append(f"Timeline mode tabs changed: "
+                                 f"was {sorted(prev['timeline_modes'])}, now {sorted(expensive['timeline_modes'])}")
             if prev.get("daily_schedule_present") is not None and \
                prev["daily_schedule_present"] != expensive.get("daily_schedule_present"):
                 warnings.append("Daily Schedule view presence changed: "
@@ -851,8 +862,13 @@ async def check_portal_structure(page, user_frame):
         try:
             await _return_to_home(page, user_frame)
         except Exception as exc:
+            # No longer fatal to the date loop (2026-08-27 — that's pure RPC
+            # now, doesn't care what's on screen); this is just tidiness, so
+            # a failure here is genuinely harmless, not a predictor of the
+            # next step failing.
             print(f"WARNING: could not return to Timeline View after the structure check ({exc}) — "
-                  f"the date-loop fetch immediately after this will likely fail and retry", file=sys.stderr)
+                  f"leaving the browser mid-navigation, but the RPC-based fetch that follows doesn't "
+                  f"depend on it", file=sys.stderr)
 
     try:
         PORTAL_FINGERPRINT_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -1077,7 +1093,20 @@ async def scrape_window(days_back, days_forward):
                 print(f"Navigating to {SCRIPT_URL} …")
                 await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             user_frame = await _get_content_frame(page)
-            await _open_timeline_view(user_frame)
+            # Deliberately NOT opening Timeline View here (removed 2026-08-27,
+            # was unconditional before). Every actual data fetch below — the
+            # date loop, rosters, leaves, cancel records — is a pure
+            # google.script.run RPC call (see the "Portal internal RPC API"
+            # section above); none of them read Timeline's DOM or need any
+            # particular view open. Timeline View is only still opened,
+            # on-demand, inside _capture_expensive_fingerprint() for the one
+            # remaining thing that DOES need it (Timeline mode-tab visibility),
+            # which is already throttled to once/STRUCTURE_CHECK_INTERVAL_HOURS
+            # — so this removes an entire class of UI-click fragility (see
+            # this file's git history around 2026-08-27 for the saga: a
+            # reload fix, a wrong-element fix, and a mouse-coordinate-vs-JS-
+            # click fix, all needed just to keep this one now-unnecessary
+            # step working) from every single run instead of just one/day.
 
             structure_warnings = []
             try:
