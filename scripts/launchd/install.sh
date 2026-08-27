@@ -28,7 +28,7 @@ done
 echo
 echo "=== Installed ==="
 echo "com.ap127.chromium — keeps a persistent, signed-in Chrome window alive"
-echo "                     (minimizes itself ~8s after starting)"
+echo "                     (hides its window ~8s after starting)"
 echo "com.ap127.fetch    — runs scripts/manual_refresh.sh every 5 minutes"
 echo
 echo "Check status:"

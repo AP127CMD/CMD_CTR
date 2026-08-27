@@ -10,9 +10,12 @@ same idea as `systemd` on Linux, or the Pi's own `pi-native/` setup):
 
 - **`com.ap127.chromium`** — keeps ONE real, plain Chrome window alive,
   signed into Google, restarting it automatically if it ever crashes or
-  gets quit. It minimizes itself about 8 seconds after starting so it stays
-  out of your way; from then on it just sits in the background holding the
-  authenticated session, using CDP (not visible interaction) for everything.
+  gets quit. It hides its own window about 8 seconds after starting (`set
+  visible of window 1 to false` — Chrome's `miniaturized` AppleScript
+  property doesn't work on current Chrome versions, tested 2026-08-27) so
+  it stays out of your way entirely; from then on it just sits in the
+  background holding the authenticated session, using CDP (not visible
+  interaction) for everything.
 - **`com.ap127.fetch`** — runs `manual_refresh.sh` every 5 minutes. Almost
   always just attaches to the already-running Chrome above over CDP — no
   window, no interruption, no visible activity at all in the normal case.
@@ -59,9 +62,14 @@ you didn't also clear the profile.
   the next trigger skips instead of racing the same Chrome tab.
 - **Session expiry**: same as everywhere else — `~/Library/Logs/ap127-fetch.log`
   will show repeated `userHtmlFrame never appeared` errors if the Google
-  session itself expired. Fix: the Chrome window is still there (check
-  `launchctl list | grep ap127.chromium` for its PID, or just look for it —
-  it'll be minimized) — un-minimize it, sign in again, done.
+  session itself expired. Fix: the Chrome window is still there, just
+  hidden — bring it back with:
+  ```bash
+  osascript -e 'tell application "Google Chrome" to set visible of window 1 to true'
+  ```
+  Sign in again, then hide it again the same way with `to false` (the
+  auto-hide only fires once, right after Chrome itself (re)starts — not
+  every time you happen to show the window).
 - **The Desktop launcher** (`AP127-ManualRefresh.command`) still works
   fine alongside this — running it manually just does one extra cycle on
   top of the automatic ones, no conflict (same lock guards both).

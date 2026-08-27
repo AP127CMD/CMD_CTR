@@ -6,12 +6,17 @@
 # KeepAlive setting genuinely restarts it if it ever crashes/quits — a
 # wrapper that forked-and-exited would leave Chrome orphaned and unmonitored.
 #
-# The minimize step runs as a detached background job BEFORE the exec (it
-# has to — nothing after `exec` in this script ever runs) so the window
-# tucks itself away ~8s after appearing rather than sitting in your way.
+# The hide step runs as a detached background job BEFORE the exec (it has
+# to — nothing after `exec` in this script ever runs) so the window tucks
+# itself away ~8s after appearing rather than sitting in your way. Uses
+# `visible` (not `miniaturized` — tested 2026-08-27, that property errors
+# on this Chrome version: "Can't make miniaturized of window 1 into type
+# specifier"). To re-show it for a re-login: `osascript -e 'tell
+# application "Google Chrome" to set visible of window 1 to true'`
+# (see ../launchd/README.md's "Session expired" section).
 
 ( sleep 8
-  osascript -e 'tell application "Google Chrome" to set miniaturized of front window to true' \
+  osascript -e 'tell application "Google Chrome" to set visible of window 1 to false' \
     >/dev/null 2>&1
 ) &
 disown
