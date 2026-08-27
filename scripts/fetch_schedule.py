@@ -404,8 +404,15 @@ async def _get_content_frame(page):
 
 
 async def _open_timeline_view(user_frame):
+    # 45s (was 15s, found too short 2026-08-27): after scrape_window() started
+    # always reloading the page fresh (see that function's comment — fixes a
+    # separate long-lived-tab staleness bug), the app's own internal
+    # bootstrap after a cold reload can take noticeably longer than it did
+    # from an already-warm tab. The click itself succeeds quickly either
+    # way; it's #gantt-date actually becoming visible (not just present in
+    # the DOM) that needs the longer budget on a cold reload.
     await user_frame.get_by_text("Timeline View").click(timeout=15_000)
-    await user_frame.wait_for_selector("#gantt-date", timeout=15_000)
+    await user_frame.wait_for_selector("#gantt-date", timeout=45_000)
 
 
 async def _return_to_home(page, user_frame, max_clicks=4):
