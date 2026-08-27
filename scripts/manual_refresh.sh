@@ -40,6 +40,13 @@ echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) — manual refresh starting ==="
 # real work) so it can't block the rebase below — see 2026-08-27 incident.
 git checkout -- .DS_Store 2>/dev/null || true
 
+# A failed run from earlier can leave an uncommitted backoff_state.json
+# bump behind (this script only commits on the success path). It's pure
+# bookkeeping, not precious — whichever this run's own outcome is will
+# rewrite it anyway, so there's nothing worth preserving from a stale local
+# copy. Discard rather than requiring a manual commit before every retry.
+git checkout -- data/backoff_state.json 2>/dev/null || true
+
 if ! git pull --rebase origin main; then
   echo "git pull failed — likely uncommitted changes in the way. Current status:" >&2
   git status --short >&2

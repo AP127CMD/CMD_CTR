@@ -21,6 +21,12 @@ git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/AP127CMD/
 
 echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) — starting fetch ==="
 
+# A failed cycle leaves an uncommitted backoff_state.json bump behind (this
+# script only commits on the success path) — without this, EVERY cycle
+# after a failure would fail again immediately on git pull, forever. It's
+# pure bookkeeping, not precious; this run's own outcome rewrites it anyway.
+git checkout -- data/backoff_state.json 2>/dev/null || true
+
 if ! git pull --rebase origin main; then
   echo "git pull failed — skipping this cycle" >&2
   exit 1
