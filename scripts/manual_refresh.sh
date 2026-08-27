@@ -36,7 +36,16 @@ cd "$REPO_ROOT"
 
 echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) — manual refresh starting ==="
 
-git pull --rebase origin main || { echo "git pull failed — resolve manually before retrying." >&2; exit 1; }
+# Discard noise Finder/macOS writes into the working tree on its own (never
+# real work) so it can't block the rebase below — see 2026-08-27 incident.
+git checkout -- .DS_Store 2>/dev/null || true
+
+if ! git pull --rebase origin main; then
+  echo "git pull failed — likely uncommitted changes in the way. Current status:" >&2
+  git status --short >&2
+  echo "Resolve the above (commit, stash, or discard as appropriate) and try again." >&2
+  exit 1
+fi
 
 # --- 1. Make sure a real, plain Chrome is running with the persistent profile ---
 if curl -sf "http://localhost:${CDP_PORT}/json/version" >/dev/null 2>&1; then
