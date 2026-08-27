@@ -1025,11 +1025,20 @@ async def scrape_window(days_back, days_forward):
             if cdp_endpoint:
                 context = browser.contexts[0] if browser.contexts else await browser.new_context()
                 page = context.pages[0] if context.pages else await context.new_page()
-                if SCRIPT_URL not in page.url:
-                    print(f"Navigating to {SCRIPT_URL} …")
-                    await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
-                else:
-                    print(f"Reusing already-authenticated tab at {page.url}")
+                # ALWAYS reload, even when already on the right URL — found
+                # 2026-08-27: a tab left open for many hours (exactly what a
+                # persistent CDP-attached Chromium does by design) can go
+                # internally stale — still authenticated, still on the right
+                # URL, but userHtmlFrame never (re)appears, because the
+                # existing DOM/app state itself is what's broken, not the
+                # navigation. Skipping the reload was an optimization that
+                # traded away reliability for the *common* case (which
+                # doesn't need it) at the cost of the *long-lived* case
+                # (which is the whole point of the Pi deployment this exists
+                # for). A fresh navigation is cheap next to the RPC calls
+                # that follow either way.
+                print(f"Reloading {SCRIPT_URL} (was: {page.url}) …")
+                await page.goto(SCRIPT_URL, wait_until="networkidle", timeout=LOAD_TIMEOUT_MS)
             else:
                 context = await browser.new_context(
                     user_agent=(
