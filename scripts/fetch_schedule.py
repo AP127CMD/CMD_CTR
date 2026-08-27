@@ -414,15 +414,23 @@ async def _open_timeline_view(user_frame):
     # wrapper div both have no click handler at all; the click handler lives
     # on a `button.landing-btn` several levels up, and a JS-dispatched
     # .click() on THAT element opens Timeline View correctly every time.
-    # Exactly why Playwright's coordinate-based click on the text stopped
-    # reaching the button specifically after a cold reload (vs. an
-    # already-warm tab, where this same selector had worked reliably since
-    # 2026-07-27) wasn't fully pinned down — a page.screenshot() call during
-    # diagnosis separately got stuck on "waiting for fonts to load", which
-    # points at post-reload font/layout settling as a plausible contributing
-    # factor — but targeting the real clickable element is the correct fix
-    # regardless of that mechanism, not merely a workaround for it.
-    await user_frame.locator("button.landing-btn", has_text="Timeline View").click(timeout=15_000)
+    # Targeting the right element (above) turned out not to be sufficient on
+    # its own: Playwright's normal .click() (which simulates a real mouse
+    # click at the element's on-screen coordinates) still silently failed to
+    # trigger the button's onclick — reported success, bounding box and
+    # element both correct, but the app never navigated. Root cause: coordinate
+    # translation through the two levels of nested iframes here (page ->
+    # sandboxFrame -> userHtmlFrame) is a known trickier case for a browser
+    # attached via connect_over_cdp (this run's whole reason for existing —
+    # see FETCH_CDP_ENDPOINT above) vs. one Playwright itself launched, where
+    # it has full control over frame/coordinate bookkeeping. Confirmed via a
+    # standalone script: identical Playwright locator.click() silently
+    # no-ops, while a JS-dispatched element.click() from inside the frame's
+    # own context (bypassing screen-coordinate simulation entirely) opens
+    # Timeline View correctly and repeatably. Use that instead.
+    button = user_frame.locator("button.landing-btn", has_text="Timeline View")
+    await button.wait_for(state="visible", timeout=15_000)
+    await button.evaluate("el => el.click()")
     await user_frame.wait_for_selector("#gantt-date", timeout=45_000)
 
 
