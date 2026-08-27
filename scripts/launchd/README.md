@@ -3,7 +3,20 @@
 Keeps `scripts/manual_refresh.sh` running every 5 minutes automatically,
 for as long as this Mac is on — without interrupting normal use.
 
-## Managing it
+## Managing it — with buttons
+
+**`AP127 Control.app` on the Desktop** — double-click it for a small native
+dialog: it shows the current state and offers the 2 relevant buttons for
+that state (Pause+Stop while running, Resume+Stop while paused, Start
+while off), plus Cancel. No Terminal window, no typing.
+
+Rebuild it after editing `AP127-Control.applescript` (its source, kept
+here for version control):
+```bash
+osacompile -o ~/Desktop/"AP127 Control.app" scripts/launchd/AP127-Control.applescript
+```
+
+## Managing it — from the terminal
 
 ```bash
 ./scripts/launchd/manage.sh start    # install (if needed) and start everything
