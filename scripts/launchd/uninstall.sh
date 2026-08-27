@@ -5,7 +5,7 @@
 set -uo pipefail
 
 uid=$(id -u)
-for label in com.ap127.chromium com.ap127.fetch; do
+for label in com.ap127.chromium com.ap127.chromium-hide com.ap127.fetch; do
   launchctl bootout "gui/${uid}/${label}" 2>/dev/null && echo "Stopped $label" || echo "$label was not running"
   rm -f "$HOME/Library/LaunchAgents/${label}.plist"
 done

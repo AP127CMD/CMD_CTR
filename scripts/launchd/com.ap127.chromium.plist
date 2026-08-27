@@ -6,7 +6,13 @@
     <string>com.ap127.chromium</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/nugui/flight-schedule-feed/scripts/launchd/start_chromium.sh</string>
+        <string>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</string>
+        <string>--remote-debugging-port=9222</string>
+        <string>--remote-debugging-address=127.0.0.1</string>
+        <string>--user-data-dir=/Users/nugui/.ap127-manual-chrome-profile</string>
+        <string>--no-first-run</string>
+        <string>--no-default-browser-check</string>
+        <string>https://script.google.com/macros/s/AKfycbx-8p8MWbDAeJkTBPt4Yy_6cH0azSv-5VXcrzVhIUGM6XEJRtMBQNku-WybzNlhq9zN/exec</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

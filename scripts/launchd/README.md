@@ -10,12 +10,16 @@ same idea as `systemd` on Linux, or the Pi's own `pi-native/` setup):
 
 - **`com.ap127.chromium`** — keeps ONE real, plain Chrome window alive,
   signed into Google, restarting it automatically if it ever crashes or
-  gets quit. It hides its own window about 8 seconds after starting (`set
-  visible of window 1 to false` — Chrome's `miniaturized` AppleScript
-  property doesn't work on current Chrome versions, tested 2026-08-27) so
-  it stays out of your way entirely; from then on it just sits in the
-  background holding the authenticated session, using CDP (not visible
-  interaction) for everything.
+  gets quit.
+- **`com.ap127.chromium-hide`** — a separate, independent one-shot job that
+  hides that window about 8 seconds after each `com.ap127.chromium`
+  (re)start (`set visible of window 1 to false` — Chrome's `miniaturized`
+  AppleScript property doesn't work on current Chrome versions, tested
+  2026-08-27; a delayed step backgrounded *inside* `com.ap127.chromium`
+  itself was tried first and silently never ran under launchd, also tested
+  2026-08-27 — a fully separate job is simple enough to trust). After
+  hiding, Chrome just sits in the background holding the authenticated
+  session, using CDP (not visible interaction) for everything.
 - **`com.ap127.fetch`** — runs `manual_refresh.sh` every 5 minutes. Almost
   always just attaches to the already-running Chrome above over CDP — no
   window, no interruption, no visible activity at all in the normal case.
