@@ -3,9 +3,24 @@
 Keeps `scripts/manual_refresh.sh` running every 5 minutes automatically,
 for as long as this Mac is on — without interrupting normal use.
 
+## Managing it
+
+```bash
+./scripts/launchd/manage.sh start    # install (if needed) and start everything
+./scripts/launchd/manage.sh stop     # fully stop + remove all 3 agents, Chrome quits too
+./scripts/launchd/manage.sh pause    # stop just the fetch timer; Chrome stays running, signed in
+./scripts/launchd/manage.sh resume   # re-enable the fetch timer after a pause — instant, no relaunch
+./scripts/launchd/manage.sh status   # what's running + the last fetch's outcome
+```
+`pause`/`resume` is the lighter-weight option when you just want a break —
+Chrome stays warm so there's nothing to wait on when you resume. `stop`
+fully tears everything down (frees the RAM Chrome was using) but your
+signed-in session is preserved on disk either way — `start` afterward just
+needs a few seconds to relaunch Chrome, not a fresh sign-in.
+
 ## How it works
 
-Two macOS `launchd` LaunchAgents (the native background-service mechanism —
+Three macOS `launchd` LaunchAgents (the native background-service mechanism —
 same idea as `systemd` on Linux, or the Pi's own `pi-native/` setup):
 
 - **`com.ap127.chromium`** — keeps ONE real, plain Chrome window alive,
@@ -29,10 +44,10 @@ LaunchAgents specifically run inside your logged-in session so they have
 normal keychain/network access. They stop when you log out or shut down,
 and resume automatically next time you log in (`RunAtLoad`).
 
-## Install
+## First install
 
 ```bash
-./scripts/launchd/install.sh
+./scripts/launchd/manage.sh start
 ```
 If Chrome isn't already signed in (fresh profile, or the session expired),
 a window will appear within a few seconds — sign into Google there, same
@@ -41,23 +56,12 @@ as any normal sign-in. After that it runs itself.
 ## Check it's working
 
 ```bash
-launchctl list | grep ap127          # both should show a PID, not "-"
-tail -f ~/Library/Logs/ap127-fetch.log
+./scripts/launchd/manage.sh status
 ```
-A healthy cycle ends with `=== Manual refresh complete ===`. If data hasn't
-changed since the last check, it'll say `No data changes — nothing to
-push.` — that's normal, not a failure.
-
-## Uninstall / pause
-
-```bash
-./scripts/launchd/uninstall.sh
-```
-Stops both agents and removes them from `~/Library/LaunchAgents`. The
-signed-in Chrome profile and window are left alone — quit Chrome yourself
-if you want, or leave it (harmless, just idle). Re-running `install.sh`
-turns auto-refresh back on without needing to sign in again, as long as
-you didn't also clear the profile.
+or watch it live: `tail -f ~/Library/Logs/ap127-fetch.log` — a healthy
+cycle ends with `=== Manual refresh complete ===`. If data hasn't changed
+since the last check, it'll say `No data changes — nothing to push.` —
+that's normal, not a failure.
 
 ## Notes
 
