@@ -404,14 +404,25 @@ async def _get_content_frame(page):
 
 
 async def _open_timeline_view(user_frame):
-    # 45s (was 15s, found too short 2026-08-27): after scrape_window() started
-    # always reloading the page fresh (see that function's comment — fixes a
-    # separate long-lived-tab staleness bug), the app's own internal
-    # bootstrap after a cold reload can take noticeably longer than it did
-    # from an already-warm tab. The click itself succeeds quickly either
-    # way; it's #gantt-date actually becoming visible (not just present in
-    # the DOM) that needs the longer budget on a cold reload.
-    await user_frame.get_by_text("Timeline View").click(timeout=15_000)
+    # Click the actual <button class="landing-btn"> ancestor, NOT the "Timeline
+    # View" text/H3 itself. Found live 2026-08-27, after scrape_window()
+    # started always reloading the page fresh (separate fix, see that
+    # function's comment): get_by_text("Timeline View").click() would report
+    # success but leave the app on the Home screen — #gantt-date then stayed
+    # hidden forever (up to 45s tried, never resolved: this isn't a timing
+    # issue). Confirmed via direct DOM inspection: the H3 and its immediate
+    # wrapper div both have no click handler at all; the click handler lives
+    # on a `button.landing-btn` several levels up, and a JS-dispatched
+    # .click() on THAT element opens Timeline View correctly every time.
+    # Exactly why Playwright's coordinate-based click on the text stopped
+    # reaching the button specifically after a cold reload (vs. an
+    # already-warm tab, where this same selector had worked reliably since
+    # 2026-07-27) wasn't fully pinned down — a page.screenshot() call during
+    # diagnosis separately got stuck on "waiting for fonts to load", which
+    # points at post-reload font/layout settling as a plausible contributing
+    # factor — but targeting the real clickable element is the correct fix
+    # regardless of that mechanism, not merely a workaround for it.
+    await user_frame.locator("button.landing-btn", has_text="Timeline View").click(timeout=15_000)
     await user_frame.wait_for_selector("#gantt-date", timeout=45_000)
 
 
