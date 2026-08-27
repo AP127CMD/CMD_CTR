@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ap127.chromium</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/nugui/flight-schedule-feed/scripts/launchd/start_chromium.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/nugui/Library/Logs/ap127-chromium.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/nugui/Library/Logs/ap127-chromium.log</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

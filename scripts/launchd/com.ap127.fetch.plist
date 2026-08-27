@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ap127.fetch</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/nugui/flight-schedule-feed/scripts/manual_refresh.sh</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>300</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- launchd jobs don't source .zshrc/.bash_profile, so PATH must be
+             set explicitly here or python3/gh/git/curl won't resolve. -->
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/nugui/Library/Logs/ap127-fetch.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/nugui/Library/Logs/ap127-fetch.log</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>Nice</key>
+    <integer>5</integer>
+</dict>
+</plist>

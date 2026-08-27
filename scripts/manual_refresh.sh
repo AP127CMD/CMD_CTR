@@ -32,6 +32,30 @@ PROFILE_DIR="$HOME/.ap127-manual-chrome-profile"
 CDP_PORT=9222
 SCRIPT_URL="https://script.google.com/macros/s/AKfycbx-8p8MWbDAeJkTBPt4Yy_6cH0azSv-5VXcrzVhIUGM6XEJRtMBQNku-WybzNlhq9zN/exec"
 
+# Lock guard (mkdir is atomic on POSIX — no extra dependency like flock,
+# which isn't installed on macOS by default). Needed once this runs on a
+# recurring timer (launchd): a run that takes longer than the interval
+# would otherwise overlap with the next one, and both would drive the SAME
+# Chrome tab at once — exactly the "two scrapers racing in one browser"
+# class of bug this project already hit once with GitHub Actions (see
+# CLAUDE.md's 2026-07-27 concurrency-fix entry). A stale lock (this script
+# killed mid-run, e.g. by a reboot) is caught by checking whether the PID
+# that created it is still alive, so it can't wedge the timer forever.
+LOCK_DIR="/tmp/ap127-manual-refresh.lock"
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  stale_pid=$(cat "$LOCK_DIR/pid" 2>/dev/null || echo "")
+  if [ -n "$stale_pid" ] && ! kill -0 "$stale_pid" 2>/dev/null; then
+    echo "Stale lock from dead PID $stale_pid — clearing it."
+    rm -rf "$LOCK_DIR"
+    mkdir "$LOCK_DIR"
+  else
+    echo "Another refresh is already running (PID ${stale_pid:-unknown}) — skipping this cycle."
+    exit 0
+  fi
+fi
+echo $$ > "$LOCK_DIR/pid"
+trap 'rm -rf "$LOCK_DIR"' EXIT
+
 cd "$REPO_ROOT"
 
 echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) — manual refresh starting ==="
