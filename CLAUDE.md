@@ -16,7 +16,30 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-26 — **manual-refresh tool + Orange Pi Zero 2W pivot** (scraper/
+**Last known:** token = `r44` (2026-08-27 — **three real reliability fixes to the CDP-attach path, found
+via `manual_refresh.sh`'s first several real-world runs** (scraper-only — token not bumped). All apply
+equally to `pi-native/`'s and `docker/`'s deployments (same `fetch_schedule.py`), not just manual runs.
+(1) A tab left open for many hours (the normal state for ANY persistent-Chromium deployment — the whole
+point of the Pi setups) can go internally stale: still authenticated, still on the right URL, but
+`userHtmlFrame` never reappears. Fix: `scrape_window()` now ALWAYS reloads the page when
+`FETCH_CDP_ENDPOINT` is set, never trusts an already-open tab is still healthy. (2) After that reload,
+`_open_timeline_view()`'s "Timeline View" click (`get_by_text(...).click()`) reported success but the
+app silently stayed on the Home screen — traced to Playwright resolving the click to the `<h3>` text
+node, which has no click handler; the real handler lives on a `button.landing-btn` several levels up.
+Fixed to target that button specifically. (3) Even targeting the right element wasn't enough — a normal
+Playwright mouse-coordinate `.click()` on that button STILL silently no-op'd (correct element, correct
+bounding box, reported success, app never navigated). Root cause: coordinate translation through this
+portal's two levels of nested iframes (page → sandboxFrame → userHtmlFrame) is a known trickier case
+specifically for a browser attached via `connect_over_cdp` (the whole reason CDP mode exists) vs. one
+Playwright launched itself. Fixed by dispatching the click via JS (`element.evaluate("el => el.click()")`,
+bypassing screen-coordinate simulation entirely) instead — confirmed reliable across several real runs.
+Verified end-to-end multiple times same day: fetched 300+ flights across 18 dates each time, pushed,
+CMDV2 triggered, all clean. **`check_portal_structure()`'s other `get_by_text(...).click()` calls**
+(View Daily Schedule, Submit Forms, Cancel Flight, Leave Request) may have the same latent fragility —
+not yet hit in practice (that check is throttled to once/24h and didn't fire during this debugging), left
+as-is since that function already treats any failure there as non-fatal/best-effort — revisit if one of
+those ever actually fails.)
+(2026-08-26 — **manual-refresh tool + Orange Pi Zero 2W pivot** (scraper/
 infra-only — token not bumped). Two changes: (1) `scripts/manual_refresh.sh` — one command
 (`./scripts/manual_refresh.sh`) that does the entire 2026-08-25 manual-fix dance automatically: opens/
 reuses a persistent, real, unmodified Chrome window (`~/.ap127-manual-chrome-profile` — sign into Google
