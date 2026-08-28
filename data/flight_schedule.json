@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-28T09:31:41Z",
+  "fetched_at": "2026-08-28T09:46:06Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -175565,7 +175565,7 @@
         "date": "2026-08-27",
         "rowIdx": "BK-MTA2P6OS",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": false,
@@ -175592,8 +175592,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor meeting."
       },
       {
         "id": "BK-MTA2P96H",
@@ -176757,9 +176757,9 @@
         "date": "2026-08-28",
         "rowIdx": "BK-MTBEXSG5",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "13:20",
@@ -176775,15 +176775,15 @@
         "condition": "Sim R44",
         "type": "R44 (SIM)",
         "tail": "HS-TZQ (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44 (SIM)",
+        "tkoff": "13:25",
+        "ldgTime": "14:20",
+        "airborne": "00:55",
+        "ldg": 5,
+        "to": 5,
+        "inst": 0,
+        "blockOff": "13:20",
+        "blockOn": "14:20",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -177064,6 +177064,41 @@
         "inst": 1,
         "blockOff": "15:00",
         "blockOn": "16:00",
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MTCR4F49",
+        "date": "2026-08-28",
+        "rowIdx": "BK-MTCR4F49",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": true,
+        "isStandby": false,
+        "start": "16:00",
+        "end": "16:30",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "SIRAPOP",
+        "instructor": "CHAROENCHAI U.",
+        "batch": "Skill Test",
+        "lesson": "SIRME",
+        "condition": "Sim DA42 / IR",
+        "type": "DA42 (SIM)",
+        "tail": "HS-TCP (SIM)",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
       }
@@ -178174,6 +178209,41 @@
         "planDurMin": null,
         "student": "MARUAY B.",
         "instructor": "SANTI PO.",
+        "batch": "AP-126",
+        "lesson": "CMDGL 93",
+        "condition": null,
+        "type": "DA42TDI",
+        "tail": "HS-TPQ",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MTCR4RC7",
+        "date": "2026-08-30",
+        "rowIdx": "BK-MTCR4RC7",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:00",
+        "end": "09:30",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "NUTTAWAT R.",
+        "instructor": "SOWAN C.",
         "batch": "AP-126",
         "lesson": "CMDGL 93",
         "condition": null,
@@ -188839,8 +188909,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -188857,8 +188927,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -188881,8 +188951,8 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -188923,14 +188993,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -188953,20 +189023,20 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -188977,26 +189047,26 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": true,
-      "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": true,
-      "name": "VASSAPON K.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
-      "isPartTime": false,
-      "name": "NUNTAPOB T.",
+      "isPartTime": true,
+      "name": "TANAKRIT V.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "VASSAPON K.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -189007,8 +189077,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -194349,6 +194419,19 @@
       "lesson": "CMDIF (SIM) 92",
       "acType": "DA42 (SIM)",
       "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MTA2P6OS|28/08/2026 16:34:40",
+      "bookingId": "BK-MTA2P6OS",
+      "date": "2026-08-27",
+      "reason": "Other",
+      "remarks": "Instructor meeting.",
+      "instructor": "KAMONVICH O.",
+      "student": "SIRAWIT K.",
+      "batch": "HP-57",
+      "lesson": "LS 107",
+      "acType": "R44",
+      "acReg": "HS-TZU"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-126-PRAN-SLBS7|28/08/2026 13:24:27",
