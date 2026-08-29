@@ -21,10 +21,10 @@ sudo apt-get install -y --no-install-recommends \
 
 echo "=== Installing the playwright Python package (NOT its browser download — ==="
 echo "=== we only ever attach to the system chromium above, never launch our own) ==="
-pip3 install --break-system-packages playwright>=1.50.0 2>&1 || pip3 install playwright>=1.50.0
+pip3 install --break-system-packages 'playwright>=1.50.0' 2>&1 || pip3 install 'playwright>=1.50.0'
 
 echo "=== zram check ==="
-if swapon --show 2>/dev/null | grep -q zram; then
+if grep -q zram /proc/swaps 2>/dev/null; then
   echo "zram already active — good."
 else
   echo "WARNING: no zram/swap detected. On 1GB RAM this matters — see README.md's"
