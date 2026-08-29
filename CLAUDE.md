@@ -16,9 +16,37 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-29 — **Orange Pi Zero 2W hardware
+**Last known:** token = `r44` (2026-08-29 — **Orange Pi Zero 2W: DEPLOYED +
+verified live, and a Mac-side monitor tool added** (infra/tooling-only — token
+not bumped). The Pi (DietPi, hostname `DietPi`, `192.168.1.123` DHCP-reserved)
+now runs the fetch pipeline 24/7: `ap127-fetch.timer` every 5 min → real
+fetches committed+pushed to `AP127CMD/CMD_CTR` → CMDV2 `refresh-data.yml`
+dispatched → both Pages sites pick up the new `fetchedAt`. Verified end-to-end
+multiple cycles. **`fetch_schedule.yml` stays PERMANENTLY disabled** — no CI
+fallback, the Pi is the system (user's explicit call). **Key finding: the
+Google sign-in step was never needed** — a real OS Chromium loads the Ops
+Portal anonymously; the 2025 incident was bot-detection against
+*Playwright-launched* browsers specifically. Deployment deviations from
+`pi-native/README.md`'s original plan (all now documented there): headless
+first-boot via SD-card `dietpi.txt`/`dietpi-wifi.txt`/`Automation_Custom_Script.sh`
+written from the Mac pre-flash (WiFi country `TH` is critical — `GB` default
+won't associate on Thai ch.12-13); SSH = OpenSSH (`-2`, not `-1`=Dropbear);
+zram = 50% RAM (~484 MiB, DietPi refuses >50%); DietPi image
+`OrangePiZero2W-ARMv8-Trixie` v10.6 (fixes the AIC8800 WiFi driver);
+avahi-daemon (ID 152) auto-installed; `install.sh` runs as `dietpi`, repo at
+`/home/dietpi/flight-schedule-feed`. Fixed 2 `install.sh` bugs: unquoted
+`playwright>=1.50.0` (shell redirect → junk `=1.50.0` file), and a false
+"no zram" warning (`swapon` not on `dietpi`'s PATH → now `grep zram /proc/swaps`).
+**New: `pi-native/mac-monitor/`** — single-file Python stdlib localhost
+dashboard (`~/Desktop/AP127-PiMonitor.command` → `http://127.0.0.1:8766`):
+headline green/yellow/red, fetch-pipeline + Pi-vitals + live-site + CMDV2
+panels via one SSH call + `gh api` + `curl`, `journalctl` tail, and buttons for
+run-fetch-now / SSH shell / Screen-Sharing(x11vnc `-once`). `--selftest` flag.
+Design spec: `docs/superpowers/specs/2026-08-29-mac-pi-monitor-design.md`.)
+(2026-08-29 — **Orange Pi Zero 2W hardware
 setup started** (infra-only — token not bumped). User has no LAN port and no
 monitor on the Zero 2W — resolved via DietPi's headless first-boot config:
+`dietpi-wifi.txt` (SSID/key/`WPA-PSK`) + `dietpi.txt`
 `dietpi-wifi.txt` (SSID/key/`WPA-PSK`) + `dietpi.txt`
 (`AUTO_SETUP_NET_WIFI_ENABLED=1`, `AUTO_SETUP_NET_ETHERNET_ENABLED=0`,
 `AUTO_SETUP_SSH_SERVER_INDEX=-1` for OpenSSH auto-enabled) dropped onto the

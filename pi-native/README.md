@@ -1,10 +1,52 @@
 # AP127 fetch pipeline — Orange Pi Zero 2W (native) deployment
 
-**Status as of 2026-08-29: hardware setup in progress** — SD card being flashed
-with DietPi (headless WiFi pre-config, see step 1). Not yet booted/verified on
-real hardware as of this note; a fresh Claude Code session is picking up from
-here to finish install + verification (see `CLAUDE.md`'s 2026-08-29 entry for
-the handoff prompt used).
+**Status as of 2026-08-29: DEPLOYED and verified live.** Running 24/7 on a
+DietPi Orange Pi Zero 2W, hostname `DietPi`, currently `192.168.1.123`
+(DHCP-reserved on the router). `ap127-fetch.timer` fires every 5 min; verified
+end-to-end: real fetches (280 flights / 18 dates) committed + pushed to
+`AP127CMD/CMD_CTR`, CMDV2 `refresh-data.yml` dispatched, both Pages sites
+picking up the new `fetchedAt`. `fetch_schedule.yml` stays **permanently
+disabled** — the Pi is the system now, no CI fallback (user's call, 2026-08-29).
+
+**Surprise finding: the Google sign-in step (old step 5) was NOT needed.** A
+real, OS-launched Chromium loads the Ops Portal anonymously — no login, no
+session to expire. The 2025 incident was Google's bot-detection flagging a
+*Playwright-launched* browser specifically; a genuine Chromium never trips it.
+Step 5 below is kept only as a fallback in case Google ever starts gating
+anonymous Apps Script access.
+
+**Mac-side monitoring:** `mac-monitor/` — a localhost dashboard
+(`~/Desktop/AP127-PiMonitor.command`) showing fetch health, Pi vitals, live-site
+timestamps, and buttons for run-fetch-now / SSH / Screen Sharing. See
+`mac-monitor/README.md`.
+
+## Deviations from the original plan (all applied)
+
+- **Headless first-boot config was done from the Mac before flashing**, not via
+  post-boot `dietpi-config`: `dietpi.txt` + `dietpi-wifi.txt` + an
+  `Automation_Custom_Script.sh` written onto the SD card's FAT config partition.
+  WiFi country `TH` (critical — the `GB` default silently fails to associate on
+  Thai 2.4 GHz channels), tz `Asia/Bangkok`, 4 WiFi networks, `AUTO_SETUP_AUTOMATED=1`.
+- **SSH server = OpenSSH (`AUTO_SETUP_SSH_SERVER_INDEX=-2`)**, not `-1`. The old
+  step 2 note said `-1` = OpenSSH — wrong. `-1` = Dropbear, `-2` = OpenSSH.
+- **zram = 50 % of RAM (~484 MiB), not 100 %.** DietPi's `dietpi-set_swapfile`
+  refuses a zram-swap larger than 50 % of RAM ("Insufficient RAM size for
+  desired zram-swap size"). Set via `AUTO_SETUP_SWAPFILE_SIZE=1`
+  (auto) + `AUTO_SETUP_SWAPFILE_LOCATION=zram`. Persistent via a udev rule.
+- **DietPi image:** `DietPi_OrangePiZero2W-ARMv8-Trixie` (v10.6, 2026-08-08) —
+  its release notes specifically fix "stability issues on the Orange Pi Zero 2W
+  caused by its onboard WiFi driver" (AIC8800). Use this version or newer.
+- **avahi-daemon** (software ID 152) added to the auto-install so `DietPi.local`
+  resolves. (mDNS still may not cross a wired↔WiFi bridge on some routers — the
+  DHCP reservation is the reliable path.)
+- **install.sh** run as the `dietpi` user (it refuses root); repo cloned to
+  `/home/dietpi/flight-schedule-feed`, git identity set for the commit step.
+- Two install.sh bugs fixed this round: `playwright>=1.50.0` was unquoted (shell
+  read `>=` as a redirect, made a junk `=1.50.0` file); the zram check used
+  `swapon` which isn't on `dietpi`'s PATH → false "no zram" warning. Now
+  `grep zram /proc/swaps`.
+
+**Original setup steps below are kept for reference / rebuild-from-scratch.**
 
 ## Why native, not Docker
 
@@ -44,9 +86,10 @@ AUTO_SETUP_NET_WIFI_ENABLED=1
 AUTO_SETUP_NET_ETHERNET_ENABLED=0
 AUTO_SETUP_SSH_SERVER_INDEX=-1
 ```
-(`-1` = OpenSSH, enabled automatically — this is what makes it reachable
-with zero monitor/keyboard ever needed. `AUTO_SETUP_HOSTNAME` left at
-DietPi's default, `dietpi` — reachable at `dietpi.local` via mDNS.)
+(`-2` = OpenSSH, `-1` = Dropbear — use **`-2`**; `ssh-copy-id` and install.sh
+expect OpenSSH. Enabled automatically — reachable with zero monitor/keyboard.
+`AUTO_SETUP_NET_HOSTNAME` left at DietPi's default, `DietPi` — reachable at
+`DietPi.local` via mDNS *if* avahi-daemon is installed, ID 152, see deviations.)
 
 And in `dietpi-wifi.txt` (same partition):
 ```
@@ -90,10 +133,15 @@ systemd units (`ap127-chromium.service`, `ap127-fetch.timer`), and prompts
 for your `GH_PAT` (see `.env.example`'s instructions for the exact scopes)
 before enabling everything.
 
-### 5. One-time login (the one human step)
+### 5. One-time login — NOT NEEDED in practice (fallback only)
 
-Chromium is now running headless on Xvfb display `:99`, already sitting on
-the portal's sign-in screen. To see and use it:
+As deployed 2026-08-29 the portal loads fully **without** signing in — a real
+Chromium isn't bot-flagged the way Playwright's was. Only do this if
+`journalctl -u ap127-fetch` starts showing `userHtmlFrame never appeared` /
+empty fetches that a page reload doesn't fix, i.e. Google has begun gating
+anonymous Apps Script access.
+
+Chromium runs headless on Xvfb display `:99`. To see and use it:
 
 ```bash
 # On the Pi (a second SSH session, or after install.sh finishes):
