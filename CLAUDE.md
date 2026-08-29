@@ -14,9 +14,44 @@ GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Us
 ```bash
 grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
-gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
+gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r44` (2026-08-29 — **Orange Pi Zero 2W: DEPLOYED +
+**Last known:** token = `r44` (2026-08-29 — **GitHub Actions confirmed working
+again + Pi failure-alerting added — both fetch paths now run permanently in
+parallel** (infra-only — token not bumped). User: "the portal site seem to
+change some permission setting? check if it's no longer an issue with github
+auto action" — tested for real rather than guessing: a fresh, non-persistent,
+headless Playwright-launched Chromium (`test_gha_style.py`, exactly what GHA
+uses) reached `userHtmlFrame` anonymously from a local run, then a live
+`workflow_dispatch -f force=true` on the actual disabled workflow confirmed it
+end-to-end on GitHub's own runners — **280 flights/18 dates fetched, committed
+(with a live push-conflict against the Pi's own concurrent commit, correctly
+absorbed by the existing rebase-retry loop), CMDV2 dispatched.** Root cause
+now understood precisely: the portal was never permanently gated — Google's
+bot-detection was flagging Playwright's browser fingerprint specifically
+during the *interactive sign-in* flow; the portal serves data to an anonymous
+visitor (no sign-in) without ever tripping that check, for both a real
+Chromium (Pi, see 2026-08-29 entry below) AND, it turns out, a fresh Playwright
+one (GHA). Left `fetch_schedule.yml` **enabled** (was `disabled_manually`
+since 2026-08-26). **User's call: keep BOTH GitHub Actions and the Pi running
+permanently** — redundant, not conflicting (proven by the very push-conflict
+above resolving cleanly). Then: **added failure alerting to the Pi side**,
+which previously had none (GHA already opens a `fetch-failure`-labeled issue
+on any failed run, auto-closing on next success — see `.github/workflows/
+fetch_schedule.yml`). `pi-native/run_fetch.sh` now mirrors that exact
+open-once/dedup/auto-close pattern via raw `curl`+GitHub REST calls (no `gh`
+CLI on the Pi) — deliberately a DIFFERENT label, `fetch-failure-pi`, so the
+two systems' failures stay distinguishable (one being down doesn't mask the
+other, and vice versa). Needs `Issues: read/write` on the Pi's `GH_PAT` —
+verified the Pi's current token already has it (`admin: true` on the repo
+permissions check) — `.env.example` updated to document the requirement for
+any future token rotation. Deployed live: pulled onto the Pi via SSH,
+confirmed present in the running file — takes effect next 5-min cycle, no
+service restart needed (`run_fetch.sh` runs fresh each time). Not yet
+verified against a REAL failure (would need to simulate one) — the
+open/close logic itself was exercised read-only (issue list HTTP 200) but not
+a live create+close round-trip.)
+(2026-08-29 — **Orange Pi Zero 2W: DEPLOYED +
 verified live, and a Mac-side monitor tool added** (infra/tooling-only — token
 not bumped). The Pi (DietPi, hostname `DietPi`, `192.168.1.123` DHCP-reserved)
 now runs the fetch pipeline 24/7: `ap127-fetch.timer` every 5 min → real

@@ -5,8 +5,20 @@ DietPi Orange Pi Zero 2W, hostname `DietPi`, currently `192.168.1.123`
 (DHCP-reserved on the router). `ap127-fetch.timer` fires every 5 min; verified
 end-to-end: real fetches (280 flights / 18 dates) committed + pushed to
 `AP127CMD/CMD_CTR`, CMDV2 `refresh-data.yml` dispatched, both Pages sites
-picking up the new `fetchedAt`. `fetch_schedule.yml` stays **permanently
-disabled** — the Pi is the system now, no CI fallback (user's call, 2026-08-29).
+picking up the new `fetchedAt`.
+
+**UPDATE, same day: `fetch_schedule.yml` re-enabled, runs PERMANENTLY
+alongside the Pi, not disabled.** A live `workflow_dispatch -f force=true`
+test proved GitHub Actions' own fetch works again too (same "anonymous portal
+access" finding below applies equally to a fresh Playwright-launched
+browser, not just a real Chromium) — 280 flights/18 dates, clean commit
+(correctly absorbed a genuine concurrent push-conflict against the Pi's own
+commit via the existing rebase-retry loop), CMDV2 dispatched. **User's
+explicit call: keep both running** — deliberate redundancy, not a
+fallback-only relationship. Added `fetch-failure-pi`-labeled GitHub-issue
+alerting to `run_fetch.sh` (mirrors `fetch_schedule.yml`'s own
+`fetch-failure` mechanism, kept as a separate label so a Pi-only or
+CI-only outage stays distinguishable) — see "Failure alerting" below.
 
 **Surprise finding: the Google sign-in step (old step 5) was NOT needed.** A
 real, OS-launched Chromium loads the Ops Portal anonymously — no login, no
@@ -14,6 +26,21 @@ session to expire. The 2025 incident was Google's bot-detection flagging a
 *Playwright-launched* browser specifically; a genuine Chromium never trips it.
 Step 5 below is kept only as a fallback in case Google ever starts gating
 anonymous Apps Script access.
+
+## Failure alerting (added 2026-08-29)
+
+`run_fetch.sh` opens a `fetch-failure-pi`-labeled GitHub issue (via raw
+`curl` + the REST API, using `GH_PAT` — no `gh` CLI on the Pi) the first time
+a cycle fails, and won't open a second one while that issue stays open (same
+dedup pattern as CI's `fetch-failure` label). It auto-closes (with a comment)
+the next time a cycle succeeds. **Deliberately a different label from CI's**
+— the two fetch paths fail independently (Chromium/session/RAM issues here
+vs. runner/portal issues in CI), so a single shared label would hide "only
+one of the two is actually down." Requires `Issues: read/write` on `GH_PAT`
+(see `.env.example`) — the Pi's current token already covers this
+(`admin: true` on the repo permissions check, broader than the documented
+minimum). You'll see these as normal GitHub issue notifications/emails if
+you're watching this repo, same channel as CI's own failure alerts.
 
 **Mac-side monitoring:** `mac-monitor/` — a localhost dashboard
 (`~/Desktop/AP127-PiMonitor.command`) showing fetch health, Pi vitals, live-site
