@@ -1,6 +1,10 @@
 # AP127 fetch pipeline — Orange Pi Zero 2W (native) deployment
 
-**Status as of 2026-08-26: written, not yet deployed.**
+**Status as of 2026-08-29: hardware setup in progress** — SD card being flashed
+with DietPi (headless WiFi pre-config, see step 1). Not yet booted/verified on
+real hardware as of this note; a fresh Claude Code session is picking up from
+here to finish install + verification (see `CLAUDE.md`'s 2026-08-29 entry for
+the handoff prompt used).
 
 ## Why native, not Docker
 
@@ -30,30 +34,39 @@ meaningfully more for a general Debian/Armbian desktop-capable image).
 Download the Orange Pi Zero 2W image from https://dietpi.com/#download —
 flash with Raspberry Pi Imager or balenaEtcher, same as any other SD image.
 
+**The Zero 2W's WiFi chip is 2.4GHz-only** — must use the 2.4GHz SSID, not a
+5GHz network, or it'll never associate.
+
 Before first boot, edit `dietpi.txt` on the boot partition to pre-configure
-WiFi + hostname so it comes up headless (no monitor/keyboard needed):
+WiFi + SSH so it comes up headless (no monitor/keyboard needed):
 ```
 AUTO_SETUP_NET_WIFI_ENABLED=1
-AUTO_SETUP_NET_WIFI_COUNTRY_CODE=TH
-AUTO_SETUP_HOSTNAME=ap127-zero2w
+AUTO_SETUP_NET_ETHERNET_ENABLED=0
+AUTO_SETUP_SSH_SERVER_INDEX=-1
 ```
+(`-1` = OpenSSH, enabled automatically — this is what makes it reachable
+with zero monitor/keyboard ever needed. `AUTO_SETUP_HOSTNAME` left at
+DietPi's default, `dietpi` — reachable at `dietpi.local` via mDNS.)
+
 And in `dietpi-wifi.txt` (same partition):
 ```
-aWIFI_SSID[0]='<your WiFi SSID>'
+aWIFI_SSID[0]='<your 2.4GHz WiFi SSID>'
 aWIFI_KEY[0]='<your WiFi password>'
+aWIFI_KEYMGR[0]='WPA-PSK'
 ```
 
-Boot it. First boot runs DietPi's setup automatically (a few minutes) —
-you'll see it appear on your router's DHCP list as `ap127-zero2w` (or try
-`ssh dietpi@ap127-zero2w.local`).
+Boot it. First boot runs DietPi's setup automatically (a few minutes) — try
+`ssh root@dietpi.local` (default password `dietpi`, forced change on first
+login), or check your router's DHCP list if `.local` doesn't resolve.
 
 ### 2. First SSH + user setup
 
-Default login: `dietpi` / password `dietpi` — DietPi will prompt you to
+Default login: `root` / password `dietpi` — DietPi will prompt you to
 change it on first login. Then set up key-based auth from your Mac:
 ```bash
-ssh-copy-id dietpi@<pi-ip>
+ssh-copy-id root@<pi-ip>
 ```
+(or `dietpi.local` if mDNS resolves — check before hunting for the IP)
 
 ### 3. Enable zram (do this before anything else — see "Memory cushion" below)
 

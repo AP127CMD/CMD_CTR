@@ -16,7 +16,28 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is DISABLED as of 2026-08-26 — see below
 ```
-**Last known:** token = `r44` (2026-08-27 — **`scripts/launchd/` — background auto-refresh on the Mac**
+**Last known:** token = `r44` (2026-08-29 — **Orange Pi Zero 2W hardware
+setup started** (infra-only — token not bumped). User has no LAN port and no
+monitor on the Zero 2W — resolved via DietPi's headless first-boot config:
+`dietpi-wifi.txt` (SSID/key/`WPA-PSK`) + `dietpi.txt`
+(`AUTO_SETUP_NET_WIFI_ENABLED=1`, `AUTO_SETUP_NET_ETHERNET_ENABLED=0`,
+`AUTO_SETUP_SSH_SERVER_INDEX=-1` for OpenSSH auto-enabled) dropped onto the
+SD card's boot partition from the Mac before first boot — no screen/keyboard
+ever needed, reachable at `root@dietpi.local` (password `dietpi`, forced
+change on first login) once it's up. **Noted: the Zero 2W's WiFi chip is
+2.4GHz-only** — must use the 2.4GHz SSID (`NuGuitar 2.4G` here), not the 5GHz
+network, or it'll never associate; `pi-native/README.md` step 1 updated to
+call this out explicitly and to correct the default-login user from `dietpi`
+to `root` (matches current DietPi behavior). `pi-native/README.md`'s status
+line updated to "hardware setup in progress." **Handoff:** a fresh Claude
+Code session was given a self-contained prompt (this repo, `pi-native/`,
+current state, DietPi flash already done, don't touch `docker/` or
+re-architect the CDP-attach approach, don't re-enable `fetch_schedule.yml`
+without asking) to carry the rest through: SSH in, run `pi-native/install.sh`,
+get Chrome signed in over VNC (`pi-native/README.md` step 5), verify the
+5-min timer produces real fetches, update docs again once proven. Not yet
+verified live at time of writing — first boot/SSH not yet confirmed.)
+(2026-08-27 — **`scripts/launchd/` — background auto-refresh on the Mac**
 (scraper/infra-only — token not bumped). User: "keep it auto refresh on my macbook... run it in
 background... as long as my mac is turned on, keep the fetching alive" (and separately asked about an
 iOS app for this — declined: Apple requires WebKit not Chromium, and iOS deliberately suspends
