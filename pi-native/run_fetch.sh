@@ -80,18 +80,43 @@ GitHub Actions' own fetch keeps running independently — check ap127-cmd-ctr.pa
     >/dev/null 2>&1 && echo "Opened Pi-failure issue." || echo "WARNING: could not open failure issue." >&2
 }
 
+# NOTE on permissions (verified live 2026-08-31): this Pi's fine-grained
+# GH_PAT can CREATE and READ issues, but CANNOT comment on or close them —
+# both return `403 Resource not accessible by personal access token`. That is
+# also why its issue POSTs come out with labels=[]: applying a label is an
+# issue *modification*, which the same 403 covers.
+#
+# So auto-close cannot work from the Pi with this token. Rather than silently
+# pretend (the first version of this function printed "Auto-closed #N" without
+# checking any HTTP status — it was lying every single time), close is
+# attempted and the REAL outcome is reported. The dedup guard in
+# report_pi_failure still works (it only needs read), so a failing Pi opens at
+# most one issue instead of one per cycle, which was the main bug.
+#
+# To make auto-close actually work, grant the PAT `Issues: Read and write` on
+# AP127CMD/CMD_CTR (github.com/settings/personal-access-tokens) — no code
+# change needed, this function starts succeeding immediately. Until then the
+# issue is closed by hand, or by the CI-side staleness watchdog if that lands.
 close_pi_failure_if_open() {
-  local issues
+  local issues code
   issues="$(_pi_open_issue_numbers)"
   [ -n "$issues" ] || return 0
   for n in $issues; do
-    curl -sf -X POST -H "Authorization: Bearer ${GH_PAT}" \
+    curl -s -o /dev/null -X POST -H "Authorization: Bearer ${GH_PAT}" \
       "https://api.github.com/repos/AP127CMD/CMD_CTR/issues/${n}/comments" \
-      -d '{"body":"Resolved — Pi fetch succeeded again. Auto-closing."}' >/dev/null 2>&1
-    curl -sf -X PATCH -H "Authorization: Bearer ${GH_PAT}" \
+      -d '{"body":"Resolved — Pi fetch succeeded again. Auto-closing."}' 2>/dev/null || true
+    code="$(curl -s -o /dev/null -w '%{http_code}' -X PATCH \
+      -H "Authorization: Bearer ${GH_PAT}" \
+      -H "Accept: application/vnd.github.v3+json" \
       "https://api.github.com/repos/AP127CMD/CMD_CTR/issues/${n}" \
-      -d '{"state":"closed"}' >/dev/null 2>&1
-    echo "Auto-closed Pi-failure issue #${n}."
+      -d '{"state":"closed"}' 2>/dev/null)" || code="000"
+    if [ "$code" = "200" ]; then
+      echo "Auto-closed Pi-failure issue #${n}."
+    else
+      echo "NOTE: could not auto-close Pi-failure issue #${n} (HTTP ${code}) —" \
+           "GH_PAT lacks Issues:write. Close it by hand; alerting still works" \
+           "(dedup prevents duplicates)." >&2
+    fi
   done
 }
 
