@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-30T14:35:08Z",
+  "fetched_at": "2026-08-30T14:44:27Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -178056,9 +178056,9 @@
         "date": "2026-08-30",
         "rowIdx": "BK-M9CC-8048",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "06:00",
@@ -178083,17 +178083,17 @@
         "inst": null,
         "blockOff": "19:35",
         "blockOn": "20:35",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-YBX8-8053",
         "date": "2026-08-30",
         "rowIdx": "BK-YBX8-8053",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "07:00",
@@ -178118,17 +178118,17 @@
         "inst": null,
         "blockOff": "19:30",
         "blockOn": "20:30",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-9J5J-8059",
         "date": "2026-08-30",
         "rowIdx": "BK-9J5J-8059",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "10:00",
@@ -178153,17 +178153,17 @@
         "inst": null,
         "blockOff": "19:20",
         "blockOn": "20:20",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-3ASL-8066",
         "date": "2026-08-30",
         "rowIdx": "BK-3ASL-8066",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "11:00",
@@ -178188,17 +178188,17 @@
         "inst": null,
         "blockOff": "18:15",
         "blockOn": "19:15",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-3M7R-8072",
         "date": "2026-08-30",
         "rowIdx": "BK-3M7R-8072",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "14:00",
@@ -178223,17 +178223,17 @@
         "inst": null,
         "blockOff": "18:20",
         "blockOn": "19:20",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-08ET-8078",
         "date": "2026-08-30",
         "rowIdx": "BK-08ET-8078",
         "realRowIdx": null,
-        "status": "Completed",
+        "status": "Canceled",
         "statusOverride": null,
-        "isActual": true,
+        "isActual": false,
         "isSimulator": true,
         "isStandby": false,
         "start": "15:00",
@@ -178258,15 +178258,15 @@
         "inst": null,
         "blockOff": "18:20",
         "blockOn": "19:20",
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-6KUM-8084",
         "date": "2026-08-30",
         "rowIdx": "BK-6KUM-8084",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": true,
@@ -178293,15 +178293,15 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       },
       {
         "id": "BK-YHMS-8090",
         "date": "2026-08-30",
         "rowIdx": "BK-YHMS-8090",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "isActual": false,
         "isSimulator": true,
@@ -178328,8 +178328,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Instructor Unavailable"
       }
     ],
     "2026-08-31": [
@@ -190928,26 +190928,20 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "KOONPHOL U.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -190958,8 +190952,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -190970,8 +190964,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -190988,8 +190982,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191012,8 +191006,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191042,20 +191036,20 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -191066,26 +191060,26 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "KEVIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -196458,6 +196452,110 @@
       "lesson": "CSPXIC 90",
       "acType": "DA40CS",
       "acReg": "HS-TVE"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-08ET-8078|29/08/2026 18:00:00",
+      "bookingId": "BK-08ET-8078",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "JIRAT R.",
+      "student": "GRAVITAT C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 92",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-3ASL-8066|29/08/2026 18:00:00",
+      "bookingId": "BK-3ASL-8066",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "ATHINAT H.",
+      "student": "PATCHARANAN D.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 92",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-3M7R-8072|29/08/2026 18:00:00",
+      "bookingId": "BK-3M7R-8072",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "JIRAT R.",
+      "student": "GRAVITAT C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 91",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-6KUM-8084|29/08/2026 18:00:00",
+      "bookingId": "BK-6KUM-8084",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "ATHINAT H.",
+      "student": "SARACH C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 91",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-9J5J-8059|29/08/2026 18:00:00",
+      "bookingId": "BK-9J5J-8059",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "ATHINAT H.",
+      "student": "PATCHARANAN D.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 91",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-M9CC-8048|29/08/2026 18:00:00",
+      "bookingId": "BK-M9CC-8048",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "JIRAT R.",
+      "student": "PARAMUTT C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 91",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-YBX8-8053|29/08/2026 18:00:00",
+      "bookingId": "BK-YBX8-8053",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "JIRAT R.",
+      "student": "PARAMUTT C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 92",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-YHMS-8090|29/08/2026 18:00:00",
+      "bookingId": "BK-YHMS-8090",
+      "date": "2026-08-30",
+      "reason": "Other",
+      "remarks": "Instructor Unavailable",
+      "instructor": "ATHINAT H.",
+      "student": "SARACH C.",
+      "batch": "AP-126",
+      "lesson": "CMDIF (SIM) 92",
+      "acType": "DA42 (SIM)",
+      "acReg": "HS-TCP (SIM)"
     }
   ],
   "_regressionStreaks": {}
