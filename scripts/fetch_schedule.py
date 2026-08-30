@@ -103,7 +103,18 @@ _TIME_RE = re.compile(r"^\d{2}:\d{2}$")
 # "DR-AP-126-PONG-C0LHI" (a second scheme). Kept loose on purpose — tightening
 # it just means more false "unexpected format" warnings without catching
 # anything a hard error would help with.
-_BOOKING_ID_RE = re.compile(r"^[A-Z]{2,}-[A-Z0-9-]+$")
+#
+# 2026-08-31: widened to allow SPACES and lowercase in the middle segment. The
+# portal now embeds the flight-type label into the id for non-syllabus flights
+# — "BK-AP FAM-JATU-PZA7R", "BK-Skill Test-SARU-HPU4G", "BK-Test Flight-...",
+# "BK-FAM FI-...", "BK-Recurrent-W-TH-...". These are entirely legitimate, but
+# the old `[A-Z0-9-]+` (uppercase, no spaces) rejected every one of them, so
+# each run emitted dozens of bogus "unexpected bookingId format" warnings.
+# That mattered beyond noise: those warnings feed the schema-drift GitHub
+# issue, whose open-issue dedup then permanently swallowed any REAL drift
+# alert (issue #10 sat open doing exactly that — found in the 2026-08-31
+# audit). The prefix check just below still catches a genuinely new id scheme.
+_BOOKING_ID_RE = re.compile(r"^[A-Z]{2,}-[A-Za-z0-9 -]+$")
 # The new portal appends an override note to status instead of a separate
 # field, e.g. "Pending [OVERRIDE: Student solo]".
 _STATUS_OVERRIDE_RE = re.compile(r"^(Pending|Completed|Canceled)\s*\[OVERRIDE:\s*(.+?)\]\s*$")
