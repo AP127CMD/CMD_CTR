@@ -294,3 +294,36 @@ jobs:
                 labels: ['schema-drift'],
               });
             }
+
+      # Auto-close a stale schema-drift issue once a run completes with NO
+      # drift. Same gap, same reason, as the fetch-failure label (fixed
+      # 2026-07-25), DB001's update-cache-failure and the dispatcher's
+      # dispatcher-failure (both 2026-08-31/08-30): the dedup above means one
+      # un-closed issue permanently swallows every future drift alert. Found
+      # in the 2026-08-31 audit — issue #10 had been open since 08-29 doing
+      # exactly that, saturated by benign booking-id warnings (now fixed at
+      # source in fetch_schedule.py's _BOOKING_ID_RE).
+      # NOTE the close condition is deliberately "ran, and found no drift" —
+      # NOT plain success(). A successful run that still reports drift must
+      # leave the issue open.
+      - name: Close stale schema-drift issue when no drift found
+        if: success() && steps.backoff.outputs.skip != 'true' && steps.fetch.outputs.schema_drift != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'schema-drift',
+            });
+            for (const issue of issues) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Resolved — run ${context.runId} completed with no schema drift detected. Auto-closing.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+              });
+            }
