@@ -85,7 +85,10 @@ REQUIRED_ENTRY_FIELDS = {
 # `actual` appears only on Completed flights (post-flight record; found
 # 2026-07-16 — the migration notes' "gone for good" verdict on actuals was
 # wrong for the read views after all). Optional, never required.
-KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS | {"actual"}
+# `bookingType`/`leg` appeared upstream 2026-08-31 (found in the audit that
+# day, once the bookingId false-positives stopped drowning the drift signal).
+# Known, not required — an older portal response without them is still valid.
+KNOWN_ENTRY_FIELDS = REQUIRED_ENTRY_FIELDS | {"actual", "bookingType", "leg"}
 
 # Inner fields of `actual` observed 2026-07-16 (Timeline View, window.G).
 # Times (blockOff/blockOn/takeoff/landing) are "HH:MM"; tis/duration are
@@ -118,6 +121,22 @@ _BOOKING_ID_RE = re.compile(r"^[A-Z]{2,}-[A-Za-z0-9 -]+$")
 # The new portal appends an override note to status instead of a separate
 # field, e.g. "Pending [OVERRIDE: Student solo]".
 _STATUS_OVERRIDE_RE = re.compile(r"^(Pending|Completed|Canceled)\s*\[OVERRIDE:\s*(.+?)\]\s*$")
+
+# The portal also prefixes non-syllabus bookings with a KIND marker, e.g.
+# "MEETING|Pending", "GROUND|Pending", "TESTFLIGHT|Pending". Before 2026-08-31
+# these fell through `status if status in VALID_STATUSES else "Pending"` and
+# were stored as an ordinary "Pending" with the marker DISCARDED — so a
+# 3-hour meeting or a 1-hour ground-school slot was indistinguishable from a
+# real training flight downstream (both carry a durationMin and no aircraft).
+# The marker is now captured as `bookingKind` so consumers CAN separate them.
+# Nothing downstream is changed by this commit — the field is simply made
+# available; excluding these from flight-hours KPIs is a separate decision.
+_STATUS_KIND_RE = re.compile(r"^([A-Z][A-Z0-9_]*)\|(Pending|Completed|Canceled)$")
+# Markers seen so far. A NEW one still warns (that's real drift worth seeing);
+# these known ones no longer do, so the schema-drift alert stops being
+# permanently saturated — which was silently swallowing every other drift
+# signal via the open-issue dedup (found in the 2026-08-31 audit).
+KNOWN_BOOKING_KINDS = {"MEETING", "GROUND", "TESTFLIGHT"}
 
 
 def validate_raw_cache(cache):
@@ -190,6 +209,13 @@ def validate_raw_cache(cache):
             m = _STATUS_OVERRIDE_RE.match(status or "")
             if m:
                 base_status = m.group(1)
+            else:
+                k = _STATUS_KIND_RE.match(status or "")
+                if k:
+                    # "GROUND|Pending" etc. — a known kind is not drift; an
+                    # unknown one still is, and falls through to new_statuses.
+                    if k.group(1) in KNOWN_BOOKING_KINDS:
+                        base_status = k.group(2)
             if base_status not in VALID_STATUSES:
                 new_statuses.add(status)
 
@@ -284,8 +310,14 @@ def normalize_entry(entry, date, cancel_lookup=None):
     ac_type = entry.get("acType") or ""
     raw_status = entry.get("status") or ""
     status_override = None
+    booking_kind = None
     status = raw_status
-    m = _STATUS_OVERRIDE_RE.match(raw_status)
+    # Strip a "KIND|" prefix first (MEETING/GROUND/TESTFLIGHT), keeping the
+    # marker rather than throwing it away — see _STATUS_KIND_RE's note.
+    _k = _STATUS_KIND_RE.match(raw_status)
+    if _k:
+        booking_kind, status = _k.group(1), _k.group(2)
+    m = _STATUS_OVERRIDE_RE.match(status)
     if m:
         status, status_override = m.group(1), m.group(2)
     raw_condition = _null_dash(entry.get("condition") or "")
@@ -307,6 +339,16 @@ def normalize_entry(entry, date, cancel_lookup=None):
         "realRowIdx": None,
         "status": status if status in VALID_STATUSES else "Pending",
         "statusOverride": status_override,
+        # None for ordinary syllabus flights; "MEETING"/"GROUND"/"TESTFLIGHT"
+        # for the portal's non-syllabus bookings (2026-08-31). Consumers that
+        # report FLIGHT hours/counts should exclude MEETING and GROUND — they
+        # carry a durationMin but no aircraft and are not flights.
+        "bookingKind": booking_kind,
+        # New upstream fields (2026-08-31). Passed through rather than dropped
+        # so they're available without another portal round-trip; nothing
+        # reads them yet.
+        "bookingType": entry.get("bookingType"),
+        "leg": entry.get("leg"),
         "isActual": status == "Completed",
         "isSimulator": "(SIM)" in ac_type,
         "isStandby": is_standby,
