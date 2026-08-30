@@ -134,6 +134,66 @@ if ! git pull --rebase origin main; then
   exit 1
 fi
 
+# ─── Standby gate ────────────────────────────────────────────────────────────
+# The Pi is a BACKUP, not a second primary (user's call, 2026-08-31). Before
+# this gate it fetched unconditionally every 5 min, landing commits 10-20
+# SECONDS apart from GitHub Actions' own — identical work, twice: double load
+# on a GAS backend that's known to degrade under repeated requests, double the
+# CMDV2 dispatches, and constant push races between the two writers.
+#
+# Now: if the data someone already committed is younger than
+# STANDBY_MAX_AGE_MIN, the primary is evidently healthy and this cycle does
+# nothing at all — no portal hit, no commit, no CMDV2 trigger. If the primary
+# stops, data ages past the threshold and the Pi takes over on its own within
+# one cycle of that point, no human involved.
+#
+# PROOF_RUN_INTERVAL_H exists because a standby that never runs is a standby
+# nobody knows is broken — the classic cold-spare trap. Regardless of how
+# healthy the primary looks, the Pi does one real fetch if it hasn't completed
+# one in that long, so its Chromium/session/network path stays continuously
+# proven rather than being first exercised during an actual outage.
+STANDBY_MAX_AGE_MIN="${STANDBY_MAX_AGE_MIN:-20}"
+PROOF_RUN_INTERVAL_H="${PROOF_RUN_INTERVAL_H:-6}"
+LAST_FETCH_STAMP="${HOME}/.ap127-last-pi-fetch"   # local only — never committed
+
+_data_age_min() {
+  python3 - "$PWD/data/flight_schedule.json" <<'PY' 2>/dev/null || echo 99999
+import datetime as dt, json, sys
+try:
+    with open(sys.argv[1]) as fh:
+        ts = json.load(fh)["fetched_at"]
+    when = dt.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    now = dt.datetime.now(dt.timezone.utc)
+    print(int((now - when).total_seconds() // 60))
+except Exception:
+    print(99999)   # unreadable/missing -> treat as stale, fetch for real
+PY
+}
+
+age_min="$(_data_age_min)"
+proof_due=true
+if [ -f "$LAST_FETCH_STAMP" ]; then
+  last_epoch="$(cat "$LAST_FETCH_STAMP" 2>/dev/null || echo 0)"
+  now_epoch="$(date -u +%s)"
+  if [ $(( (now_epoch - last_epoch) / 3600 )) -lt "$PROOF_RUN_INTERVAL_H" ]; then
+    proof_due=false
+  fi
+fi
+
+if [ "$age_min" -lt "$STANDBY_MAX_AGE_MIN" ] && [ "$proof_due" = false ]; then
+  echo "Standing by — data is ${age_min} min old (< ${STANDBY_MAX_AGE_MIN}), primary is healthy."
+  echo "No fetch, no commit, no CMDV2 trigger this cycle."
+  exit 0
+fi
+
+if [ "$age_min" -ge "$STANDBY_MAX_AGE_MIN" ]; then
+  echo "TAKING OVER — data is ${age_min} min old (>= ${STANDBY_MAX_AGE_MIN}); primary looks down."
+else
+  echo "Proof run — primary is healthy (data ${age_min} min old), but the Pi hasn't"
+  echo "fetched in >= ${PROOF_RUN_INTERVAL_H}h; fetching once to keep the standby proven."
+fi
+# ─────────────────────────────────────────────────────────────────────────────
+
 if ! python3 scripts/fetch_schedule.py; then
   echo "Fetch failed — see fetch_schedule.py's own retry/backoff-state output above."
   echo "If this keeps happening across many cycles, the Chromium session"
@@ -141,6 +201,11 @@ if ! python3 scripts/fetch_schedule.py; then
   report_pi_failure
   exit 1
 fi
+
+# The fetch itself succeeded — that's what "the standby still works" means, so
+# stamp it here rather than after the push (a push race is a git problem, not
+# evidence the Pi's Chromium/portal path is broken). Drives PROOF_RUN_INTERVAL_H.
+date -u +%s > "$LAST_FETCH_STAMP" 2>/dev/null || true
 
 python3 scripts/generate_flight_data.py
 
