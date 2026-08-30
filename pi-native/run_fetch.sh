@@ -27,30 +27,63 @@ git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/AP127CMD/
 # independently for different reasons (Chromium/session/RAM on the Pi vs.
 # runner/portal issues in CI), so conflating them under one label would hide
 # "only one of the two is actually down."
+# Dedup/close match on the TITLE PREFIX below, deliberately NOT on the
+# `fetch-failure-pi` label. Found 2026-08-31: this Pi's fine-grained GH_PAT
+# creates issues fine but GitHub SILENTLY DROPS the `labels` field from its
+# POSTs (verified: issues #11/#12/#13 all came out with labels=[], while the
+# identical POST from a full-permission token applies the label correctly).
+# Label-based dedup therefore always matched zero, so every failed cycle
+# opened ANOTHER issue and no success ever auto-closed one — the exact
+# silent-alerting failure this whole mechanism exists to prevent. Title
+# matching needs no permission beyond reading issues, so it can't regress the
+# same way if the token is ever rotated to a narrower scope.
+PI_ISSUE_PREFIX="[Pi Fetch] Run failed"
+
+# Echoes the open issue numbers whose title starts with PI_ISSUE_PREFIX.
+# Excludes pull requests — GitHub's /issues endpoint returns PRs too.
+_pi_open_issue_numbers() {
+  curl -sf -H "Authorization: Bearer ${GH_PAT}" \
+    "https://api.github.com/repos/AP127CMD/CMD_CTR/issues?state=open&per_page=100" 2>/dev/null \
+    | python3 -c '
+import json, sys
+try:
+    items = json.load(sys.stdin)
+except Exception:
+    sys.exit(0)
+prefix = sys.argv[1]
+print(" ".join(
+    str(i["number"]) for i in items
+    if "pull_request" not in i and (i.get("title") or "").startswith(prefix)
+))' "$PI_ISSUE_PREFIX" 2>/dev/null || true
+}
+
 report_pi_failure() {
   local existing
-  existing=$(curl -sf -H "Authorization: Bearer ${GH_PAT}" \
-    "https://api.github.com/repos/AP127CMD/CMD_CTR/issues?state=open&labels=fetch-failure-pi" \
-    | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))' 2>/dev/null) || existing=0
-  if [ "${existing:-0}" -gt 0 ]; then
-    return 0  # already an open issue — don't spam a new one every 5 min
+  existing="$(_pi_open_issue_numbers)"
+  if [ -n "$existing" ]; then
+    echo "Pi-failure issue already open (#${existing// /, #}) — not opening another."
+    return 0
   fi
   local now title body
   now="$(date -u +%Y-%m-%dT%H:%MZ)"
-  title="[Pi Fetch] Run failed – ${now} UTC"
-  body="Orange Pi Zero 2W fetch cycle failed at ${now} UTC.\\n\\nCheck: \`ssh dietpi@<pi-ip> journalctl -u ap127-fetch -n 50\` or the Mac monitor dashboard.\\n\\nGitHub Actions' own fetch keeps running independently — check ap127-cmd-ctr.pages.dev's fetchedAt if you need to know whether data is still current regardless."
+  title="${PI_ISSUE_PREFIX} – ${now} UTC"
+  body="Orange Pi Zero 2W fetch cycle failed at ${now} UTC.
+
+Check: \`ssh dietpi@DietPi.local journalctl -u ap127-fetch -n 50\` or the Mac monitor dashboard.
+(Note: the Pi's journal is RAM-only, so logs do not survive a reboot — investigate before power-cycling.)
+
+GitHub Actions' own fetch keeps running independently — check ap127-cmd-ctr.pages.dev's fetchedAt if you need to know whether data is still current regardless."
   curl -sf -X POST -H "Authorization: Bearer ${GH_PAT}" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/AP127CMD/CMD_CTR/issues" \
-    -d "$(python3 -c 'import json,sys; print(json.dumps({"title": sys.argv[1], "body": sys.argv[2].replace("\\n", "\n"), "labels": ["fetch-failure-pi"]}))' "$title" "$body")" \
-    >/dev/null 2>&1 && echo "Opened fetch-failure-pi issue." || echo "WARNING: could not open failure issue." >&2
+    -d "$(python3 -c 'import json,sys; print(json.dumps({"title": sys.argv[1], "body": sys.argv[2], "labels": ["fetch-failure-pi"]}))' "$title" "$body")" \
+    >/dev/null 2>&1 && echo "Opened Pi-failure issue." || echo "WARNING: could not open failure issue." >&2
 }
 
 close_pi_failure_if_open() {
   local issues
-  issues=$(curl -sf -H "Authorization: Bearer ${GH_PAT}" \
-    "https://api.github.com/repos/AP127CMD/CMD_CTR/issues?state=open&labels=fetch-failure-pi" \
-    | python3 -c 'import json,sys; print(" ".join(str(i["number"]) for i in json.load(sys.stdin)))' 2>/dev/null) || return 0
+  issues="$(_pi_open_issue_numbers)"
+  [ -n "$issues" ] || return 0
   for n in $issues; do
     curl -sf -X POST -H "Authorization: Bearer ${GH_PAT}" \
       "https://api.github.com/repos/AP127CMD/CMD_CTR/issues/${n}/comments" \
@@ -58,6 +91,7 @@ close_pi_failure_if_open() {
     curl -sf -X PATCH -H "Authorization: Bearer ${GH_PAT}" \
       "https://api.github.com/repos/AP127CMD/CMD_CTR/issues/${n}" \
       -d '{"state":"closed"}' >/dev/null 2>&1
+    echo "Auto-closed Pi-failure issue #${n}."
   done
 }
 
