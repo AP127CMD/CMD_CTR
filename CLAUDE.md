@@ -16,7 +16,62 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r44` (2026-08-29 — **GitHub Actions confirmed working
+**Last known:** token = `r44` (2026-08-31 — **full fetch-system audit: 6 real
+bugs found and fixed, Pi demoted to a true standby** (scraper/infra-only —
+token not bumped). User: "Audit and check all the fetching system thoroughly.
+I want consistency and reliable system."
+**Verified healthy first (evidence, not assumption):** zero status flip-flops
+across 431 bookings × 35 commits (the 2026-07-27 failure mode is genuinely
+gone — the RPC rewrite fixed it); flight count stable at 5784/138 dates, zero
+regression streaks; both writers producing byte-identical data; Pi healthy
+(zram active, 474 MB free, 28% disk).
+**Bugs found and fixed:**
+(1) **Pi failure alerts were completely broken** — issues #11/#12/#13 were
+triplicates that never auto-closed. Root cause, verified live: the Pi's
+fine-grained PAT gets `403 Resource not accessible by personal access token`
+on issue close/comment, and silently drops `labels` on create (applying a
+label is an issue *modification*). Label-based dedup therefore always matched
+zero. Dedup now matches on **title prefix** (read-only, can't regress that
+way). Auto-close still 403s — that is now **reported honestly**; the first
+version printed "Auto-closed #N" with no status check, i.e. it lied on every
+single call. Fix needs `Issues: Read and write` on the PAT (user action).
+(2) **DB001 `update-cache.yml` had no auto-close step** — issue #5 sat open
+since 08-26, so its dedup swallowed every alert for 5 days. Added; **verified
+live** (#5 auto-closed on the next run).
+(3) **`schema-drift` had the same gap** — third instance of this identical
+ecosystem-wide pattern (after `fetch-failure` 07-25 and `dispatcher-failure`
+08-30). Added an auto-close whose condition is "ran AND found no drift", not
+plain `success()`.
+(4) **Booking-id validator rejected legitimate ids** — the portal now embeds
+the flight type (`BK-AP FAM-…`, `BK-Skill Test-…`, `BK-Recurrent-W-TH-…`);
+the old `[A-Z0-9-]+` allowed neither spaces nor lowercase, so dozens of bogus
+warnings per run **saturated the drift alert**, which (via 3) then masked
+everything else.
+(5) **Real drift, revealed once (4) stopped drowning it:** the portal marks
+non-syllabus bookings `MEETING|Pending` / `GROUND|Pending` /
+`TESTFLIGHT|Pending` and added `bookingType`/`leg` fields. The kind marker was
+being **discarded** — it fell through `status if status in VALID_STATUSES else
+"Pending"` — so a 3-hour CATC meeting or a 60-min Ground School slot was
+indistinguishable downstream from a real training flight (both carry a
+durationMin, neither an aircraft). Now captured as **`bookingKind`**;
+`bookingType`/`leg` passed through. **Deliberately additive — no consumer
+changed, so no reported number moved.** ⚠️ **Open question for the user:
+should MEETING/GROUND be excluded from flight-hours KPIs?** They currently
+inflate them. 24 new tests (55 total, was 31).
+(6) **Local repo was wedged mid-rebase** with UU conflicts, 5 h behind — the
+Mac launchd agents are (correctly) unloaded, so it was inert, but any manual
+run would have failed. Reset to origin.
+**Architecture change (user's call):** the Pi was NOT a backup — it fetched
+unconditionally every 5 min, landing commits **10-20 seconds** from CI's,
+doubling portal load, CMDV2 dispatches and push contention. `run_fetch.sh`
+now gates on the committed `fetched_at`: <20 min → stand by (no portal hit at
+all); ≥20 min → take over unattended; plus a forced **proof run** every 6 h so
+the standby stays proven rather than first exercised during an outage. Fails
+safe (bad/missing timestamp → fetch, never silent standby). Unit-tested: 7
+age-parser cases incl. every error path, 8 gate-decision cases.
+**Verified live end-to-end:** drift cleared → `schema-drift` #10 auto-closed
+itself → **CMD_CTR now has zero open issues**.)
+(2026-08-29 — **GitHub Actions confirmed working
 again + Pi failure-alerting added — both fetch paths now run permanently in
 parallel** (infra-only — token not bumped). User: "the portal site seem to
 change some permission setting? check if it's no longer an issue with github

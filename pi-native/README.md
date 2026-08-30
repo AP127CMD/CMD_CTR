@@ -7,7 +7,34 @@ end-to-end: real fetches (280 flights / 18 dates) committed + pushed to
 `AP127CMD/CMD_CTR`, CMDV2 `refresh-data.yml` dispatched, both Pages sites
 picking up the new `fetchedAt`.
 
-**UPDATE, same day: `fetch_schedule.yml` re-enabled, runs PERMANENTLY
+**UPDATE 2026-08-31 — the Pi is now a TRUE STANDBY, not a second primary.**
+It was fetching unconditionally every 5 min and landing commits 10-20 *seconds*
+apart from GitHub Actions' own: identical work twice, doubling load on a GAS
+backend known to degrade under repeated requests, doubling CMDV2 dispatches,
+and causing constant push races. Now `run_fetch.sh` checks the last committed
+`fetched_at` first:
+
+| Condition | Behaviour |
+|---|---|
+| Data younger than `STANDBY_MAX_AGE_MIN` (20) | **Stand by** — exits immediately. No portal hit, no commit, no CMDV2 trigger. |
+| Data `>=` 20 min old | **Take over** — the primary looks down; fetch for real. Unattended failover within one cycle. |
+| Primary healthy but Pi hasn't fetched in `PROOF_RUN_INTERVAL_H` (6) | **Proof run** — one real fetch, so the standby stays *proven* rather than first exercised during an actual outage. |
+
+Both knobs are env-overridable. Fails safe: an unreadable/missing/malformed
+`fetched_at` yields a huge age, so the Pi fetches rather than standing by
+forever on bad state. `~/.ap127-last-pi-fetch` (local, never committed) tracks
+the last successful fetch for the proof-run timer.
+
+**Known limitation — Pi failure alerts cannot auto-close.** The Pi's
+fine-grained `GH_PAT` can create and read issues but gets
+`403 Resource not accessible by personal access token` on closing or
+commenting (this is also why its issue POSTs come out unlabelled — applying a
+label is an issue *modification*). Dedup works (read-only), so a failing Pi
+opens **one** issue rather than one per cycle. To enable auto-close, grant the
+PAT `Issues: Read and write` on AP127CMD/CMD_CTR at
+github.com/settings/personal-access-tokens — no code change needed.
+
+**Earlier the same week: `fetch_schedule.yml` re-enabled, runs PERMANENTLY
 alongside the Pi, not disabled.** A live `workflow_dispatch -f force=true`
 test proved GitHub Actions' own fetch works again too (same "anonymous portal
 access" finding below applies equally to a fresh Playwright-launched
