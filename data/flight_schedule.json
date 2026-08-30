@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-30T07:22:13Z",
+  "fetched_at": "2026-08-30T07:30:27Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -178084,8 +178084,7 @@
         "blockOff": "19:35",
         "blockOn": "20:35",
         "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
+        "cancelRemarks": null
       },
       {
         "id": "BK-YBX8-8053",
@@ -178120,80 +178119,7 @@
         "blockOff": "19:30",
         "blockOn": "20:30",
         "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
-      },
-      {
-        "id": "",
-        "date": "2026-08-30",
-        "rowIdx": "",
-        "realRowIdx": null,
-        "status": "Canceled",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": true,
-        "isStandby": false,
-        "start": "08:00",
-        "end": "09:00",
-        "duration": "01:00",
-        "durationMin": 60,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "PATCHARANAN D.",
-        "instructor": "ATHINAT H.",
-        "batch": "AP-126",
-        "lesson": "CMDIF (SIM) 91",
-        "condition": "Sim DA42",
-        "type": "DA42 (SIM)",
-        "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
-      },
-      {
-        "id": "",
-        "date": "2026-08-30",
-        "rowIdx": "",
-        "realRowIdx": null,
-        "status": "Canceled",
-        "statusOverride": null,
-        "isActual": false,
-        "isSimulator": true,
-        "isStandby": false,
-        "start": "09:00",
-        "end": "10:00",
-        "duration": "01:00",
-        "durationMin": 60,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "PATCHARANAN D.",
-        "instructor": "ATHINAT H.",
-        "batch": "AP-126",
-        "lesson": "CMDIF (SIM) 92",
-        "condition": "Sim DA42",
-        "type": "DA42 (SIM)",
-        "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
+        "cancelRemarks": null
       },
       {
         "id": "BK-9J5J-8059",
@@ -178228,8 +178154,7 @@
         "blockOff": "19:20",
         "blockOn": "20:20",
         "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
+        "cancelRemarks": null
       },
       {
         "id": "BK-3ASL-8066",
@@ -178334,8 +178259,7 @@
         "blockOff": "18:20",
         "blockOn": "19:20",
         "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
+        "cancelRemarks": null
       },
       {
         "id": "BK-6KUM-8084",
@@ -178370,8 +178294,7 @@
         "blockOff": null,
         "blockOn": null,
         "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
+        "cancelRemarks": null
       },
       {
         "id": "BK-YHMS-8090",
@@ -190551,20 +190474,20 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -190605,20 +190528,20 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "THAWATANAN P.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "WISANU T.",
+      "name": "THAWATANAN P.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "WISANU T.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -190635,14 +190558,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -190653,8 +190576,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -190665,14 +190588,14 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -190701,8 +190624,14 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
