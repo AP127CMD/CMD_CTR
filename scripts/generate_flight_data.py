@@ -19,6 +19,42 @@ RECENT_DEST = ROOT / "flight-data-recent.js"
 RECENT_LOOKBACK_DAYS = 4
 RECENT_LOOKAHEAD_DAYS = 15
 
+# ─── Non-flight bookings (2026-08-31) ────────────────────────────────────────
+# The Ops Portal schedules meetings and ground school in the SAME feed as real
+# flights. They carry a durationMin and no aircraft, so every hours KPI
+# downstream was counting a 3-hour CATC meeting or a 7.5-hour ground-school
+# block as flight time (253.8 h of 9,632.6 h — 2.6% — across current history).
+# User's call, 2026-08-31: exclude Ground School and Meetings from flight hours.
+#
+# `isNonFlight` is emitted per flight so consumers can drop these from HOURS
+# while still SHOWING them on schedules — they're real calendar events, and
+# CMDV2's p116 specifically fixed a bug that had hidden meeting rows.
+#
+# Two signals, deliberately:
+#   1. `bookingKind` (MEETING/GROUND) — authoritative, but only populated on
+#      fetches from 2026-08-31 onward.
+#   2. A lesson-name fallback — REQUIRED for correctness, not belt-and-braces:
+#      most history predates bookingKind, and everything on or before
+#      2026-07-09 lives in flight_schedule.pre_migration_archive.json, which is
+#      re-applied as an override every run and is therefore NEVER re-fetched.
+#      Without this fallback the exclusion would silently miss ~all historical
+#      meetings while appearing to work.
+# The fallback is gated on "no aircraft at all" so a genuine flight whose
+# lesson merely mentions a meeting can never be dropped.
+_NON_FLIGHT_KINDS = {"MEETING", "GROUND"}
+_MEETING_RE = re.compile(r"\bmeeting\b", re.I)
+_GROUND_SCHOOL_RE = re.compile(r"\bground school\b", re.I)
+
+
+def is_non_flight(f: dict) -> bool:
+    """True for meetings / ground school — scheduled events that are not flights."""
+    if (f.get("bookingKind") or "").upper() in _NON_FLIGHT_KINDS:
+        return True
+    if f.get("type") or f.get("tail"):
+        return False  # has an aircraft -> it's a flight, whatever it's called
+    lesson = f.get("lesson") or ""
+    return bool(_MEETING_RE.search(lesson) or _GROUND_SCHOOL_RE.search(lesson))
+
 
 def parse_dur(hhmm: str) -> int:
     if not hhmm:
@@ -57,6 +93,11 @@ def transform(raw: dict) -> dict:
                 "type":       f.get("type") or None,
                 "tail":       f.get("tail") or None,
             }
+            # Meetings / ground school: still shown on schedules, excluded from
+            # flight-hours KPIs. Emitted only when true, to keep the ~2 MB feed
+            # from growing a false flag on every one of ~5,800 real flights.
+            if is_non_flight(f):
+                entry["isNonFlight"] = True
             # recover_vanished_bookings() flag — only present (and only true) on Canceled
             # entries the scraper synthesized with no confirmed cancel reason found anywhere.
             # Watchdog uses this to render a distinct "Removed" notice instead of "Cancelled".
