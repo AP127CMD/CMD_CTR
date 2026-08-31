@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-31T11:12:33Z",
+  "fetched_at": "2026-08-31T11:23:44Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -180207,12 +180207,12 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-126-RAKC-VBDX0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "16:00",
@@ -180228,15 +180228,15 @@
         "condition": "Sim DA42",
         "type": "DA42 (SIM)",
         "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42 (SIM)",
+        "tkoff": "16:05",
+        "ldgTime": "16:55",
+        "airborne": "00:50",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "16:00",
+        "blockOn": "17:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -180283,12 +180283,12 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-126-RAKC-NM0AA",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "17:00",
@@ -180304,15 +180304,15 @@
         "condition": "Sim DA42",
         "type": "DA42 (SIM)",
         "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42 (SIM)",
+        "tkoff": "17:05",
+        "ldgTime": "17:55",
+        "airborne": "00:50",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "17:00",
+        "blockOn": "18:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -181282,16 +181282,16 @@
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
-        "end": "08:30",
-        "duration": "02:00",
-        "durationMin": 120,
+        "end": "07:45",
+        "duration": "01:15",
+        "durationMin": 75,
         "planDur": null,
         "planDurMin": null,
         "student": "WATCHARAPOL A.",
         "instructor": "WUTTHICHAI L.",
         "batch": "AP-127",
-        "lesson": "CSPXV 38",
-        "condition": "XC",
+        "lesson": "CSPGL 37",
+        "condition": "SPIC",
         "type": "DA40TDI",
         "tail": "HS-TPV",
         "actualType": null,
@@ -181721,8 +181721,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-126-PREM-5CP0K",
@@ -193530,8 +193530,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193548,8 +193548,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193560,8 +193560,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193578,8 +193578,8 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193620,14 +193620,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -193644,8 +193644,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193674,8 +193674,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -199215,6 +199215,19 @@
       "lesson": "CSPGL 37",
       "acType": "DA40TDI",
       "acReg": "HS-TPT"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-VIPH-VRLYX|31/08/2026 18:05:52",
+      "bookingId": "BK-AP-129-VIPH-VRLYX",
+      "date": "2026-09-01",
+      "reason": "Other",
+      "remarks": "",
+      "instructor": "EKKAPHOP R.",
+      "student": "VIPHARATH C.",
+      "batch": "AP-129",
+      "lesson": "CDGL 12",
+      "acType": "DA40CS",
+      "acReg": "HS-TVE"
     }
   ],
   "_regressionStreaks": {}
