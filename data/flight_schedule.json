@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-31T00:49:06Z",
+  "fetched_at": "2026-08-31T01:02:57Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -180055,7 +180055,7 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-127-KHOB-RAEX9",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -180085,8 +180085,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "RPM high"
       },
       {
         "id": "BK-AP-126-SARA-JM2FU",
@@ -191874,8 +191874,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191892,8 +191892,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191910,8 +191910,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191928,8 +191928,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191946,14 +191946,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191988,8 +191988,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -192006,8 +192006,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -192042,14 +192042,14 @@
     {
       "isPartTime": false,
       "name": "KEVIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -197520,6 +197520,19 @@
       "lesson": "CMDIF (SIM) 92",
       "acType": "DA42 (SIM)",
       "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-KHOB-RAEX9|31/08/2026 07:44:08",
+      "bookingId": "BK-AP-127-KHOB-RAEX9",
+      "date": "2026-08-31",
+      "reason": "Aircraft Trouble",
+      "remarks": "RPM high",
+      "instructor": "SORRAWUT P.",
+      "student": "KHOBPONG W.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 43",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPU"
     }
   ],
   "_regressionStreaks": {}
