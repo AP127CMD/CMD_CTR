@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-31T09:40:29Z",
+  "fetched_at": "2026-08-31T09:50:48Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -180169,12 +180169,12 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-126-KANT-WMBLD",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "15:00",
@@ -180190,15 +180190,15 @@
         "condition": "Sim DA42",
         "type": "DA42 (SIM)",
         "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42 (SIM)",
+        "tkoff": "15:10",
+        "ldgTime": "15:50",
+        "airborne": "00:40",
+        "ldg": 4,
+        "to": 4,
+        "inst": 1,
+        "blockOff": "15:00",
+        "blockOn": "16:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -181839,44 +181839,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-127-NUTT-4P8BC",
-        "date": "2026-09-01",
-        "rowIdx": "BK-AP-127-NUTT-4P8BC",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "10:20",
-        "end": "11:50",
-        "duration": "01:30",
-        "durationMin": 90,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "NUTTAPHAT K.",
-        "instructor": "PHAHOLYUTH P.",
-        "batch": "AP-127",
-        "lesson": "CDXV 31",
-        "condition": "XC",
-        "type": "DA40CS",
-        "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-127-TEER-WF9I1",
         "date": "2026-09-01",
         "rowIdx": "BK-AP-127-TEER-WF9I1",
@@ -182521,6 +182483,83 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-MTH1VW0E",
+        "date": "2026-09-01",
+        "rowIdx": "BK-MTH1VW0E",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:30",
+        "end": "12:00",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "ANUSORN T.",
+        "instructor": "PHAHOLYUTH P.",
+        "batch": "AP-127",
+        "lesson": "CSXV 33",
+        "condition": "Solo / XC",
+        "type": "DA40CS",
+        "tail": "HS-TVG",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-127-NUTT-4P8BC",
+        "date": "2026-09-01",
+        "rowIdx": "BK-AP-127-NUTT-4P8BC",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:20",
+        "end": "11:50",
+        "duration": "01:30",
+        "durationMin": 90,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "NUTTAPHAT K.",
+        "instructor": "PHAHOLYUTH P.",
+        "batch": "AP-127",
+        "lesson": "CDXV 31",
+        "condition": "XC",
+        "type": "DA40CS",
+        "tail": "HS-TVG",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-09-02": [],
@@ -193270,8 +193309,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -193288,14 +193327,14 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193342,8 +193381,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193414,8 +193453,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -193426,8 +193465,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193438,8 +193477,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
