@@ -1,7 +1,7 @@
 # CMD CTR — Claude Code Context
 
 ## ⚠️ Update rule — do this after EVERY code change
-1. Bump cache token in `index.html` — next must be `r44`
+1. Bump cache token in `index.html` — next must be `r46`
 2. Update the Verify section below with the new token + change summary
 3. Update `/Users/nugui/AP127_Docs/README.md` §2.1 (add to §10 log) — then push AP127_Docs
 4. `git add . && git commit -m "rNN: <what changed>" && git pull --rebase && git push`
@@ -16,7 +16,32 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r44` (2026-08-31 — **full fetch-system audit: 6 real
+**Last known:** token = `r45` (2026-08-31 — **meetings/ground school excluded
+from flight hours** (r45 — token BUMPED, view code changed). User: "Yes, exclude
+Ground School and Meeting from flight hours." The portal schedules them in the
+same feed as flights, each with a real `durMin` and no aircraft. Source side:
+`generate_flight_data.py` now emits `isNonFlight` per flight (see the entry
+below for the `bookingKind` capture that made this possible). Consumer side:
+new `fMin()`/`fHrs()` in `js/app-shared.js`; all 26 sites summing `f.durMin`
+directly route through them, plus `brdFlownMin`/`calFlownMin`/the Gantt row
+total. Same change shipped to CMDV2 (`p176`) and CMDV3 — all three agree.
+**Two signals, and the second is load-bearing:** `bookingKind` is authoritative
+but only populates on fetches from today; the lesson-name fallback covers
+history, because everything on or before 2026-07-09 lives in the frozen
+pre-migration archive that is re-applied every run and NEVER re-fetched —
+without it the exclusion would silently miss nearly all historical meetings
+while appearing to work. The fallback is gated on "no aircraft at all" so a
+genuine flight whose lesson merely mentions a meeting can't be dropped.
+**Scoped exactly to what was asked** — ground-based briefings (C172 Training,
+Long Brief AUPRT, Night Flying Long Briefing, ~29h) are deliberately NOT swept
+in. **Impact is narrower than the raw 253.8h figure suggests, and worth being
+precise about: ALL meeting/ground hours are status `Pending`, so every
+Completed-gated metric (flown hours, Ops Analytics HOURS) was already
+unaffected — this changes SCHEDULED-hours figures only.** Verified live in the
+browser on both dashboards: May 2026 scheduled hours drop by the identical
+105.5h in each. Meetings remain VISIBLE on schedules (p116's fix preserved);
+row counts unchanged. 79 tests.)
+(2026-08-31 — **full fetch-system audit: 6 real
 bugs found and fixed, Pi demoted to a true standby** (scraper/infra-only —
 token not bumped). User: "Audit and check all the fetching system thoroughly.
 I want consistency and reliable system."
