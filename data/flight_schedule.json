@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-31T05:20:01Z",
+  "fetched_at": "2026-08-31T05:30:55Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -179485,7 +179485,7 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-126-MARU-9JQGV",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -179515,8 +179515,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Right pilot brake failure, no brake pressure"
       },
       {
         "id": "BK-AP-127-NATP-4TYYJ",
@@ -191920,14 +191920,20 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "PARINYA B.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191956,8 +191962,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191980,8 +191986,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -191998,8 +192004,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -192034,8 +192040,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -192058,8 +192064,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -192070,8 +192076,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -197542,6 +197548,19 @@
       "lesson": "CMDIF (SIM) 92",
       "acType": "DA42 (SIM)",
       "acReg": "HS-TCP (SIM)"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-MARU-9JQGV|31/08/2026 12:20:47",
+      "bookingId": "BK-AP-126-MARU-9JQGV",
+      "date": "2026-08-31",
+      "reason": "Aircraft Trouble",
+      "remarks": "Right pilot brake failure, no brake pressure",
+      "instructor": "SANTI PO.",
+      "student": "MARUAY B.",
+      "batch": "AP-126",
+      "lesson": "CMDGL 93",
+      "acType": "DA42TDI",
+      "acReg": "HS-TPQ"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-KHOB-RAEX9|31/08/2026 07:44:08",
