@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-31T07:09:41Z",
+  "fetched_at": "2026-08-31T07:20:20Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -179143,12 +179143,12 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-126-PARA-53DDU",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "06:00",
@@ -179164,15 +179164,15 @@
         "condition": "Sim DA42",
         "type": "DA42 (SIM)",
         "tail": "HS-TCP (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42 (SIM)",
+        "tkoff": "06:10",
+        "ldgTime": "06:55",
+        "airborne": "00:45",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "06:00",
+        "blockOn": "07:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -179789,12 +179789,12 @@
         "date": "2026-08-31",
         "rowIdx": "BK-AP-127-WATC-QJ8P2",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:20",
@@ -179810,15 +179810,15 @@
         "condition": "XC",
         "type": "DA40TDI",
         "tail": "HS-TPX",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "10:23",
+        "ldgTime": "13:12",
+        "airborne": "02:49",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "10:17",
+        "blockOn": "13:17",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -191956,14 +191956,14 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191974,20 +191974,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -191998,14 +191992,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -192040,14 +192034,14 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -192082,8 +192076,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
