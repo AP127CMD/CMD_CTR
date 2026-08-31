@@ -2,6 +2,14 @@
 const { useState, useMemo, useEffect, useRef, useCallback, createContext, useContext } = React;
 
 // ─── Data ────────────────────────────────────────────────────────────────
+// Non-flight bookings (2026-08-31) — upstream schedules meetings and ground
+// school in the SAME feed as flights, each with a real durMin and no aircraft,
+// so hours KPIs counted a 3-hour meeting as flight time. They stay VISIBLE on
+// schedules; only their HOURS are dropped. ALWAYS use fMin()/fHrs() when
+// summing hours — reading f.durMin directly in a total bypasses the exclusion.
+const fMin = f => (f && f.isNonFlight) ? 0 : ((f && f.durMin) || 0);
+const fHrs = f => fMin(f) / 60;
+
 const FLIGHTS     = window.FLIGHT_DATA.flights;
 const INSTRUCTORS = window.FLIGHT_DATA.instructors;
 const RESOURCES   = window.FLIGHT_DATA.resources;

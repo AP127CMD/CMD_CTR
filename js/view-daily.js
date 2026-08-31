@@ -155,14 +155,14 @@ function DailyBoard() {
       else if (f.status === 'Completed') s.mix.completed++;
       else if (f.status === 'Canceled')  s.mix.canceled++;
       else                               s.mix.pending++;
-      s.schedHours += (f.durMin || 0) / 60;
+      s.schedHours += fHrs(f);
       if (f.status === 'Completed') {
         const minutes = f.durMin || 0;
         s.flownHours += minutes / 60;
       }
-      if (f.status === 'Pending')  s.pendingHours  += (f.durMin || 0) / 60;
-      if (f.status === 'Canceled') s.canceledHours += (f.durMin || 0) / 60;
-      if (f.isSim)                 s.simHours      += (f.durMin || 0) / 60;
+      if (f.status === 'Pending')  s.pendingHours  += fHrs(f);
+      if (f.status === 'Canceled') s.canceledHours += fHrs(f);
+      if (f.isSim)                 s.simHours      += fHrs(f);
       if (f.student)    s.students.add(f.student);
       if (f.instructor) s.instructors.add(f.instructor);
       if (f.tail)       s.tails.add(f.tail);
@@ -202,7 +202,7 @@ function DailyBoard() {
       if (f.status === 'Completed') m[b].completed++;
       if (f.status === 'Canceled')  m[b].canceled++;
       if (f.isStandby) m[b].standby++;
-      m[b].hours += (f.durMin || 0) / 60;
+      m[b].hours += fHrs(f);
     });
     return Object.values(m).sort((a, b) => {
       // AP-127 always first if present
@@ -222,7 +222,7 @@ function DailyBoard() {
       m[k].total++;
       if (f.status === 'Completed') m[k].completed++;
       if (f.status === 'Canceled')  m[k].canceled++;
-      m[k].hours += (f.durMin || 0) / 60;
+      m[k].hours += fHrs(f);
       if (f.batch === HIGHLIGHT_BATCH) m[k].ap127++;
     });
     return Object.values(m).sort((a, b) => b.hours - a.hours || b.total - a.total);
@@ -239,7 +239,7 @@ function DailyBoard() {
       m[k].total++;
       if (f.status === 'Completed') m[k].completed++;
       if (f.status === 'Canceled')  m[k].canceled++;
-      m[k].hours += (f.durMin || 0) / 60;
+      m[k].hours += fHrs(f);
     });
     return Object.values(m).sort((a, b) => b.total - a.total);
   }, [flights]);
@@ -257,12 +257,12 @@ function DailyBoard() {
       if (f.student)    s.students.add(f.student);
       if (f.instructor) s.instructors.add(f.instructor);
       if (f.lesson)     s.lessons.add(f.lesson);
-      if (f.status === 'Pending')   { s.pending++; s.pendingHours += (f.durMin||0)/60; }
-      if (f.status === 'Completed') { s.completed++; s.completedHours += (f.durMin||0)/60; }
-      if (f.status === 'Canceled')  { s.canceled++; s.canceledHours += (f.durMin||0)/60; }
+      if (f.status === 'Pending')   { s.pending++; s.pendingHours += fHrs(f); }
+      if (f.status === 'Completed') { s.completed++; s.completedHours += fHrs(f); }
+      if (f.status === 'Canceled')  { s.canceled++; s.canceledHours += fHrs(f); }
       if (f.isStandby) s.standby++;
       if (f.isSim)     s.sim++;
-      s.hours += (f.durMin || 0) / 60;
+      s.hours += fHrs(f);
     });
     const outcome = s.completed + s.canceled;
     s.completionRate = outcome > 0 ? (s.completed / outcome) * 100 : null;

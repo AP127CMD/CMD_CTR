@@ -146,7 +146,7 @@ function SummaryBoard() {
       if(f.status==='Canceled')  s.canceled++;
       if(f.isStandby) s.standby++;
       if(f.isSim)     s.sim++;
-      s.hours += (f.durMin||0)/60;
+      s.hours += fHrs(f);
     });
     return s;
   },[all]);
@@ -156,7 +156,7 @@ function SummaryBoard() {
     all.forEach(f=>{
       const b=f.batch||'Unknown';
       if(!m[b]) m[b]={batch:b,total:0,pending:0,completed:0,canceled:0,hours:0,completedHours:0,standby:0};
-      m[b].total++; m[b].hours+=(f.durMin||0)/60;
+      m[b].total++; m[b].hours+=fHrs(f);
       m[b].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[b].pending++;
       if(f.status==='Completed') m[b].completed++;
@@ -171,7 +171,7 @@ function SummaryBoard() {
     all.forEach(f=>{
       const k=f.instructor||'—';
       if(!m[k]) m[k]={name:k,total:0,hours:0,completedHours:0,pending:0,completed:0,canceled:0,standby:0};
-      m[k].total++; m[k].hours+=(f.durMin||0)/60;
+      m[k].total++; m[k].hours+=fHrs(f);
       m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;
@@ -187,7 +187,7 @@ function SummaryBoard() {
       if(!f.student) return;  // skip flights with no named student
       const k=f.student;
       if(!m[k]) m[k]={name:k,total:0,hours:0,completedHours:0,pending:0,completed:0,canceled:0,standby:0};
-      m[k].total++; m[k].hours+=(f.durMin||0)/60;
+      m[k].total++; m[k].hours+=fHrs(f);
       m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;
@@ -209,7 +209,7 @@ function SummaryBoard() {
     all.filter(f => f.batch === HIGHLIGHT_BATCH).forEach(f => {
       const k = f.student || '—';
       if (!m[k]) m[k] = {name:k, total:0, hours:0, completedHours:0, pending:0, completed:0, canceled:0, standby:0};
-      m[k].total++; m[k].hours += (f.durMin||0)/60;
+      m[k].total++; m[k].hours += fHrs(f);
       m[k].completedHours += flownMin_s(f)/60;
       if(f.status==='Pending')   m[k].pending++;
       if(f.status==='Completed') m[k].completed++;

@@ -44,7 +44,7 @@ function RosterBoard() {
 
       const cell = m[key][f.date];
       cell.flights++;
-      cell.hours += (f.durMin || 0) / 60;
+      cell.hours += fHrs(f);
       if (f.batch === HIGHLIGHT_BATCH) cell.ap127++;
       if (f.status === 'Completed')    cell.completed++;
       fByKD[key][f.date].push(f);
@@ -70,7 +70,7 @@ function RosterBoard() {
       if (ap127Only && f.batch !== HIGHLIGHT_BATCH) return;
       if (!t[f.date]) return;
       t[f.date].flights++;
-      t[f.date].hours += (f.durMin||0)/60;
+      t[f.date].hours += fHrs(f);
     });
     return t;
   }, [ap127Only]);

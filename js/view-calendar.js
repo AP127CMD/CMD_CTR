@@ -9,7 +9,7 @@ const CAL_SP_COLOR = 'oklch(0.72 0.15 280)';
 // Helpers
 const calFlownMin = f => {
   if (f.status !== 'Completed') return 0;
-  return f.durMin || 0;
+  return fMin(f);   // 0 for meetings/ground school
 };
 const calAbbrev = name => (name||'').split(/[\s.]+/).filter(Boolean)[0]?.slice(0,4).toUpperCase() || '?';
 const calHours  = h => h >= 10 ? h.toFixed(0) : h.toFixed(1);
@@ -47,7 +47,7 @@ function CalendarBoard() {
       if (ap127Only && f.batch !== HIGHLIGHT_BATCH) return;
       if (!m[f.date]) m[f.date] = { total:0, completed:0, canceled:0, pending:0, ap127:0, schedHours:0, completedHours:0 };
       const s = m[f.date];
-      s.total++; s.schedHours += (f.durMin||0)/60; s.completedHours += calFlownMin(f)/60;
+      s.total++; s.schedHours += fHrs(f); s.completedHours += calFlownMin(f)/60;
       if (f.status==='Completed') s.completed++;
       if (f.status==='Canceled')  s.canceled++;
       if (f.status==='Pending')   s.pending++;
@@ -122,7 +122,7 @@ function CalendarBoard() {
     const sps  = lvKeys.filter(n => !CAL_FI_NAMES.has(n));
     const s    = { total:0, completed:0, canceled:0, pending:0, standby:0, sim:0, completedHours:0, schedHours:0 };
     all.forEach(f => {
-      s.total++; s.schedHours += (f.durMin||0)/60; s.completedHours += calFlownMin(f)/60;
+      s.total++; s.schedHours += fHrs(f); s.completedHours += calFlownMin(f)/60;
       if (f.status==='Completed') s.completed++;
       if (f.status==='Canceled')  s.canceled++;
       if (f.status==='Pending')   s.pending++;

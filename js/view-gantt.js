@@ -158,7 +158,7 @@ function GanttBoard() {
             {/* Rows */}
             <div>
               {rows.map((r,ri)=>{
-            const totalMin = r.flights.reduce((a,b)=>a+(b.durMin||0),0);
+            const totalMin = r.flights.reduce((a,b)=>a+fMin(b),0);
             const hasHL    = r.flights.some(f=>f.batch===HIGHLIGHT_BATCH);
             const rowAlpha = app.highlightAP127&&!hasHL ? 0.28 : 1;
             const dateLeaveMap = leavesOnDate(app.date);

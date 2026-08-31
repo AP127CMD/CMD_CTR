@@ -4,7 +4,7 @@ const { useMemo: useM_b, useState: useS_b } = React;
 const brdHours  = h => h >= 10 ? h.toFixed(0) : h.toFixed(1);
 const brdFlownMin = f => {
   if (f.status !== 'Completed') return 0;
-  return f.durMin || 0;
+  return fMin(f);   // 0 for meetings/ground school
 };
 
 const SORT_KEYS = {
@@ -63,13 +63,13 @@ function OpsBoard() {
              simHours:0,ap127Hours:0,standbyHours:0};
     flights.forEach(f=>{
       s[f.status]=(s[f.status]||0)+1;
-      if(f.isSim)     { s.sim++;     s.simHours     +=(f.durMin||0)/60; }
-      if(f.batch===HIGHLIGHT_BATCH) { s.ap127++; s.ap127Hours+=(f.durMin||0)/60; }
-      if(f.isStandby) { s.standby++; s.standbyHours +=(f.durMin||0)/60; }
-      s.totalHours += (f.durMin||0)/60;
+      if(f.isSim)     { s.sim++;     s.simHours     +=fHrs(f); }
+      if(f.batch===HIGHLIGHT_BATCH) { s.ap127++; s.ap127Hours+=fHrs(f); }
+      if(f.isStandby) { s.standby++; s.standbyHours +=fHrs(f); }
+      s.totalHours += fHrs(f);
       if(f.status==='Completed') s.completedHours += brdFlownMin(f)/60;
-      if(f.status==='Pending')   s.pendingHours   += (f.durMin||0)/60;
-      if(f.status==='Canceled')  s.canceledHours  += (f.durMin||0)/60;
+      if(f.status==='Pending')   s.pendingHours   += fHrs(f);
+      if(f.status==='Canceled')  s.canceledHours  += fHrs(f);
     });
     return s;
   },[flights]);
