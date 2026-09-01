@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-01T03:38:08Z",
+  "fetched_at": "2026-09-01T03:48:54Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -181311,12 +181311,12 @@
         "date": "2026-09-01",
         "rowIdx": "BK-AP-127-AKAR-UGSMA",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -181332,15 +181332,15 @@
         "condition": "XC",
         "type": "DA40TDI",
         "tail": "HS-TPU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "06:42",
+        "ldgTime": "09:27",
+        "airborne": "02:45",
+        "ldg": 4,
+        "to": 4,
+        "inst": 0,
+        "blockOff": "06:32",
+        "blockOn": "09:32",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -181501,12 +181501,12 @@
         "date": "2026-09-01",
         "rowIdx": "BK-AP-126-PRIT-R4O99",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "08:30",
@@ -181522,15 +181522,15 @@
         "condition": null,
         "type": "DA42TDI",
         "tail": "HS-TPQ",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42TDI",
+        "tkoff": "09:00",
+        "ldgTime": "10:10",
+        "airborne": "01:10",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "08:45",
+        "blockOn": "10:15",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -182751,7 +182751,46 @@
         "cancelRemarks": null
       }
     ],
-    "2026-09-02": [],
+    "2026-09-02": [
+      {
+        "id": "BK-AP-127-WATC-UR1VU",
+        "date": "2026-09-02",
+        "rowIdx": "BK-AP-127-WATC-UR1VU",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:30",
+        "end": "11:30",
+        "duration": "05:00",
+        "durationMin": 300,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "WATCHARAPHOL V.",
+        "instructor": "WISANU T.",
+        "batch": "AP-127",
+        "lesson": "CSPXV 44",
+        "condition": "SPIC / XC",
+        "type": "DA40TDI",
+        "tail": "HS-TPU",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      }
+    ],
     "2026-09-03": [],
     "2026-09-04": [],
     "2026-09-05": [],
@@ -193493,8 +193532,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -193511,14 +193550,14 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -193565,8 +193604,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -193577,8 +193616,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -193601,8 +193640,14 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
+    },
+    {
+      "isPartTime": false,
+      "name": "SORRAWUT P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -193649,8 +193694,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
