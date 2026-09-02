@@ -2,7 +2,14 @@ name: Fetch Flight Schedule & Deploy
 
 on:
   schedule:
-    - cron: '0 * * * *'  # hourly fallback (CF Worker dispatcher fires every 5 min)
+    # Unguarded CLOUD PROOF RUN, twice a day. 2026-09-02: the Pi is primary and
+    # the CF dispatcher now only dispatches this workflow when the published
+    # feed is >= 35 min stale, so on a healthy day CI fetches nothing. A
+    # fallback that never executes is a fallback nobody knows is broken, so
+    # these two runs exercise the whole CI path (Playwright, portal RPC, push,
+    # CMDV2 dispatch) on a schedule instead of first discovering it rotted
+    # during an actual Pi outage. Was '0 * * * *' when CI was primary.
+    - cron: '0 */12 * * *'
   workflow_dispatch:          # manual trigger from GitHub UI, or the CF dispatcher
     inputs:
       force:

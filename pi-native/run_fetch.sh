@@ -134,25 +134,32 @@ if ! git pull --rebase origin main; then
   exit 1
 fi
 
-# ─── Standby gate ────────────────────────────────────────────────────────────
-# The Pi is a BACKUP, not a second primary (user's call, 2026-08-31). Before
-# this gate it fetched unconditionally every 5 min, landing commits 10-20
-# SECONDS apart from GitHub Actions' own — identical work, twice: double load
-# on a GAS backend that's known to degrade under repeated requests, double the
-# CMDV2 dispatches, and constant push races between the two writers.
+# ─── Freshness gate (Pi is PRIMARY) ──────────────────────────────────────────
+# 2026-09-02 role inversion (user's call): the Pi is now the PRIMARY fetch
+# path and GitHub Actions is the automatic fallback. From 2026-08-31 to
+# 2026-09-02 it was the other way round — the Pi held a 20-min standby gate
+# and CI ran ~110 Playwright jobs/day. CMD_CTR is public so those minutes are
+# free today, but at ~12 min/run that is ~40,000 min/month, 20x the private
+# allowance; the Pi does the same work on hardware that is already powered on,
+# and does it faster (persistent CDP Chromium = warm session, vs a cold
+# browser on every CI run).
 #
-# Now: if the data someone already committed is younger than
-# STANDBY_MAX_AGE_MIN, the primary is evidently healthy and this cycle does
-# nothing at all — no portal hit, no commit, no CMDV2 trigger. If the primary
-# stops, data ages past the threshold and the Pi takes over on its own within
-# one cycle of that point, no human involved.
+# This gate is NOT a standby gate any more — it is a duplicate-work guard.
+# STANDBY_MAX_AGE_MIN is now barely above the timer interval, so in normal
+# operation the Pi fetches every cycle. It only skips when something ELSE
+# (the cloud fallback, or a manual run) has just committed fresher data, which
+# stops the two writers racing each other on a push the way they did before.
 #
-# PROOF_RUN_INTERVAL_H exists because a standby that never runs is a standby
-# nobody knows is broken — the classic cold-spare trap. Regardless of how
-# healthy the primary looks, the Pi does one real fetch if it hasn't completed
-# one in that long, so its Chromium/session/network path stays continuously
-# proven rather than being first exercised during an actual outage.
-STANDBY_MAX_AGE_MIN="${STANDBY_MAX_AGE_MIN:-20}"
+# The takeover logic that used to live here now lives on the cloud side, in
+# AP127_NGT_001/dispatcher/worker.js (STALE_TAKEOVER_MIN=35). The two
+# thresholds are deliberately asymmetric — Pi at >= 6 min, cloud at >= 35 min
+# — so the cloud only spends a runner after the Pi has missed ~6 cycles.
+#
+# PROOF_RUN_INTERVAL_H is now vestigial for the primary (a path that runs
+# every 5 min is self-proving) but is kept so that setting
+# STANDBY_MAX_AGE_MIN high still gives you the old standby behaviour with a
+# single env var, should you ever want to hand primary back to CI.
+STANDBY_MAX_AGE_MIN="${STANDBY_MAX_AGE_MIN:-6}"
 PROOF_RUN_INTERVAL_H="${PROOF_RUN_INTERVAL_H:-6}"
 LAST_FETCH_STAMP="${HOME}/.ap127-last-pi-fetch"   # local only — never committed
 
@@ -181,16 +188,16 @@ if [ -f "$LAST_FETCH_STAMP" ]; then
 fi
 
 if [ "$age_min" -lt "$STANDBY_MAX_AGE_MIN" ] && [ "$proof_due" = false ]; then
-  echo "Standing by — data is ${age_min} min old (< ${STANDBY_MAX_AGE_MIN}), primary is healthy."
-  echo "No fetch, no commit, no CMDV2 trigger this cycle."
+  echo "Skipping — data is only ${age_min} min old (< ${STANDBY_MAX_AGE_MIN}); another"
+  echo "writer (cloud fallback or a manual run) just committed. No fetch this cycle."
   exit 0
 fi
 
 if [ "$age_min" -ge "$STANDBY_MAX_AGE_MIN" ]; then
-  echo "TAKING OVER — data is ${age_min} min old (>= ${STANDBY_MAX_AGE_MIN}); primary looks down."
+  echo "Fetching — data is ${age_min} min old (>= ${STANDBY_MAX_AGE_MIN}). Pi is primary."
 else
-  echo "Proof run — primary is healthy (data ${age_min} min old), but the Pi hasn't"
-  echo "fetched in >= ${PROOF_RUN_INTERVAL_H}h; fetching once to keep the standby proven."
+  echo "Proof run — data is only ${age_min} min old, but the Pi hasn't completed a"
+  echo "fetch in >= ${PROOF_RUN_INTERVAL_H}h; fetching once to keep this path proven."
 fi
 # ─────────────────────────────────────────────────────────────────────────────
 
