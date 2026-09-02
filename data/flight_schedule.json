@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-02T02:38:24Z",
+  "fetched_at": "2026-09-02T02:52:16Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -182901,8 +182901,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-126-THAN-1PD0P",
@@ -184716,6 +184716,44 @@
         "condition": "SPIC / XC",
         "type": "DA40TDI",
         "tail": "HS-TPV",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MTJHEG4K",
+        "date": "2026-09-02",
+        "rowIdx": "BK-MTJHEG4K",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": "TESTFLIGHT",
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "11:00",
+        "end": "12:00",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "WACHIRA B.",
+        "instructor": "WUTTHICHAI L.",
+        "batch": "Test Flight",
+        "lesson": "Test Flight",
+        "condition": null,
+        "type": "DA40TDI",
+        "tail": "HS-TPW",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -195560,8 +195598,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -195584,8 +195622,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -195638,8 +195676,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -195686,8 +195724,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -195710,14 +195748,14 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KEVIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -201246,6 +201284,19 @@
       "lesson": "CDGL 12",
       "acType": "DA40CS",
       "acReg": "HS-TVE"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-WATC-PLEDB|02/09/2026 09:29:15",
+      "bookingId": "BK-AP-127-WATC-PLEDB",
+      "date": "2026-09-02",
+      "reason": "Aircraft Trouble",
+      "remarks": "",
+      "instructor": "PREECHA K.",
+      "student": "WATCHARAPONG C.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 42",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPT"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-WATC-UR1VU|01/09/2026 19:16:18",
