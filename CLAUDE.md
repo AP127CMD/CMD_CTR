@@ -18,7 +18,12 @@ This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below 
 - `fetch_schedule.yml`'s own cron is `0 */12 * * *` — an **unguarded cloud proof run**, not a fallback
   cadence. Do not "fix" it back to hourly; a fallback that never runs is one nobody knows is broken.
 - The Pi's gate is no longer a *standby* gate, it's a **duplicate-work guard**: at 6 min against a 5-min
-  timer it fetches every cycle and only skips when another writer just committed.
+  timer it fetches whenever it's free to, and only skips when another writer just committed.
+- **The timer interval is NOT the fetch interval.** The timer fires every 5 min; a real fetch takes
+  **~12 min** (measured 2026-09-02: 10:02:19 → 10:14:27, 18 dates + leave/cancel backfill). `Type=oneshot`
+  means cycles never overlap — the timer re-fires, sees fresh data, and skips. **Effective cadence is a
+  fetch every ~12–18 min**, on par with CI's old ~13 min. Don't read "5-minute timer" as "5-minute data".
+  This is also why 35 min is the cloud threshold: ~2 missed Pi fetches of headroom, not six.
 - **To hand primary back to CI:** raise `STANDBY_MAX_AGE_MIN` on the Pi (one env var in
   `pi-native/.env`) and drop `STALE_TAKEOVER_MIN` in the dispatcher. That's the whole switch.
 - Verify who is fetching: `git log --format='%an %s' -5` — Pi commits are authored

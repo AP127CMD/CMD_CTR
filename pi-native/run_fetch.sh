@@ -153,10 +153,12 @@ fi
 # The takeover logic that used to live here now lives on the cloud side, in
 # AP127_NGT_001/dispatcher/worker.js (STALE_TAKEOVER_MIN=35). The two
 # thresholds are deliberately asymmetric — Pi at >= 6 min, cloud at >= 35 min
-# — so the cloud only spends a runner after the Pi has missed ~6 cycles.
+# — so the cloud only spends a runner after the Pi has missed ~2 real fetches.
+# (The timer is 5 min but a fetch takes ~12 min end-to-end; oneshot means cycles
+# never overlap, they just skip. Effective cadence is a fetch every ~12-18 min.)
 #
-# PROOF_RUN_INTERVAL_H is now vestigial for the primary (a path that runs
-# every 5 min is self-proving) but is kept so that setting
+# PROOF_RUN_INTERVAL_H is now vestigial for the primary (a path that fetches
+# every ~12-18 min is self-proving) but is kept so that setting
 # STANDBY_MAX_AGE_MIN high still gives you the old standby behaviour with a
 # single env var, should you ever want to hand primary back to CI.
 STANDBY_MAX_AGE_MIN="${STANDBY_MAX_AGE_MIN:-6}"
