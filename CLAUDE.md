@@ -1,5 +1,30 @@
 # CMD CTR — Claude Code Context
 
+## ⚠️ Fetch-path roles — READ FIRST (changed 2026-09-02)
+
+**The Orange Pi Zero 2W is the PRIMARY scraper. GitHub Actions is the automatic fallback.**
+This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below describing CI as
+"the primary fetch path again" are historical, not current.
+
+| | Threshold | File |
+|---|---|---|
+| Pi fetches when data is ≥ | **6 min** (`STANDBY_MAX_AGE_MIN`) | `pi-native/run_fetch.sh` |
+| Cloud takes over when data is ≥ | **35 min** (`STALE_TAKEOVER_MIN`) | `DB001/dispatcher/worker.js` |
+| Telegram pages when data is ≥ | **60 min** (`DATA_STALE_LIMIT_MIN`) | `CMDV2/watchdog-monitor/src/index.js` |
+
+- The CF dispatcher **no longer dispatches `fetch_schedule.yml` every 5 min** — only on a stale feed.
+  It reads `fetchedAt` with a 600-byte `Range` request against `flight-data-recent.js` and **fails open**
+  (dispatches when the age can't be determined).
+- `fetch_schedule.yml`'s own cron is `0 */12 * * *` — an **unguarded cloud proof run**, not a fallback
+  cadence. Do not "fix" it back to hourly; a fallback that never runs is one nobody knows is broken.
+- The Pi's gate is no longer a *standby* gate, it's a **duplicate-work guard**: at 6 min against a 5-min
+  timer it fetches every cycle and only skips when another writer just committed.
+- **To hand primary back to CI:** raise `STANDBY_MAX_AGE_MIN` on the Pi (one env var in
+  `pi-native/.env`) and drop `STALE_TAKEOVER_MIN` in the dispatcher. That's the whole switch.
+- Verify who is fetching: `git log --format='%an %s' -5` — Pi commits are authored
+  `AP127 Pi` and suffixed `(orangepi-zero2w)`; CI commits are `github-actions[bot]`.
+
+
 ## ⚠️ Update rule — do this after EVERY code change
 1. Bump cache token in `index.html` — next must be `r46`
 2. Update the Verify section below with the new token + change summary
