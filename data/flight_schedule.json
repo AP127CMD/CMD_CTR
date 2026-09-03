@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-03T04:14:53Z",
+  "fetched_at": "2026-09-03T04:39:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -197743,6 +197743,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|03/09/2026 11:02:17",
+      "name": "PATCHARANAN D.",
+      "batch": "AP-126",
+      "start": "2026-09-04",
+      "end": "2026-09-04",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|key|05/08/2026 20:31:03",
       "name": "PICHAKORN J.",
       "batch": "AP-127",
@@ -197901,20 +197912,20 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -197925,8 +197936,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -197937,8 +197948,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -197955,14 +197966,14 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -197979,8 +197990,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -197997,8 +198008,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -198009,14 +198020,14 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -198027,8 +198038,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
@@ -198039,8 +198050,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -198069,22 +198080,22 @@
     {
       "isPartTime": false,
       "name": "KEVIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
     {
       "tail": "HS-TCB",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TCP",
@@ -198101,14 +198112,14 @@
     {
       "tail": "HS-TPG",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPH",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPL",
@@ -198119,8 +198130,8 @@
     {
       "tail": "HS-TPM",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPO",
@@ -198137,8 +198148,8 @@
     {
       "tail": "HS-TPR",
       "acType": "DA40TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPT",
@@ -198179,8 +198190,8 @@
     {
       "tail": "HS-TVB",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVC",
@@ -198203,8 +198214,8 @@
     {
       "tail": "HS-TVF",
       "acType": "DA42NG",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVG",
@@ -198227,8 +198238,8 @@
     {
       "tail": "HS-TZS",
       "acType": "R44",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TZT",
