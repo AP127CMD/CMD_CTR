@@ -475,5 +475,21 @@ source and verifying the diff was scoped to exactly the expected changes before 
 - **GitHub Actions runner IPs got rate-limited/blocked by the Ops Portal (found 2026-07-11, ~1h after the freeze deploy above):** 3 consecutive CI runs returned a "stable empty" result (passed `_fetch_one_date()`'s own consistency check, so not caught as a failure) for every date in the window, and the existing merge logic overwrote real populated schedules with those empty arrays — **actual data loss**, worsening each run (07-10 first, then 07-11 too). Confirmed the portal worked fine from a normal (non-Actions) network at the same moment, so this looks like Google throttling/blocking the Actions runner IP pool specifically, not a real outage. **Fix:** a regression guard in `main()`'s merge step — a date whose existing count is ≥5 but whose fresh count drops below 20% of that is treated as a suspected bad response and keeps its existing data, surfaced as a warning via the same `schema-drift` GitHub-issue mechanism. Also had to manually restore `data/flight_schedule.json` from git history (the 3 bad runs had already committed wiped data before this landed) — **watch for this again**: if `git log -- data/flight_schedule.json` ever shows a commit with a large unexplained *decrease* in total flight count, that's this failure mode, not a real schedule change. **Recurred 2026-07-16** (ongoing at time of writing): every CI run gets stable-empty responses for PAST dates in the window (07-10→07-15, sometimes the whole window) while today/future dates fetch fine; the regression guard is containing it (no data loss, warnings on issue #3), but past dates' statuses/actuals don't refresh from CI — a fetch from a normal network works fine and can backfill them manually.
 - **`git rebase` inverts ours/theirs vs. a normal merge** — learned the hard way twice in one session. During `rebase`, `--ours` = the commit being rebased **onto** (usually `origin/main`'s latest auto-commit), `--theirs` = **your own** commit being replayed. This is the opposite of `git merge`. When resolving a conflict on `data/flight_schedule.json`/`flight-data.js` against a routine `chore: update flight data` auto-commit, you almost always want to keep your own (larger/more deliberate) change — that means `git checkout --theirs <file>` during a rebase, not `--ours`.
 
+- **The Pi is shared hardware now — it also runs a CUPS AirPrint server (2026-09-03).** The Orange Pi
+  Zero 2W that runs `pi-native/` also shares a USB Canon PIXMA E410 to Apple devices via CUPS. Two
+  consequences for anyone working on the fetch pipeline:
+  - **The board's boot config was changed.** Its USB-C data port ships as `dr_mode = "peripheral"` with
+    the companion EHCI/OHCI disabled, so a custom H616 device-tree overlay was added
+    (`/boot/overlay-user/usb-otg-host.dtbo`, enabled via `user_overlays=` in `/boot/dietpiEnv.txt`).
+    A kernel upgrade that drops that overlay kills USB on the board silently — no error explains it.
+  - **Install one package group at a time.** A single `apt-get update && apt-get install` run alongside
+    the persistent headless Chromium **crash-rebooted the board** (watchdog/brownout, 1 GB RAM) and
+    installed nothing; `/var/log` is RAMlog so the apt history was lost with it. This is a property of
+    the board under load, not of printing.
+  - Cost to this pipeline: `cupsd` idles at ~15 MB, and a rasterizing print job may briefly slow one
+    scrape cycle — absorbed by the existing freshness thresholds and the ≥35 min cloud takeover.
+  - Full detail (queue name, driver, device URI, admin URL) is in **AP127_Docs §5.4** — deliberately not
+    repeated here, since this repo is public.
+
 ## Master reference
 Full architecture, deploy steps, secrets: https://ap127-docs.pages.dev  (§2.1)
