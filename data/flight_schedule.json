@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-03T01:40:11Z",
+  "fetched_at": "2026-09-03T02:01:10Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -184467,12 +184467,12 @@
         "date": "2026-09-02",
         "rowIdx": "BK-HP-57-POON-GC6KE",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "18:10",
@@ -184488,15 +184488,15 @@
         "condition": "XC / Night",
         "type": "R44",
         "tail": "HS-TZT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44",
+        "tkoff": "18:10",
+        "ldgTime": "19:10",
+        "airborne": "01:00",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "18:10",
+        "blockOn": "19:10",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -184505,12 +184505,12 @@
         "date": "2026-09-02",
         "rowIdx": "BK-HP-57-POON-XOAY1",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "19:20",
@@ -184526,15 +184526,15 @@
         "condition": "XC / Night",
         "type": "R44",
         "tail": "HS-TZT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44",
+        "tkoff": "19:20",
+        "ldgTime": "20:20",
+        "airborne": "01:00",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "19:20",
+        "blockOn": "20:20",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -185001,12 +185001,12 @@
         "date": "2026-09-03",
         "rowIdx": "BK-AP-126-PREM-O4N43",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -185022,15 +185022,15 @@
         "condition": "ME",
         "type": "DA42TDI",
         "tail": "HS-TPL",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42TDI",
+        "tkoff": "06:34",
+        "ldgTime": "07:55",
+        "airborne": "01:21",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "06:27",
+        "blockOn": "07:58",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -185381,7 +185381,7 @@
         "date": "2026-09-03",
         "rowIdx": "BK-AP-129-TUPP-WUPUM",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -185411,8 +185411,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Aircraft not available due to trouble from previous day"
       },
       {
         "id": "BK-AP-126-PATT-SLTBM",
@@ -197847,20 +197847,20 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -197877,14 +197877,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -197925,14 +197925,14 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -197943,8 +197943,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -197961,8 +197961,8 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -198003,8 +198003,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -203643,6 +203643,19 @@
       "lesson": "CSPXV 42",
       "acType": "DA40TDI",
       "acReg": "HS-TPX"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-TUPP-WUPUM|03/09/2026 08:50:43",
+      "bookingId": "BK-AP-129-TUPP-WUPUM",
+      "date": "2026-09-03",
+      "reason": "Aircraft Trouble",
+      "remarks": "Aircraft not available due to trouble from previous day",
+      "instructor": "PHAHOLYUTH P.",
+      "student": "TUPPAWAT S.",
+      "batch": "AP-129",
+      "lesson": "CDIL 17",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPU"
     }
   ],
   "_regressionStreaks": {}
