@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-04T10:17:19Z",
+  "fetched_at": "2026-09-04T10:28:00Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -188613,12 +188613,12 @@
         "date": "2026-09-04",
         "rowIdx": "BK-AP-126-NATT-FKL49",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "16:00",
@@ -188634,15 +188634,15 @@
         "condition": "ME",
         "type": "DA42TDI",
         "tail": "HS-TPQ",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA42TDI",
+        "tkoff": "16:34",
+        "ldgTime": "16:50",
+        "airborne": "00:16",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "16:26",
+        "blockOn": "16:56",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -201941,14 +201941,20 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "KITTICHAI C.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -201989,8 +201995,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -202067,8 +202073,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -202079,8 +202085,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -202108,9 +202114,15 @@
     },
     {
       "isPartTime": false,
-      "name": "NANTAWAT D.",
+      "name": "KEVIN T.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NANTAWAT D.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
