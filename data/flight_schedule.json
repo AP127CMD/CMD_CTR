@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-05T05:44:38Z",
+  "fetched_at": "2026-09-05T05:53:27Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -190325,12 +190325,12 @@
         "date": "2026-09-05",
         "rowIdx": "BK-AP-127-VASA-662N0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:00",
@@ -190346,15 +190346,15 @@
         "condition": "XC",
         "type": "DA40CS",
         "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "10:13",
+        "ldgTime": "11:55",
+        "airborne": "01:42",
+        "ldg": 4,
+        "to": 4,
+        "inst": 0,
+        "blockOff": "10:00",
+        "blockOn": "12:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -190525,8 +190525,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:30",
-        "end": "12:00",
+        "start": "06:30",
+        "end": "08:00",
         "duration": "01:30",
         "durationMin": 90,
         "planDur": null,
@@ -190537,7 +190537,7 @@
         "lesson": "CMDXV 94",
         "condition": "XC / ME",
         "type": "DA42TDI",
-        "tail": "HS-TPQ",
+        "tail": "HS-TCP",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -190563,8 +190563,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "08:00",
+        "start": "07:00",
+        "end": "08:30",
         "duration": "01:30",
         "durationMin": 90,
         "planDur": null,
@@ -190614,44 +190614,6 @@
         "condition": "Solo / XC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
-        "id": "BK-AP-126-PARA-MASHY",
-        "date": "2026-09-06",
-        "rowIdx": "BK-AP-126-PARA-MASHY",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "08:00",
-        "end": "10:00",
-        "duration": "02:00",
-        "durationMin": 120,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "PARAMUTT C.",
-        "instructor": "THAWATANAN P.",
-        "batch": "AP-126",
-        "lesson": "CMSPXI 95",
-        "condition": "SPIC / XC / IR / ME",
-        "type": "DA42TDI",
-        "tail": "HS-TPQ",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -191057,8 +191019,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "08:30",
+        "start": "09:00",
+        "end": "11:00",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
@@ -191069,7 +191031,7 @@
         "lesson": "CMSPXIC 96",
         "condition": "SPIC / XC / IR / ME",
         "type": "DA42TDI",
-        "tail": "HS-TCP",
+        "tail": "HS-TPQ",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -191385,6 +191347,45 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-AP-126-PARA-MASHY",
+        "date": "2026-09-06",
+        "rowIdx": "BK-AP-126-PARA-MASHY",
+        "realRowIdx": null,
+        "status": "Canceled",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "08:10",
+        "end": "10:10",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "PARAMUTT C.",
+        "instructor": "SANTI PO.",
+        "batch": "AP-126",
+        "lesson": "CMSPXI 95",
+        "condition": "SPIC / XC / IR / ME",
+        "type": "DA42TDI",
+        "tail": "HS-TPQ",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null,
+        "recovered": true
       }
     ],
     "2026-09-07": [],
@@ -202410,6 +202411,12 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "KITTICHAI C.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
@@ -202434,8 +202441,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -202458,14 +202465,14 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -202500,8 +202507,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -202512,8 +202519,8 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -202554,14 +202561,14 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KEVIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
