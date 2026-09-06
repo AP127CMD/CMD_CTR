@@ -3,7 +3,7 @@ import { upstreamFor, isAllowedKey, contentTypeFor, wantsFresh, parseRange } fro
 const CACHE_CONTROL = 'public, max-age=60, stale-while-revalidate=240';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
   'Access-Control-Allow-Headers': 'Cache-Control, If-None-Match, Range',
 };
 
@@ -17,6 +17,7 @@ function edgeCache() {
 
 async function handleGet(key, request, ctx) {
   const upstream = upstreamFor(key);
+  const isHead = request.method === 'HEAD';
   const fresh = wantsFresh(request.headers.get('Cache-Control'));
   const range = request.headers.get('Range');
   const rangeSpec = parseRange(range);
@@ -60,11 +61,11 @@ async function handleGet(key, request, ctx) {
   if (up.status === 206) {
     const cr = up.headers.get('Content-Range');
     if (cr) headers['Content-Range'] = cr;
-    return new Response(up.body, { status: 206, headers });
+    return new Response(isHead ? null : up.body, { status: 206, headers });
   }
 
-  const res = new Response(up.body, { status: 200, headers });
-  if (cache && !fresh && ctx && ctx.waitUntil) {
+  const res = new Response(isHead ? null : up.body, { status: 200, headers });
+  if (cache && !fresh && !isHead && ctx && ctx.waitUntil) {
     ctx.waitUntil(cache.put(request, res.clone()));
   }
   return res;
@@ -75,7 +76,7 @@ export default {
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS });
     }
-    if (request.method !== 'GET') {
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response('Method not allowed', { status: 405, headers: CORS });
     }
     const key = keyFromPath(new URL(request.url).pathname);

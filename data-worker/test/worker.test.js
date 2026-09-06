@@ -100,6 +100,15 @@ describe('GET', () => {
   });
 });
 
+describe('HEAD', () => {
+  it('200, headers, empty body', async () => {
+    const res = await worker.fetch(req('HEAD', '/flight-data.js'), {}, {});
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toBe('application/javascript; charset=utf-8');
+    expect(await res.text()).toBe('');
+  });
+});
+
 describe('other methods', () => {
   it('405 for PUT (no writes in the proxy design)', async () => {
     const res = await worker.fetch(req('PUT', '/flight-data.js', { body: 'x' }), {}, {});
