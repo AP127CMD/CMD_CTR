@@ -253,9 +253,23 @@ Settings → Build → Build watch paths → **Exclude paths**:
   rise ~288/day → ~720/day (vs 100,000/day free). Per-invocation CPU is unchanged (still reads
   the small `flight-data-recent.js`, still short-circuits on unchanged `extractFeedSig`).
 
+### 4.7 DB001 cache refresh: */5 → */15
+
+`AP127_NGT_001/dispatcher/worker.js` `scheduled()` runs every 5 min (`*/5` cron) and
+*unconditionally* dispatches `DB001/update-cache.yml` on every tick — 288 GitHub Actions runs/day
+for a cache that only needs to track flight-data freshness (~12–18 min today, ~3–5 min after
+Phase 2). After decoupling this is no longer a Pages-build cost, but it is wasted CI churn.
+
+- Gate the DB001 dispatch on the tick time: dispatch only when
+  `new Date(event.scheduledTime).getUTCMinutes() % 15 === 0` (fires at :00/:15/:30/:45).
+- The dispatcher's own 5-min cron and its CMD_CTR stale-check are **unchanged** — only the DB001
+  target is spaced out.
+- `update-cache.yml`'s own `0 * * * *` fallback cron stays as the safety net.
+- Result: DB001 cache refreshes every 15 min (~96 runs/day, down from 288).
+
 **Phase 1 result:** portal change → Pi scrape (≤ ~18 min, unchanged in Phase 1) → commit + R2
 PUT + `/notify` → Telegram within **seconds**. The ~5 min poll wait is gone. Pages builds
-flatline. Fetch cadence has no metered ceiling.
+flatline. Fetch cadence has no metered ceiling. DB001 CI churn drops to a third.
 
 ---
 
@@ -299,7 +313,7 @@ After Phase 1 the dominant latency is the **~12 min serial scrape**. Phase 2 par
 |---|---|---|---|
 | Pi timer interval | 5 min | 3 min | `ap127-fetch.timer` |
 | Pi duplicate-work guard | 6 min | 3 min | `run_fetch.sh` `STANDBY_MAX_AGE_MIN` |
-| Cloud takeover | 35 min | **unchanged** | `DB001/dispatcher/worker.js` `STALE_TAKEOVER_MIN` |
+| Cloud takeover | 35 min | **unchanged** | `AP127_NGT_001/dispatcher/worker.js` `STALE_TAKEOVER_MIN` |
 | Telegram staleness page | 60 min | **unchanged** | `ap127-watchdog-monitor` `DATA_STALE_LIMIT_MIN` |
 | Watchdog cron backstop | 5 min | 2 min (Phase 1) | watchdog `wrangler.toml` |
 
@@ -320,10 +334,11 @@ new faster cadence — widening the margin, not shrinking it.
 6. Repoint the remaining browser consumers and the backend Workers; delete `AP127_V2/flight-data.js`;
    trim `refresh_snapshots.mjs`.
 7. Add the watchdog `POST /notify` endpoint + callers; tighten its cron to `*/2`.
-8. Set build watch paths on all three Pages projects.
-9. **Soak 48 h:** CF API deployment count per project flatlines to ~0; feed stays fresh;
-   watchdog + dispatcher error-free; Telegram latency measured in seconds after a Pi commit.
-10. **Phase 2:** implement §5.1 behind `FETCH_RPC_CONCURRENCY=1`; test at `4` for several
+8. Gate the dispatcher's DB001 target to */15 (§4.7); redeploy the dispatcher.
+9. Set build watch paths on all three Pages projects.
+10. **Soak 48 h:** CF API deployment count per project flatlines to ~0; feed stays fresh;
+    watchdog + dispatcher error-free; Telegram latency measured in seconds after a Pi commit.
+11. **Phase 2:** implement §5.1 behind `FETCH_RPC_CONCURRENCY=1`; test at `4` for several
     cycles with output diffing; then flip the timer + `STANDBY_MAX_AGE_MIN`; monitor
     bot-detection for a week.
 
@@ -358,6 +373,5 @@ new faster cadence — widening the margin, not shrinking it.
   dashboard-only.
 - Confirm the watchdog's `WATCHDOG_API_KEY` is the right gate for `/notify` (vs. a dedicated
   key) — reuse unless there is a reason to separate.
-- DB001 `update-cache.yml` is driven by the dispatcher every 5 min; after decoupling this is no
-  longer a build cost, but dropping it to */15 would cut ~200 GH Actions runs/day for a cache
-  that only needs to track flight-data freshness. Optional, not required by this spec.
+- Confirm the dispatcher's `event.scheduledTime` lands on exact 5-min boundaries (it should) so
+  the `% 15 === 0` gate in §4.7 fires cleanly; if drift is observed, switch to a KV tick counter.
