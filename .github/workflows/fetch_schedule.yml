@@ -187,7 +187,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No data changes — skipping commit."
           else
-            git commit -m "chore: update flight data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git commit -m "chore: update flight data $(date -u +%Y-%m-%dT%H:%M:%SZ) [CI Skip]"
             for attempt in 1 2 3 4 5; do
               if git push origin main; then
                 echo "Pushed on attempt $attempt"; break

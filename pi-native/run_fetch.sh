@@ -226,7 +226,7 @@ if git diff --cached --quiet; then
   exit 0
 fi
 
-git commit -m "chore: update flight data $(date -u +%Y-%m-%dT%H:%M:%SZ) (orangepi-zero2w)"
+git commit -m "chore: update flight data $(date -u +%Y-%m-%dT%H:%M:%SZ) (orangepi-zero2w) [CI Skip]"
 
 pushed=false
 for attempt in 1 2 3 4 5; do
