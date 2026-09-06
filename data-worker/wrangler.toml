@@ -1,0 +1,9 @@
+name = "ap127-data"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# R2-backed static server for the AP127 flight-data plane. See
+# ../docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "ap127-data"
