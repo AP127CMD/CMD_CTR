@@ -217,27 +217,32 @@ made every run fail `Upstream HTTP 404`. So:
 - Delete `AP127_V2/flight-data.js` from the CMDV2 repo (no longer mirrored; the browser reads it
   from the Worker at runtime).
 - `refresh-data.yml`'s `git add` drops `flight-data.js` (keeps `progress-data.js` / `ngt-data.js`).
-- `refresh-data.yml` keeps running on its hourly cron for `progress-data.js` / `ngt-data.js`
-  only. Those commits are covered by build watch paths (§4.5).
+- `refresh-data.yml` keeps its hourly cron but its commits carry `[CI Skip]` (§4.5), so the
+  committed `progress-data.js` / `ngt-data.js` snapshots ship to the deploy on real code pushes
+  rather than hourly. They are runtime-fetched fallbacks, so a stale committed copy is low-risk.
 
-### 4.5 Pages build watch paths (dashboard, one-time)
+### 4.5 Stop the Pages builds — `[CI Skip]` in data commit messages
 
-Settings → Build → Build watch paths → **Exclude paths**:
+Build watch paths turned out to be **dashboard-only** (`PATCH …/pages/projects/{name}` accepts
+`path_excludes` with `success:true` but silently drops it). Instead, every data-commit message
+gets a trailing **`[CI Skip]`** token, which Cloudflare Pages recognises and skips the build
+(deployment status `idle`, does not count against the 500/mo). Verified live 2026-09-06 on both
+`ap127-db001` and `ap127-cmd-ctr`.
 
-| Project | Exclude paths |
+| Commit site | New message tail |
 |---|---|
-| `ap127-cmd-ctr` | `flight-data.js`, `flight-data-recent.js`, `data/*` |
-| `ap127-ngt2` | `flight-data.js`, `flight-data-recent.js`, `progress-data.js`, `ngt-data.js` |
-| `ap127-db001` | `cache.json`, `student.html` |
+| `pi-native/run_fetch.sh` | `…update flight data <ts> (orangepi-zero2w) [CI Skip]` |
+| `.github/workflows/fetch_schedule.yml` (Commit updated data) | `…update flight data <ts> [CI Skip]` |
+| `AP127_V2/.github/workflows/refresh-data.yml` | `…refresh data snapshots <ts> [CI Skip]` |
+| `AP127_NGT_001/.github/workflows/update-cache.yml` | `…update cache.json [<ts>] [CI Skip]` |
 
-- Semantics: exclude rules evaluated first; a push whose changed files are *all* excluded →
-  build skipped, does not count against the 500/mo.
-- Known Cloudflare override: a build fires regardless when a push has **0** file changes, **20+
-  commits**, or **3000+ files changed**. The Pi's rebase-retry loop can in principle bundle
-  many commits after a long outage — rare, and a handful of extra builds/month is immaterial.
-- Implementation will first attempt `PATCH /accounts/{acc}/pages/projects/{name}` with the
-  `build_config` `path_includes` / `path_excludes` fields; if the API rejects them, this is a
-  ~2-min manual dashboard task per project with the exact values above.
+- Cloudflare checks the **head commit** of the push. The Pi/CI rebase-retry loops replay the
+  original `[CI Skip]` commit, so it stays the head.
+- **No GitHub workflow is push-triggered by any of these commits** (all the data workflows are
+  `schedule`/`workflow_dispatch`; only DB001's `deploy-dispatcher.yml` is push-triggered, on
+  `dispatcher/**`), so `[CI Skip]` only ever affects the Pages build.
+- A real code push must NOT contain `[CI Skip]` in its message — then it builds and deploys
+  normally, shipping whatever the current data files are.
 
 ### 4.6 Watchdog push endpoint (kills the poll wait)
 
@@ -344,7 +349,7 @@ new faster cadence — widening the margin, not shrinking it.
 5. Repoint the backend Workers (`watchdog` `FLIGHT_SRC`, `dispatcher` feed URL); deploy both.
 6. Add the watchdog `POST /notify` endpoint + Pi/CI callers; tighten its cron to `*/2`; deploy.
 7. Gate the dispatcher's DB001 target to */15 (§4.7); push (auto-deploys).
-8. Set build watch paths on all three Pages projects.
+8. Add `[CI Skip]` to the four data-commit messages (§4.5); push.
 9. **Soak 48 h:** CF API deployment count per project flatlines to ~0; feed stays fresh via the
    Worker; watchdog + dispatcher error-free; Telegram latency in seconds after a Pi commit.
 10. **Phase 2:** implement §5.1 behind `FETCH_RPC_CONCURRENCY=1`; test at `4` for several cycles
@@ -355,7 +360,7 @@ new faster cadence — widening the margin, not shrinking it.
 
 - **Browser:** revert the one-line `<script src>` changes (Git) and re-run a real build. Sites
   are back on the bundled `flight-data.js`.
-- **Build watch paths:** clear the exclude lists in the dashboard; builds resume immediately.
+- **`[CI Skip]`:** remove the token from the four commit-message strings; data commits build again.
 - **Backend Workers:** revert `FLIGHT_SRC` / feed URL to `raw.githubusercontent.com`; redeploy.
 - **Watchdog:** remove `/notify` callers; restore `*/5` cron.
 - **Phase 2:** `FETCH_RPC_CONCURRENCY=1` restores serial scraping; revert the timer /
@@ -366,10 +371,10 @@ new faster cadence — widening the margin, not shrinking it.
 ## 8. Documentation updates (per the AP127 universal update rule)
 
 - `flight-schedule-feed/CLAUDE.md` — new "Data plane" section: the Worker URL, the proxy model
-  (raw.github, `no-cache` bypass), build-watch-paths config, the `/notify` push, the Phase-2
+  (raw.github, `no-cache` bypass), the `[CI Skip]` mechanism, the `/notify` push, the Phase-2
   cadence knobs. Update the fetch-roles table.
 - `AP127_V2/CLAUDE.md`, `AP127_NGT_001/CLAUDE.md` — note the feed source is now the `ap127-data`
-  Worker; note build watch paths.
+  Worker; note the `[CI Skip]` mechanism.
 - `AP127_Docs/README.md` — §2.1 / §2.2 / §2.4 architecture + §10 dated log entry; deploy the
   docs site.
 - `pi-native/README.md` — the new `WATCHDOG_NOTIFY_KEY` env key, the `/notify` call, the Phase-2
@@ -394,5 +399,4 @@ new faster cadence — widening the margin, not shrinking it.
 
 ## Still open
 
-- Whether build watch paths are settable via the CF API (`build_config.path_excludes`) or are
-  dashboard-only.
+- (none)
