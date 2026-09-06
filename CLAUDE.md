@@ -20,8 +20,14 @@ stateless proxy in `data-worker/` that re-serves the git-committed data files fr
   change reaches Telegram in seconds instead of on the watchdog's `*/2` cron.
 - Full design + rollout: `docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md`,
   `docs/superpowers/plans/2026-09-06-r2-data-plane-decoupling.md`.
-- **Phase 2 (not yet done):** parallelise the per-date RPC (`FETCH_RPC_CONCURRENCY`), then drop
-  the Pi timer to 3 min + `STANDBY_MAX_AGE_MIN` to 3.
+- **Phase 2 (LIVE 2026-09-06):** the per-date `getStudentSchedule` loop runs
+  `FETCH_RPC_CONCURRENCY` (default 4) dates at once — `_gather_dates_bounded()` + a FIFO
+  semaphore; `=1` is exact serial. The Pi's `.env` sets it to 4. The Pi timer is `3min`
+  (`pi-native/ap127-fetch.timer`) and `STANDBY_MAX_AGE_MIN` default is `3`. Full window went
+  ~7.5 min → ~3 min; effective cadence ~3–6 min. Verified live: concurrency 1 and 4 both produce
+  byte-identical output (404/18 dates, 6117 total). **Revert if Google bot-detection reacts:**
+  `FETCH_RPC_CONCURRENCY=1` in `pi-native/.env`, and/or `OnUnitActiveSec=5min` +
+  `STANDBY_MAX_AGE_MIN=6` — each independent.
 
 ## ⚠️ Fetch-path roles — READ FIRST (changed 2026-09-02)
 

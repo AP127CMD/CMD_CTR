@@ -1,11 +1,21 @@
 # AP127 fetch pipeline — Orange Pi Zero 2W (native) deployment
 
 **Status as of 2026-08-29: DEPLOYED and verified live.** Running 24/7 on a
-DietPi Orange Pi Zero 2W, hostname `DietPi`, currently `192.168.1.123`
-(DHCP-reserved on the router). `ap127-fetch.timer` fires every 5 min; verified
-end-to-end: real fetches (280 flights / 18 dates) committed + pushed to
-`AP127CMD/CMD_CTR`, CMDV2 `refresh-data.yml` dispatched, both Pages sites
-picking up the new `fetchedAt`.
+DietPi Orange Pi Zero 2W, hostname `DietPi`. `ap127-fetch.timer` fires every
+5 min; verified end-to-end.
+
+> **2026-09-06 changes (see `docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md`):**
+> - **Timer → `3min`**, `STANDBY_MAX_AGE_MIN` default → **`3`**. The per-date
+>   RPC loop now runs `FETCH_RPC_CONCURRENCY` (default 4, set in `.env`) dates at
+>   once, so a full window is ~3 min not ~12. Effective cadence ~3–6 min.
+>   Revert if Google bot-detection reacts: `FETCH_RPC_CONCURRENCY=1` and/or
+>   `OnUnitActiveSec=5min` + `STANDBY_MAX_AGE_MIN=6` — each independent.
+> - **New `.env` key `WATCHDOG_NOTIFY_KEY`** (= the `ap127-watchdog` Worker's
+>   `NOTIFY_KEY` secret). `run_fetch.sh` `POST`s the watchdog's `/notify` after a
+>   publish so a schedule change reaches Telegram in seconds. Optional — without
+>   it the watchdog still catches changes on its `*/2` cron.
+> - Data commits now carry **`[CI Skip]`** so Cloudflare Pages skips the build.
+>   The browser loads `flight-data.js` from the `ap127-data` Worker.
 
 **UPDATE 2026-08-31 — the Pi is now a TRUE STANDBY, not a second primary.**
 It was fetching unconditionally every 5 min and landing commits 10-20 *seconds*

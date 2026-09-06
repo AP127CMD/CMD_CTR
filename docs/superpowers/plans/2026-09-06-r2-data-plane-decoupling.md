@@ -38,7 +38,14 @@
 | Dispatcher DB001 → */15 | Deployed. Verified live: dispatched at :15, skipped :05/:10; DB001 update-cache runs now 15 min apart. |
 | Docs | CLAUDE.md ×3 + `/Users/nugui/CLAUDE.md` + spec + this plan + `AP127_Docs` §10 — done. |
 
-**Remaining:** `pi-native/README.md` touch-up · 48 h soak watch · **Phase 2** (below).
+### PHASE 2 SHIPPED (2026-09-06)
+
+| Piece | State |
+|---|---|
+| Task 9 — parallel per-date RPC | `_gather_dates_bounded()` + FIFO semaphore + `_fetch_one_date_with_retry()`. `FETCH_RPC_CONCURRENCY` (default 4, `=1` exact serial). 13 tests. **Verified live on the Pi: concurrency 1 and 4 both → byte-identical output (404 flights/18 dates, 6117 total), full window ~7.5 min → ~3 min.** |
+| Task 10 — 3-min cadence | Pi `ap127-fetch.timer` `OnUnitActiveSec=3min` deployed (`/etc/systemd/system/`, daemon-reloaded). `STANDBY_MAX_AGE_MIN` default `3` (gate verified skipping at 2 min old). Pi `.env` holds `FETCH_RPC_CONCURRENCY=4`. |
+
+**Remaining:** watch the 3-min cadence for Google bot-detection over the next day (`userHtmlFrame never appeared` / session-expired / RPC failures — none so far); the Mac Pi monitor + the `fetch-failure-pi` issue mechanism cover this. Both knobs revert with one line each.
 
 ---
 
