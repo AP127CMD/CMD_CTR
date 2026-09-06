@@ -1,5 +1,28 @@
 # CMD CTR — Claude Code Context
 
+## ⚠️ Data plane — READ FIRST (2026-09-06)
+
+**The browser no longer loads `flight-data.js` from the Pages deploy — it loads it from the
+`ap127-data` Worker** (`https://ap127-data.anusorn-tanmetha.workers.dev/flight-data.js`), a
+stateless proxy in `data-worker/` that re-serves the git-committed data files from
+`raw.githubusercontent.com` with a JS `Content-Type` + 60 s edge cache. Redeploy it with
+`cd data-worker && npx wrangler deploy` (not git-integrated).
+
+- **Data commits still happen** (`data/flight_schedule.json`, `flight-data*.js`, etc., every
+  cycle — history + shared state intact) but every data-commit message ends with **`[CI Skip]`**,
+  which makes Cloudflare Pages skip the build (status `idle`, doesn't count against the 500/mo
+  free cap). A real code push must NOT contain `[CI Skip]` or it won't deploy.
+- **Backend Workers (`watchdog`, `dispatcher`) still read `raw.githubusercontent.com` directly**
+  — a Worker can't fetch a same-account `*.workers.dev` URL (CF 1042). The `ap127-data` Worker is
+  for browsers + GitHub-Actions consumers only.
+- `run_fetch.sh` and `fetch_schedule.yml` `POST` to the watchdog's `/notify` (key
+  `WATCHDOG_NOTIFY_KEY` = the watchdog's `NOTIFY_KEY` secret) after a publish, so a schedule
+  change reaches Telegram in seconds instead of on the watchdog's `*/2` cron.
+- Full design + rollout: `docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md`,
+  `docs/superpowers/plans/2026-09-06-r2-data-plane-decoupling.md`.
+- **Phase 2 (not yet done):** parallelise the per-date RPC (`FETCH_RPC_CONCURRENCY`), then drop
+  the Pi timer to 3 min + `STANDBY_MAX_AGE_MIN` to 3.
+
 ## ⚠️ Fetch-path roles — READ FIRST (changed 2026-09-02)
 
 **The Orange Pi Zero 2W is the PRIMARY scraper. GitHub Actions is the automatic fallback.**
@@ -46,7 +69,12 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r45` (2026-08-31 — **meetings/ground school excluded
+**Last known:** token = `r46` (2026-09-06 — **`index.html` loads `flight-data.js`
+from the `ap127-data` Worker instead of the local file** (r46 — token bumped, all
+10 `?v=r45` → `?v=r46`). Part of the data-plane decoupling — see the "Data plane"
+section at the top of this file. Data commits now carry `[CI Skip]` so they no
+longer trigger Pages builds; the Worker serves the data. Next → `r47`.)
+(2026-08-31 — **meetings/ground school excluded
 from flight hours** (r45 — token BUMPED, view code changed). User: "Yes, exclude
 Ground School and Meeting from flight hours." The portal schedules them in the
 same feed as flights, each with a real `durMin` and no aircraft. Source side:
