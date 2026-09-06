@@ -60,7 +60,7 @@ This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below 
 
 
 ## ⚠️ Update rule — do this after EVERY code change
-1. Bump cache token in `index.html` — next must be `r46`
+1. Bump cache token in `index.html` — next must be `r48`
 2. Update the Verify section below with the new token + change summary
 3. Update `/Users/nugui/AP127_Docs/README.md` §2.1 (add to §10 log) — then push AP127_Docs
 4. `git add . && git commit -m "rNN: <what changed>" && git pull --rebase && git push`
@@ -75,11 +75,17 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r46` (2026-09-06 — **`index.html` loads `flight-data.js`
+**Last known:** token = `r47` (2026-09-06 — **ASF cache URL → the `ap127-data`
+Worker** (r47). `js/view-autoslotfinder.js` `ASF_CACHE_URL` was
+`ap127-db001.pages.dev/cache.json`, which is now `[CI Skip]`-frozen in DB001's
+Pages deploy — repointed to `ap127-data.anusorn-tanmetha.workers.dev/cache.json`
+(always fresh, proxies raw.github). Same one-line fix shipped to CMDV2 as `p203`.
+Next → `r48`.)
+(2026-09-06 — **`index.html` loads `flight-data.js`
 from the `ap127-data` Worker instead of the local file** (r46 — token bumped, all
 10 `?v=r45` → `?v=r46`). Part of the data-plane decoupling — see the "Data plane"
 section at the top of this file. Data commits now carry `[CI Skip]` so they no
-longer trigger Pages builds; the Worker serves the data. Next → `r47`.)
+longer trigger Pages builds; the Worker serves the data.)
 (2026-08-31 — **meetings/ground school excluded
 from flight hours** (r45 — token BUMPED, view code changed). User: "Yes, exclude
 Ground School and Meeting from flight hours." The portal schedules them in the
