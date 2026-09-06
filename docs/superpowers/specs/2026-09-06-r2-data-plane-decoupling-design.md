@@ -115,8 +115,8 @@ data is already committed to git every cycle; the Worker just re-serves it with 
                                     browser <script src>           DB_Share /mirror proxy
                                     CMD_CTR + CMDV2 pages           (routes data files here)
 
-   Git commits still happen (history + shared state) but Pages "build watch
-   paths" exclude the data files, so no rebuild fires.
+   Git commits still happen (history + shared state) but every data-commit
+   message carries [CI Skip], so Cloudflare Pages skips the build.
 ```
 
 Two phases. **Phase 1** is low-risk and delivers the quota fix plus most of the latency win.
