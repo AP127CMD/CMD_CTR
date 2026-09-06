@@ -522,6 +522,14 @@ async def _return_to_home(page, user_frame, max_clicks=4):
 
 DATE_FETCH_ATTEMPTS = int(os.environ.get("FETCH_DATE_ATTEMPTS", "3"))
 
+# Phase 2 (2026-09-06): how many per-date getStudentSchedule RPCs to run at
+# once. `1` is exactly the old serial behaviour. The per-date `bad_dates`
+# guard in _fetch_schedule_for_date() + the retry loop + main()'s merge-step
+# regression guard all still apply per date, so a degraded response under
+# concurrent load is caught and retried, never silently merged. Keep this
+# modest — the upstream GAS server degrades under heavy back-to-back load.
+FETCH_RPC_CONCURRENCY = int(os.environ.get("FETCH_RPC_CONCURRENCY", "4"))
+
 
 def _load_frozen_archive():
     """Dates the OLD portal already fully resolved (see FROZEN_ARCHIVE_FILE
@@ -595,6 +603,43 @@ async def _fetch_schedule_for_date(user_frame, date_str, timeout_s=None):
             f"getStudentSchedule({date_str!r}) returned mismatched date(s): {sorted(bad_dates, key=str)!r}"
         )
     return flights
+
+
+async def _fetch_one_date_with_retry(user_frame, date_str):
+    """Per-date retry wrapper. Returns ``(date_str, flights)`` on success or
+    ``(date_str, None)`` after DATE_FETCH_ATTEMPTS failures. Never raises, so it
+    is safe to run many of these under asyncio.gather()."""
+    last_err = None
+    for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
+        try:
+            flights = await _fetch_schedule_for_date(user_frame, date_str)
+            print(f"  {date_str}: {len(flights)} flights"
+                  + (f" (attempt {attempt})" if attempt > 1 else ""))
+            return date_str, flights
+        except Exception as exc:  # noqa: BLE001 — any failure is retriable here
+            last_err = exc
+            await asyncio.sleep(1.5)
+    print(f"  {date_str}: FAILED after {DATE_FETCH_ATTEMPTS} attempts ({last_err!r}) — skipping",
+          file=sys.stderr)
+    return date_str, None
+
+
+async def _gather_dates_bounded(dates, fetch_one, concurrency):
+    """Run ``fetch_one(date)`` for every date, at most ``concurrency`` at a time.
+
+    ``fetch_one`` is a coroutine returning ``(date, result)``. Returns a list of
+    those pairs in the SAME ORDER as ``dates`` (asyncio.gather preserves input
+    order regardless of completion order). ``concurrency <= 1`` is exactly
+    serial and in-order — asyncio.Semaphore is FIFO and gather schedules the
+    coroutines in creation order.
+    """
+    sem = asyncio.Semaphore(max(1, int(concurrency)))
+
+    async def _run(date):
+        async with sem:
+            return await fetch_one(date)
+
+    return list(await asyncio.gather(*(_run(d) for d in dates)))
 
 
 async def _fetch_rosters(user_frame, today_iso):
@@ -1188,25 +1233,22 @@ async def scrape_window(days_back, days_forward):
             except Exception as exc:
                 print(f"WARNING: cancel-records fetch failed ({exc}) — keeping previous cancel records", file=sys.stderr)
 
-            for date_str in dates:
-                last_err = None
-                for attempt in range(1, DATE_FETCH_ATTEMPTS + 1):
-                    try:
-                        flights = await _fetch_schedule_for_date(user_frame, date_str)
-                        schedules[date_str] = flights
-                        print(f"  {date_str}: {len(flights)} flights"
-                              + (f" (attempt {attempt})" if attempt > 1 else ""))
-                        break
-                    except Exception as exc:
-                        last_err = exc
-                        await page.wait_for_timeout(1500)
-                else:
-                    print(f"  {date_str}: FAILED after {DATE_FETCH_ATTEMPTS} attempts ({last_err!r}) — skipping",
-                          file=sys.stderr)
+            # Per-date fetch, up to FETCH_RPC_CONCURRENCY in flight at once
+            # (Phase 2). concurrency=1 is exactly the old serial loop. Each
+            # date keeps its own retry + the bad_dates guard; the merge step
+            # in main() still regression-guards every date against a sudden
+            # count drop, so a degraded concurrent read can't silently land.
+            print(f"Fetching {len(dates)} dates at concurrency {FETCH_RPC_CONCURRENCY}…")
+            results = await _gather_dates_bounded(
+                dates,
+                lambda d: _fetch_one_date_with_retry(user_frame, d),
+                FETCH_RPC_CONCURRENCY,
+            )
+            for date_str, flights in results:
+                if flights is None:
                     failed_dates.append(date_str)
-                # Brief pacing between dates — the upstream GAS server seems to
-                # degrade (silently empty responses) under back-to-back requests.
-                await page.wait_for_timeout(1000)
+                else:
+                    schedules[date_str] = flights
 
         finally:
             # Never call browser.close() on a CDP-attached connection — unlike a
