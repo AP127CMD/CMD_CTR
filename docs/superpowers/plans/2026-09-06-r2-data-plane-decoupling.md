@@ -23,15 +23,22 @@
 
 ---
 
-## Status (done + committed locally, not pushed/deployed)
+## Status — PHASE 1 SHIPPED & VERIFIED LIVE (2026-09-06)
 
-| Task | Repo / commit | State |
-|---|---|---|
-| **1 — `ap127-data` Worker** | `flight-schedule-feed` `83d5cb7b7` | `data-worker/` proxy: `src/index.js` + `src/lib.js` + `wrangler.toml` + `README.md` + tests. **17 vitest green.** ✅ code done |
-| **6 — watchdog `/notify` + cron** | `AP127_V2` `07897115` | `POST /notify` (X-API-Key → 202, runs `runWatchdog` immediately), cron `*/5`→`*/2`, `handleFetch(request, env, ctx)`. **135 vitest green.** ✅ code done |
-| **11 — dispatcher DB001 */15** | `AP127_NGT_001` `797faff35` | `shouldDispatchDb001()` gates the DB001 target to :00/:15/:30/:45. **3 vitest green.** ✅ code done |
+| Piece | State |
+|---|---|
+| `ap127-data` Worker | Deployed. 20 vitest green. Live-fixed 3 bugs: HEAD support; dropped `?_=` buster (raw.github 404s on forced origin miss); slice Range locally (Fastly returned a stale `Content-Range` total). Stale-fallback on any upstream non-200. |
+| CMD_CTR `index.html` (r46) | Loads `flight-data.js` from the Worker. Verified live: 6,109 flights, console clean, Day Glance renders. |
+| CMDV2 5 entrypoints + `flight-data.js` deleted + `refresh_snapshots.mjs` trimmed + `refresh-data.yml` | Verified live: 5,175 flights, console clean, overview/crosscheck render. |
+| DB_Share `functions/mirror/[[path]].js` | Routes data files to the Worker (would have 404'd once CMDV2 deleted `flight-data.js`). Verified live: PROGRESS V4 renders. |
+| Backend Workers | **Kept on raw.github** — a Worker can't fetch a same-account `*.workers.dev` URL (CF 1042; verified). Only the `dispatcher` gained `Cache-Control: no-cache` on its age fetch. Both redeployed. |
+| Watchdog `/notify` + `NOTIFY_KEY` + cron `*/2` | Deployed. 136 vitest green. `/notify` → 202 verified; wrong key → 401. |
+| Pi + CI `/notify` callers | Committed + pushed. `WATCHDOG_NOTIFY_KEY` set on the Pi `.env` and the CMD_CTR repo. Pi confirmed running the new `run_fetch.sh`. |
+| `[CI Skip]` on all 4 data-commit sites | **Replaces build-watch-paths** (Pages API silently drops `path_excludes`). Verified live: `ap127-db001` + `ap127-cmd-ctr` data commits → deployment status `idle` (skipped, off the 500/mo cap). |
+| Dispatcher DB001 → */15 | Deployed. Verified live: dispatched at :15, skipped :05/:10; DB001 update-cache runs now 15 min apart. |
+| Docs | CLAUDE.md ×3 + `/Users/nugui/CLAUDE.md` + spec + this plan + `AP127_Docs` §10 — done. |
 
-Everything below is remaining.
+**Remaining:** `pi-native/README.md` touch-up · 48 h soak watch · **Phase 2** (below).
 
 ---
 
