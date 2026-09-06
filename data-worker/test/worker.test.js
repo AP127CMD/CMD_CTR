@@ -1,30 +1,30 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import worker from '../src/index.js';
 
-const RECENT = 'window.FLIGHT_DATA = {"fetchedAt":"2026-09-06T00:00:00Z","x":123}';
+const RECENT = 'window.FLIGHT_DATA = {"fetchedAt":"2026-09-06T00:00:00Z","x":123,"pad":"' + 'y'.repeat(400) + '"}';
+const FULL = 'window.FLIGHT_DATA = {}';
+const CACHE = '{"ap127":[]}';
 
-// Records the last upstream fetch and returns a canned raw.github response.
 let lastFetch;
 function installFetch(handler) {
   lastFetch = null;
   globalThis.fetch = vi.fn(async (url, opts) => {
-    lastFetch = { url: String(url), opts };
+    lastFetch = { url: String(url), opts: opts || {} };
     return handler(String(url), opts || {});
   });
 }
 
 beforeEach(() => {
-  // No edge cache in vitest — the Worker degrades to pass-through.
   globalThis.caches = undefined;
   installFetch((url) => {
     if (url.includes('flight-data-recent.js')) {
       return new Response(RECENT, { status: 200, headers: { ETag: '"up-recent"' } });
     }
     if (url.includes('flight-data.js')) {
-      return new Response('window.FLIGHT_DATA = {}', { status: 200, headers: { ETag: '"up-full"' } });
+      return new Response(FULL, { status: 200, headers: { ETag: '"up-full"' } });
     }
     if (url.includes('cache.json')) {
-      return new Response('{"ap127":[]}', { status: 200, headers: { ETag: '"up-cache"' } });
+      return new Response(CACHE, { status: 200, headers: { ETag: '"up-cache"' } });
     }
     return new Response('nope', { status: 404 });
   });
@@ -48,6 +48,7 @@ describe('GET', () => {
     expect(res.headers.get('cache-control')).toBe('public, max-age=60, stale-while-revalidate=240');
     expect(res.headers.get('etag')).toBe('"up-full"');
     expect(lastFetch.url).toBe('https://raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data.js');
+    expect(await res.text()).toBe(FULL);
   });
 
   it('serves cache.json from the DB001 repo with a JSON content-type', async () => {
@@ -56,7 +57,7 @@ describe('GET', () => {
     expect(lastFetch.url).toContain('AP127CMD/DB001/main/cache.json');
   });
 
-  it('Cache-Control: no-cache busts raw.github and forwards no-cache upstream', async () => {
+  it('Cache-Control: no-cache busts raw.github and sends no-store upstream', async () => {
     const res = await worker.fetch(
       req('GET', '/flight-data-recent.js', { headers: { 'Cache-Control': 'no-cache' } }),
       {}, {},
@@ -64,26 +65,32 @@ describe('GET', () => {
     expect(res.status).toBe(200);
     expect(lastFetch.url).toMatch(/flight-data-recent\.js\?_=\d+$/);
     expect(lastFetch.opts.headers['Cache-Control']).toBe('no-cache');
+    expect(lastFetch.opts.cache).toBe('no-store');
   });
 
-  it('forwards Range and returns 206 + Content-Range', async () => {
-    installFetch(() =>
-      new Response(RECENT.slice(0, 20), {
-        status: 206,
-        headers: { 'Content-Range': `bytes 0-19/${RECENT.length}`, ETag: '"up-recent"' },
-      }),
-    );
+  it('Range: slices locally with a correct Content-Range against the full length', async () => {
     const res = await worker.fetch(
       req('GET', '/flight-data-recent.js', { headers: { Range: 'bytes=0-19' } }),
       {}, {},
     );
     expect(res.status).toBe(206);
     expect(res.headers.get('content-range')).toBe(`bytes 0-19/${RECENT.length}`);
-    expect(lastFetch.opts.headers.Range).toBe('bytes=0-19');
+    // never forwards a Range upstream
+    expect(lastFetch.opts.headers.Range).toBeUndefined();
     expect(await res.text()).toBe(RECENT.slice(0, 20));
   });
 
-  it('passes through a 304 from upstream', async () => {
+  it('Range bytes=0-599 yields the fetchedAt field with the true total', async () => {
+    const res = await worker.fetch(
+      req('GET', '/flight-data-recent.js', { headers: { Range: 'bytes=0-599' } }),
+      {}, {},
+    );
+    expect(res.status).toBe(206);
+    expect(res.headers.get('content-range')).toBe(`bytes 0-${RECENT.length - 1}/${RECENT.length}`);
+    expect(await res.text()).toContain('"fetchedAt"');
+  });
+
+  it('passes through a 304 from upstream (non-range)', async () => {
     installFetch(() => new Response(null, { status: 304 }));
     const res = await worker.fetch(
       req('GET', '/flight-data-recent.js', { headers: { 'If-None-Match': '"up-recent"' } }),
@@ -126,7 +133,7 @@ describe('other methods', () => {
 });
 
 describe('edge cache', () => {
-  it('a plain GET is stored, and a second identical GET is served from cache', async () => {
+  it('a plain GET is stored under the upstream key; a second plain GET makes no new upstream fetch', async () => {
     const store = new Map();
     globalThis.caches = {
       default: {
@@ -141,6 +148,6 @@ describe('edge cache', () => {
     const before = globalThis.fetch.mock.calls.length;
     const second = await worker.fetch(req('GET', '/flight-data.js'), {}, ctx);
     expect(second.status).toBe(200);
-    expect(globalThis.fetch.mock.calls.length).toBe(before); // no new upstream hit
+    expect(globalThis.fetch.mock.calls.length).toBe(before);
   });
 });

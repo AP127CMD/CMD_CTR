@@ -19,25 +19,31 @@ async function handleGet(key, request, ctx) {
   const upstream = upstreamFor(key);
   const isHead = request.method === 'HEAD';
   const fresh = wantsFresh(request.headers.get('Cache-Control'));
-  const range = request.headers.get('Range');
-  const rangeSpec = parseRange(range);
+  const rangeSpec = parseRange(request.headers.get('Range'));
   const cache = edgeCache();
 
-  // Serve from our edge cache only for plain (non-range, non-fresh) GETs.
+  // Edge cache: plain (non-range, non-fresh) GET/HEAD only.
   if (cache && !fresh && !rangeSpec) {
-    const hit = await cache.match(request);
-    if (hit) return hit;
+    const hit = await cache.match(new Request(upstream, { method: 'GET' }));
+    if (hit) {
+      return isHead ? new Response(null, { status: hit.status, headers: hit.headers }) : hit;
+    }
   }
 
-  // Bust raw.github's own ~5-min CDN cache when a fresh read was asked for.
+  // Always fetch the FULL object from raw.github — never forward a Range. GitHub's
+  // Fastly edge has been observed handing Cloudflare a stale Content-Range total
+  // for a Range request even on a cache-busted URL; slicing here guarantees the
+  // 206 we return is internally consistent. A ~240 KB fetch is trivial for a proxy.
   const url = fresh ? `${upstream}?_=${Date.now()}` : upstream;
   const upReqHeaders = { 'User-Agent': 'ap127-data-worker' };
   const inm = request.headers.get('If-None-Match');
-  if (inm) upReqHeaders['If-None-Match'] = inm;
-  if (range) upReqHeaders['Range'] = range;
+  if (inm && !rangeSpec) upReqHeaders['If-None-Match'] = inm;
   if (fresh) upReqHeaders['Cache-Control'] = 'no-cache';
 
-  const up = await fetch(url, { headers: upReqHeaders });
+  const up = await fetch(url, {
+    headers: upReqHeaders,
+    ...(fresh ? { cache: 'no-store' } : {}),
+  });
 
   if (up.status === 304) {
     return new Response(null, {
@@ -45,28 +51,41 @@ async function handleGet(key, request, ctx) {
       headers: { ...CORS, ETag: inm, 'Cache-Control': CACHE_CONTROL },
     });
   }
-  if (up.status !== 200 && up.status !== 206) {
+  if (up.status !== 200) {
     return new Response(`upstream ${up.status}`, { status: 502, headers: CORS });
   }
 
-  const headers = {
+  const etag = up.headers.get('ETag');
+  const baseHeaders = {
     ...CORS,
     'Content-Type': contentTypeFor(key),
     'Cache-Control': CACHE_CONTROL,
     'Accept-Ranges': 'bytes',
+    ...(etag ? { ETag: etag } : {}),
   };
-  const etag = up.headers.get('ETag');
-  if (etag) headers['ETag'] = etag;
 
-  if (up.status === 206) {
-    const cr = up.headers.get('Content-Range');
-    if (cr) headers['Content-Range'] = cr;
-    return new Response(isHead ? null : up.body, { status: 206, headers });
+  if (rangeSpec) {
+    const full = new Uint8Array(await up.arrayBuffer());
+    const start = Math.min(rangeSpec.offset, full.length);
+    const end =
+      rangeSpec.length == null
+        ? full.length
+        : Math.min(start + rangeSpec.length, full.length);
+    const slice = full.subarray(start, end);
+    return new Response(isHead ? null : slice, {
+      status: 206,
+      headers: {
+        ...baseHeaders,
+        'Content-Range': `bytes ${start}-${end - 1}/${full.length}`,
+      },
+    });
   }
 
-  const res = new Response(isHead ? null : up.body, { status: 200, headers });
-  if (cache && !fresh && !isHead && ctx && ctx.waitUntil) {
-    ctx.waitUntil(cache.put(request, res.clone()));
+  const res = new Response(isHead ? null : up.body, { status: 200, headers: baseHeaders });
+  if (cache && !fresh && ctx && ctx.waitUntil) {
+    // Cache under a stable key (the bare upstream URL) so a later plain GET hits
+    // regardless of the request's own headers/query.
+    ctx.waitUntil(cache.put(new Request(upstream, { method: 'GET' }), res.clone()));
   }
   return res;
 }
