@@ -2,8 +2,8 @@ name = "ap127-data"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
-# R2-backed static server for the AP127 flight-data plane. See
-# ../docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md
-[[r2_buckets]]
-binding = "R2"
-bucket_name = "ap127-data"
+# Stateless proxy in front of raw.githubusercontent.com. Re-serves the AP127
+# data files (flight-data.js, flight-data-recent.js, cache.json) with a
+# browser-usable Content-Type + a 60s edge cache, so data commits no longer
+# trigger a Cloudflare Pages rebuild. No bindings, no storage, no secrets.
+# See ../docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md

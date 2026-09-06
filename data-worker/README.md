@@ -1,54 +1,41 @@
 # ap127-data Worker
 
-R2-backed static file server for the AP127 flight-data plane. Decouples data
-updates from Cloudflare Pages builds — see
-`../docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md` and
-`../docs/superpowers/plans/2026-09-06-r2-data-plane-decoupling.md`.
+Stateless proxy in front of `raw.githubusercontent.com` for the AP127
+flight-data plane. Re-serves the data files with a browser-usable
+`Content-Type` + a 60 s edge cache, so data commits no longer trigger a
+Cloudflare Pages rebuild. **No bindings, no storage, no secrets.**
+
+See `../docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md`.
 
 - **URL:** https://ap127-data.anusorn-tanmetha.workers.dev
-- **Bucket:** `ap127-data` (R2)
-- **Keys (allowlisted):** `flight-data.js`, `flight-data-recent.js`, `cache.json`
+- **Keys (allowlisted → upstream):**
+  | key | upstream |
+  |---|---|
+  | `flight-data.js` | `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data.js` |
+  | `flight-data-recent.js` | `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data-recent.js` |
+  | `cache.json` | `raw.githubusercontent.com/AP127CMD/DB001/main/cache.json` |
 
-## Endpoints
+## Behaviour
 
-| Method | Behaviour |
+| Request | Response |
 |---|---|
-| `GET /<key>` | Public. `Content-Type` js/json, `Cache-Control: public, max-age=60, stale-while-revalidate=240`, `ETag` + `If-None-Match` → 304, `Range` → 206. Unknown key → 404. |
-| `PUT /<key>` | `Authorization: Bearer $DATA_WRITE_TOKEN`. 8 MiB cap. Bad key → 400, bad token → 401. |
-| `OPTIONS` | 204 + CORS (`*`). Other methods → 405. |
+| `GET /<key>` | 200, `Content-Type` js/json, `Cache-Control: public, max-age=60, stale-while-revalidate=240`, upstream `ETag`, `Accept-Ranges: bytes`. Served from the edge cache (~60 s) on repeat. |
+| `GET` with `Cache-Control: no-cache` | Bypasses our edge cache **and** raw.github's (adds `?_=<ts>`), fetches fresh. Used by the watchdog / dispatcher. |
+| `GET` with `Range: bytes=…` | Forwarded upstream → 206 + `Content-Range` (the dispatcher's `bytes=0-599` age check). |
+| `GET` with `If-None-Match` | Forwarded upstream → 304 when unchanged. |
+| unknown key | 404 (no upstream fetch) |
+| `PUT` / `DELETE` / … | 405 |
+| `OPTIONS` | 204 + CORS (`*`) |
+| upstream 5xx / unreachable | 502 |
 
-## Develop / test
+## Develop / test / deploy
 
 ```
 npm install
-npm test
+npm test          # plain vitest, fetch + caches stubbed
+npx wrangler deploy
 ```
 
-Tests are plain vitest against an in-memory R2 stub (matches `AP127_V2/watchdog`).
-
-## Deploy
-
-```
-npx wrangler r2 bucket create ap127-data     # first time only
-npx wrangler secret put DATA_WRITE_TOKEN      # first time / rotation — value: openssl rand -hex 32
-npm run deploy
-```
-
-## Seed / manual write
-
-```
-T=<DATA_WRITE_TOKEN>
-U=https://ap127-data.anusorn-tanmetha.workers.dev
-curl -fsS -X PUT -H "Authorization: Bearer $T" --data-binary @flight-data.js        "$U/flight-data.js"
-curl -fsS -X PUT -H "Authorization: Bearer $T" --data-binary @flight-data-recent.js "$U/flight-data-recent.js"
-curl -fsS https://ap127-db001.pages.dev/cache.json | \
-  curl -fsS -X PUT -H "Authorization: Bearer $T" --data-binary @- "$U/cache.json"
-```
-
-## Writers (production)
-
-- Pi: `pi-native/run_fetch.sh` PUTs `flight-data*.js` each successful cycle.
-- CI fallback: `.github/workflows/fetch_schedule.yml`.
-- DB001: `AP127_NGT_001/.github/workflows/update-cache.yml` PUTs `cache.json`.
-
-All writes are non-fatal and conditional on a real data change.
+Freshness: browser reads land within ~1 min of a git push (our 60 s cache) plus
+raw.github propagation (usually seconds, up to ~5 min). The watchdog's
+`no-cache` reads see the push within seconds.
