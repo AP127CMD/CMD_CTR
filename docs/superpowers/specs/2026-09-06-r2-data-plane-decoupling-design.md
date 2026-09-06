@@ -96,20 +96,24 @@ data is already committed to git every cycle; the Worker just re-serves it with 
 ```
    Pi / CI / DB001  ── git commit + push ──►  GitHub (main)
                                                   │
-                                    raw.githubusercontent.com
-                                                  │  (fetch on cache miss / on no-cache)
-                              ┌───────────────────┴───────────────┐
-                              │   ap127-data Worker (stateless)   │
-                              │   GET /flight-data.js             │
-                              │   GET /flight-data-recent.js      │
-                              │   GET /cache.json                 │
-                              │   60 s edge cache · Range · ETag  │
-                              └───────────────────┬───────────────┘
-                                    │ GET          │ GET (Cache-Control: no-cache → bypass both caches)
-        ┌───────────────────────────┤              ├──────────────────────────┐
-  browser <script src>       watchdog Worker                        dispatcher Worker
-  CMD_CTR + CMDV2 pages      /flight-data-recent.js                 /flight-data-recent.js
-                             + POST /notify (push)                  (Range bytes=0-599)
+                        ┌──────────── raw.githubusercontent.com ────────────┐
+                        │                                                   │
+       (Cloudflare Workers can't fetch a same-account            (fetch on miss / on no-cache)
+        *.workers.dev URL — CF 1042 — so they read raw           │
+        directly)                                                │
+                        │                              ┌─────────┴─────────────────┐
+        ┌───────────────┴───────────┐                  │  ap127-data Worker        │
+   watchdog Worker          dispatcher Worker          │  (stateless proxy)        │
+   /flight-data-recent.js   /flight-data-recent.js     │  GET flight-data.js       │
+   + POST /notify (push)    (Range bytes=0-599)        │  GET flight-data-recent.js│
+                                                       │  GET cache.json           │
+                                                       │  60 s edge cache · Range  │
+                                                       │  · ETag · stale-fallback  │
+                                                       └─────────┬─────────────────┘
+                                                                 │ GET
+                                          ┌──────────────────────┴──────────┐
+                                    browser <script src>           DB_Share /mirror proxy
+                                    CMD_CTR + CMDV2 pages           (routes data files here)
 
    Git commits still happen (history + shared state) but Pages "build watch
    paths" exclude the data files, so no rebuild fires.
@@ -138,33 +142,31 @@ flakiness history.
   | `flight-data-recent.js` | `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data-recent.js` |
   | `cache.json` | `raw.githubusercontent.com/AP127CMD/DB001/main/cache.json` |
 
-**`GET /<key>`**
-- Plain GET: check `caches.default`; on miss `fetch(upstream)`, re-wrap, `ctx.waitUntil(cache.put(...))`.
-- `Cache-Control: no-cache` (or `no-store`) request: skip our edge cache **and** raw.github's —
-  fetch `upstream?_=<Date.now()>` with `Cache-Control: no-cache` forwarded. This is how the
-  watchdog / dispatcher get a read that reflects a git push within seconds.
-- `Range: bytes=…` request: forward the `Range` header upstream (raw.github honours it), return
-  `206` + `Content-Range`, do not touch the edge cache.
-- `If-None-Match`: forwarded upstream → `304` passthrough.
-- Response headers on 200/206:
-  - `Content-Type`: `application/javascript; charset=utf-8` (`.js`) / `application/json; charset=utf-8` (`.json`)
-  - `Cache-Control: public, max-age=60, stale-while-revalidate=240`
-  - `ETag`: pass through upstream
-  - `Access-Control-Allow-Origin: *`, `Accept-Ranges: bytes`
-- Upstream 5xx / unreachable → `502`.
+**`GET`/`HEAD` `/<key>`**
+- Plain GET: check `caches.default` (keyed by the bare upstream URL); on miss `fetch(upstream)`,
+  buffer the body, `ctx.waitUntil(cache.put(...))`, serve.
+- `Cache-Control: no-cache` (or `no-store`) request: skip our edge cache; fetch with
+  `Cache-Control: no-cache` forwarded (Fastly revalidates) and `cache: 'no-store'` (skip
+  Cloudflare's subrequest cache). **No `?_=` query-buster** — raw.github 404s intermittently on
+  a forced origin miss (learned live 2026-09-06).
+- `Range: bytes=…`: **fetch the full object, slice locally**, return `206` + a `Content-Range`
+  computed against the true length. Never forward `Range` upstream — GitHub's Fastly edge was
+  observed returning a stale (wrong) `Content-Range` total.
+- `If-None-Match` (non-range): forwarded upstream → `304` passthrough.
+- Response headers on 200/206: `Content-Type` js/json, `Cache-Control: public, max-age=60,
+  stale-while-revalidate=240`, upstream `ETag`, `Access-Control-Allow-Origin: *`, `Accept-Ranges: bytes`.
+- **Upstream non-200 / unreachable → serve the last good copy from the edge cache** (raw.github
+  blips must not take the data plane down); only a cold cache falls through to `502`.
 
-**Other methods** (`PUT`, `DELETE`, …) → `405`. `OPTIONS` → `204` + CORS. Unknown key → `404`.
+**`HEAD`** → same headers, empty body. **Other methods** (`PUT`, `DELETE`, …) → `405`.
+`OPTIONS` → `204` + CORS. Unknown key → `404` (no upstream fetch).
 
-**Tests (TDD, write first):**
-- GET unknown key → 404, and no upstream `fetch` was made
-- GET `flight-data.js` → 200, JS content-type, `max-age=60`, upstream URL is the CMD_CTR raw URL
-- GET `cache.json` → JSON content-type, upstream is the DB001 raw URL
-- GET with `Cache-Control: no-cache` → upstream URL has `?_=<ts>` and forwards `no-cache`
-- GET with `Range: bytes=0-19` → 206, `Content-Range` passthrough, `Range` forwarded
-- GET with `If-None-Match` → 304 passthrough
-- upstream 500 → 502
-- `PUT` / `DELETE` → 405; `OPTIONS` → 204 + `Access-Control-Allow-Origin: *`
-- edge-cache path: a second identical plain GET makes no new upstream fetch
+**Tests (plain vitest, `fetch` + `caches` stubbed):** unknown key → 404 + no fetch; `flight-data.js`
+→ 200 JS type + CMD_CTR raw URL; `cache.json` → JSON type + DB001 raw URL; `no-cache` → forwards
+`no-cache` + `cache:'no-store'`, no query buster; `Range` → 206 sliced locally, correct
+`Content-Range`, no upstream Range; `If-None-Match` → 304; upstream 500 → 502; **upstream 404 with
+a primed cache → 200 from cache**; `PUT`/`DELETE` → 405; `OPTIONS` → 204 + ACAO `*`; `HEAD` → 200
+empty body; second plain GET → no new upstream fetch.
 
 ### 4.2 Writers — **unchanged**
 
@@ -174,12 +176,12 @@ data to git exactly as they do today; that git state *is* the data plane. No new
 
 ### 4.3 Freshness characteristics
 
-- **Browser reads** land within our 60 s edge cache + raw.github propagation. GitHub purges the
-  `raw.githubusercontent.com` CDN on push (usually seconds, occasionally up to ~5 min). Net:
-  data visible to a dashboard ~1–5 min after a Pi commit — acceptable for a schedule view.
-- **Watchdog / dispatcher reads** send `Cache-Control: no-cache`; the Worker bypasses both
-  caches and cache-busts raw.github, so these see a push within seconds. This is what makes the
-  `POST /notify` path (§4.6) deliver Telegram in seconds without any payload plumbing.
+- **Browser reads** (via the Worker) land within our 60 s edge cache + raw.github propagation.
+  GitHub purges the `raw.githubusercontent.com` CDN on push (usually seconds, occasionally up to
+  ~5 min). Net: data visible to a dashboard ~1–5 min after a Pi commit — fine for a schedule view.
+- **Watchdog / dispatcher reads** go straight to raw.github (not the Worker — CF 1042) with
+  `Cache-Control: no-cache`, so a `/notify`-triggered diff sees a push within ~1 min of
+  raw.github propagation. Telegram then fires in seconds. The `*/2` cron is the backstop.
 
 ### 4.4 Readers
 
@@ -196,19 +198,25 @@ data to git exactly as they do today; that git state *is* the data plane. No new
 | `AP127_Portal/mindmap.html` | — | **not a functional consumer** — the "flight-data" strings are labels inside a mermaid architecture diagram. Update the diagram text to match §3 (docs only). |
 
 Cross-origin `<script src>` still loads synchronously and sets `window.FLIGHT_DATA`; load order
-and downstream init are unaffected. DB_Share inherits the change automatically (it proxies
-CMDV2's rendered output).
+and downstream init are unaffected. DB_Share needs a one-line change: its `functions/mirror/[[path]].js`
+proxy routes `flight-data.js` / `flight-data-recent.js` / `cache.json` to the `ap127-data`
+Worker instead of `ap127-ngt2.pages.dev` (CMDV2 no longer holds those files); everything else
+still proxies from CMDV2.
 
-**Backend Workers — repoint from `raw.githubusercontent.com` to the Worker:**
+**Backend Workers — STAY on `raw.githubusercontent.com`.** A Cloudflare Worker cannot fetch
+another Worker on the same account by its `*.workers.dev` URL (blocked, surfaces as CF error 1042
+/ a 404). Verified live 2026-09-06: pointing `watchdog` `FLIGHT_SRC` at the `ap127-data` Worker
+made every run fail `Upstream HTTP 404`. So:
 
 | File | Change |
 |---|---|
-| `AP127_V2/watchdog/src/index.js` (`FLIGHT_SRC`, ~line 16) | → `https://ap127-data.anusorn-tanmetha.workers.dev/flight-data-recent.js` |
-| `AP127_NGT_001/dispatcher/worker.js` (stale-check URL, ~line 82) | → `…/flight-data-recent.js` (Range `bytes=0-599` still supported) |
-| `AP127_V2/scripts/refresh_snapshots.mjs` | **remove** the `flight-data` mirror step entirely; repoint the `ngt-data` step from `ap127-db001.pages.dev/cache.json` → `…/cache.json`; leave `progress-data` (from `ap127-data-api` Worker) unchanged |
+| `AP127_V2/watchdog/src/index.js` (`FLIGHT_SRC`) | **unchanged** — `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data-recent.js`. `fetchFeedText()` already sends `cache-control: no-cache`, so a `/notify` diff sees a push within ~1 min of raw.github propagation. |
+| `AP127_NGT_001/dispatcher/worker.js` (`FEED_URL`) | **unchanged** — same raw.github URL. Add `Cache-Control: no-cache` to the `feedAgeMinutes()` fetch so the age check isn't fooled by a stale read. |
+| `AP127_V2/scripts/refresh_snapshots.mjs` | runs on GitHub Actions (not a Worker) so it CAN use the `ap127-data` Worker. **remove** the `flight-data` mirror step entirely; repoint the `ngt-data` step from `ap127-db001.pages.dev/cache.json` → the Worker's `/cache.json`; leave `progress-data` unchanged |
 
-- Delete `AP127_V2/flight-data.js` from the CMDV2 repo (no longer mirrored; CMDV2 reads it from
-  the Worker at runtime).
+- Delete `AP127_V2/flight-data.js` from the CMDV2 repo (no longer mirrored; the browser reads it
+  from the Worker at runtime).
+- `refresh-data.yml`'s `git add` drops `flight-data.js` (keeps `progress-data.js` / `ngt-data.js`).
 - `refresh-data.yml` keeps running on its hourly cron for `progress-data.js` / `ngt-data.js`
   only. Those commits are covered by build watch paths (§4.5).
 
@@ -236,16 +244,18 @@ Settings → Build → Build watch paths → **Exclude paths**:
 `AP127_V2/watchdog/src/index.js` already factors its check into `runWatchdog(env)` (called by
 `scheduled`). Add:
 
-- **`POST /notify`** in `handleFetch` — require `X-API-Key: <WATCHDOG_API_KEY>` (the existing
-  secret). On success: `ctx.waitUntil(runWatchdog(env))`, return `202 {"ok":true}`.
+- **`POST /notify`** in `handleFetch` — `handleFetch` gains a `ctx` param. Require
+  `X-API-Key: <NOTIFY_KEY>` (a dedicated `wrangler secret`, falling back to `WATCHDOG_API_KEY`
+  if unset). On match: `ctx.waitUntil(runWatchdog(env))`, return `202 {"ok":true}`; else `401`.
   - `runWatchdog` already no-ops cheaply when `extractFeedSig` shows the feed is unchanged, so a
-    spurious or duplicate notify is safe.
-- **Callers** — after a successful data publish, `curl -sf -X POST -H "X-API-Key: …"
-  https://<watchdog>/notify` (non-fatal, 1 attempt):
-  - `pi-native/run_fetch.sh` — after the existing "Triggering CMDV2 refresh" curl.
-  - `.github/workflows/fetch_schedule.yml` — after the CMDV2 dispatch step.
-  - Reuse the watchdog's existing `WATCHDOG_API_KEY` value as the `/notify` gate (see §9);
-    add it as a secret to the Pi `.env` and the CMD_CTR repo.
+    spurious or duplicate notify is safe. No payload — the handler just re-fetches raw.github.
+- **Callers** — after a successful data publish, `curl -fsS -m 15 -X POST -H "X-API-Key: …"
+  https://ap127-watchdog.anusorn-tanmetha.workers.dev/notify` (non-fatal, 1 attempt):
+  - `pi-native/run_fetch.sh` — at the end, after the CMDV2 refresh curl. Reads `WATCHDOG_NOTIFY_KEY`
+    from `pi-native/.env`.
+  - `.github/workflows/fetch_schedule.yml` — after the CMDV2 dispatch step. Repo secret
+    `WATCHDOG_NOTIFY_KEY`.
+  - Both hold the same value as the watchdog's `NOTIFY_KEY` secret.
 - **Cron backstop** — tighten the watchdog cron `*/5` → `*/2` in its `wrangler.toml`. Invocations
   rise ~288/day → ~720/day (vs 100,000/day free). Per-invocation CPU is unchanged (still reads
   the small `flight-data-recent.js`, still short-circuits on unchanged `extractFeedSig`).
@@ -366,11 +376,23 @@ new faster cadence — widening the margin, not shrinking it.
   cadence change.
 - Bump CMD_CTR's `index.html` cache token per its update rule (the `<script src>` line changes).
 
-## 9. Open items to resolve during implementation
+## 9. Resolved during implementation (2026-09-06)
 
-- Whether build watch paths are settable via the CF API (`build_config.path_excludes`) or
+- **CF 1042** — a Worker can't fetch a same-account `*.workers.dev` URL. So the watchdog and
+  dispatcher stay on `raw.githubusercontent.com`; only browsers + GitHub-Actions consumers use
+  the `ap127-data` Worker. (§3, §4.3, §4.4)
+- **raw.github 404s on `?_=` cache-busters** — dropped the query buster; the Worker relies on the
+  `no-cache` request header + `cache: 'no-store'`, and serves a stale edge copy on any upstream
+  non-200. (§4.1)
+- **Fastly stale `Content-Range`** — the Worker fetches the full object and slices Range locally.
+  (§4.1)
+- **`/notify` gate** — a dedicated `NOTIFY_KEY` secret (not the admin `WATCHDOG_API_KEY`).
+- **`event.scheduledTime`** — lands cleanly on 5-min boundaries; the `% 15 === 0` gate verified
+  live (DB001 dispatched at :00/:15, skipped at :05/:10).
+- **DB_Share** — its `/mirror` proxy needed a code change (route data files to the `ap127-data`
+  Worker) or it 404s once CMDV2's `flight-data.js` is deleted. Done.
+
+## Still open
+
+- Whether build watch paths are settable via the CF API (`build_config.path_excludes`) or are
   dashboard-only.
-- Confirm the watchdog's `WATCHDOG_API_KEY` is the right gate for `/notify` (vs. a dedicated
-  key) — reuse unless there is a reason to separate.
-- Confirm the dispatcher's `event.scheduledTime` lands on exact 5-min boundaries (it should) so
-  the `% 15 === 0` gate in §4.7 fires cleanly; if drift is observed, switch to a KV tick counter.
