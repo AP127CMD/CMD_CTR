@@ -216,6 +216,18 @@ jobs:
             -d '{"ref":"main"}'
           echo "CMDV2 refresh-data.yml dispatched"
 
+      # Push-trigger the watchdog so a schedule change reaches Telegram in
+      # seconds rather than on its next */2 cron tick. Non-fatal.
+      - name: Notify watchdog
+        if: success() && steps.backoff.outputs.skip != 'true'
+        env:
+          WATCHDOG_NOTIFY_KEY: ${{ secrets.WATCHDOG_NOTIFY_KEY }}
+        run: |
+          [ -n "$WATCHDOG_NOTIFY_KEY" ] || { echo "key unset — skipping"; exit 0; }
+          curl -fsS -m 15 -X POST -H "X-API-Key: $WATCHDOG_NOTIFY_KEY" \
+            https://ap127-watchdog.anusorn-tanmetha.workers.dev/notify >/dev/null \
+            && echo "watchdog notified" || echo "::warning::watchdog /notify failed"
+
       # Open a GitHub issue when this run fails so stale data doesn't go unnoticed.
       - name: Report failure as GitHub issue
         if: failure()

@@ -258,3 +258,14 @@ curl -sf -X POST \
   -d '{"ref":"main"}' \
   && echo "CMDV2 refresh-data.yml dispatched" \
   || echo "WARNING: CMDV2 refresh dispatch failed (non-fatal)" >&2
+
+# Push-trigger the watchdog so a schedule change reaches Telegram in seconds
+# instead of on its next */2 cron tick. Non-fatal, single attempt. runWatchdog()
+# no-ops cheaply if the feed hasn't changed, so a spurious call is harmless.
+if [ -n "${WATCHDOG_NOTIFY_KEY:-}" ]; then
+  curl -fsS -m 15 -X POST \
+    -H "X-API-Key: ${WATCHDOG_NOTIFY_KEY}" \
+    "https://ap127-watchdog.anusorn-tanmetha.workers.dev/notify" >/dev/null \
+    && echo "watchdog /notify ✓" \
+    || echo "WARNING: watchdog /notify failed (non-fatal)" >&2
+fi
