@@ -1,9 +1,12 @@
-# R2 Data-Plane Decoupling + Minimum Portal→Telegram Latency
+# Data-Plane Decoupling + Minimum Portal→Telegram Latency
 
 **Date:** 2026-09-06
-**Status:** Design — approved, pre-implementation
+**Status:** Design — approved; implementation in progress
 **Repos touched:** `AP127CMD/CMD_CTR` (primary), `AP127CMD/CMDV2`, `AP127CMD/DB001`
 **Related:** `2026-07-27-rpc-based-schedule-fetch-design.md` (the RPC scraper this builds on)
+**Storage model:** originally specced R2; switched to a stateless `raw.githubusercontent.com`
+proxy Worker (2026-09-06) because enabling R2 requires a payment method on file. Filename kept
+for link stability.
 
 ---
 
@@ -83,21 +86,30 @@ The user wants the highest achievable refresh rate for schedule updates and Tele
 
 ## 3. Architecture overview
 
+**Chosen storage model: a stateless proxy, not R2.** Enabling R2 requires activating it in the
+Cloudflare dashboard, which puts a payment method on file even though this workload ($0, far
+under 10 GB / 1M writes / 10M reads) would never be billed. To keep the "free plan, no card"
+constraint hard, the `ap127-data` Worker instead **proxies `raw.githubusercontent.com`** — the
+data is already committed to git every cycle; the Worker just re-serves it with a browser-usable
+`Content-Type` and a 60 s edge cache. No bindings, no storage, no secrets, no write path.
+
 ```
-                    ┌──────────────────────────────────────────┐
-   Pi run_fetch.sh ─┤ PUT /flight-data.js                      │
-   CI fetch_schedule┤ PUT /flight-data-recent.js   (Bearer)    │
-   CI update-cache  ┤ PUT /cache.json                          │
-                    │                                          │
-                    │      ap127-data  Worker  ── R2 bucket    │
-                    │      (public GET, token PUT)  ap127-data  │
-                    └───────────────┬──────────────────────────┘
-                                    │ GET (60 s cache, Range, ETag)
-        ┌───────────────────────────┼─────────────────────────────┐
-        │                           │                             │
-  browser <script src>      watchdog Worker              dispatcher Worker
-  CMD_CTR + CMDV2 pages     /flight-data-recent.js      /flight-data-recent.js
-                            + POST /notify (push)        (Range 0-599)
+   Pi / CI / DB001  ── git commit + push ──►  GitHub (main)
+                                                  │
+                                    raw.githubusercontent.com
+                                                  │  (fetch on cache miss / on no-cache)
+                              ┌───────────────────┴───────────────┐
+                              │   ap127-data Worker (stateless)   │
+                              │   GET /flight-data.js             │
+                              │   GET /flight-data-recent.js      │
+                              │   GET /cache.json                 │
+                              │   60 s edge cache · Range · ETag  │
+                              └───────────────────┬───────────────┘
+                                    │ GET          │ GET (Cache-Control: no-cache → bypass both caches)
+        ┌───────────────────────────┤              ├──────────────────────────┐
+  browser <script src>       watchdog Worker                        dispatcher Worker
+  CMD_CTR + CMDV2 pages      /flight-data-recent.js                 /flight-data-recent.js
+                             + POST /notify (push)                  (Range bytes=0-599)
 
    Git commits still happen (history + shared state) but Pages "build watch
    paths" exclude the data files, so no rebuild fires.
@@ -109,80 +121,65 @@ flakiness history.
 
 ---
 
-## 4. Phase 1 — R2 decoupling + watchdog push
+## 4. Phase 1 — data-plane proxy + watchdog push
 
 ### 4.1 `ap127-data` Worker
 
-- **Location:** `flight-schedule-feed/data-worker/` (new). `src/index.js`, `wrangler.toml`,
-  `test/` (Vitest + `@cloudflare/vitest-pool-workers`), `README.md`.
-- **Deploy:** `npx wrangler deploy` from that dir. Not Git-integrated. Manual/CI deploy on
-  change (the Worker changes rarely).
-- **Bindings:** `R2` → bucket `ap127-data` (new, created via `wrangler r2 bucket create`).
-- **Secret:** `DATA_WRITE_TOKEN` (via `wrangler secret put`). A long random string.
+- **Location:** `flight-schedule-feed/data-worker/` (new). `src/index.js`, `src/lib.js`,
+  `wrangler.toml`, `test/` (plain Vitest — `fetch` + `caches` stubbed, matches the watchdog's
+  test style), `README.md`, `package.json`, `.gitignore`.
+- **Deploy:** `npx wrangler deploy` from that dir. Not Git-integrated. Redeploy on change (rare).
+- **Bindings / secrets:** none.
 - **URL:** `https://ap127-data.anusorn-tanmetha.workers.dev`
-- **Key allowlist:** `flight-data.js`, `flight-data-recent.js`, `cache.json`. Any other key →
-  404 (GET) / 400 (PUT).
+- **Key → upstream map** (allowlist; anything else → `404` with no upstream fetch):
+  | key | upstream |
+  |---|---|
+  | `flight-data.js` | `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data.js` |
+  | `flight-data-recent.js` | `raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data-recent.js` |
+  | `cache.json` | `raw.githubusercontent.com/AP127CMD/DB001/main/cache.json` |
 
 **`GET /<key>`**
-- Full request: check `caches.default` first; on miss, `R2.get(key)`, build response,
-  `ctx.waitUntil(cache.put(...))`.
-- `Range` request (`Range: bytes=…`): bypass the edge cache, `R2.get(key, { range })`, return
-  `206` with `Content-Range` + `Accept-Ranges: bytes`.
-- Headers on 200/206:
-  - `Content-Type`: `application/javascript; charset=utf-8` for `*.js`,
-    `application/json; charset=utf-8` for `*.json`
+- Plain GET: check `caches.default`; on miss `fetch(upstream)`, re-wrap, `ctx.waitUntil(cache.put(...))`.
+- `Cache-Control: no-cache` (or `no-store`) request: skip our edge cache **and** raw.github's —
+  fetch `upstream?_=<Date.now()>` with `Cache-Control: no-cache` forwarded. This is how the
+  watchdog / dispatcher get a read that reflects a git push within seconds.
+- `Range: bytes=…` request: forward the `Range` header upstream (raw.github honours it), return
+  `206` + `Content-Range`, do not touch the edge cache.
+- `If-None-Match`: forwarded upstream → `304` passthrough.
+- Response headers on 200/206:
+  - `Content-Type`: `application/javascript; charset=utf-8` (`.js`) / `application/json; charset=utf-8` (`.json`)
   - `Cache-Control: public, max-age=60, stale-while-revalidate=240`
-  - `ETag`: pass through R2 `httpEtag`
-  - `Access-Control-Allow-Origin: *`
-  - `Accept-Ranges: bytes`
-- `If-None-Match` matches current ETag → `304`.
-- Key not in R2 → `404`.
+  - `ETag`: pass through upstream
+  - `Access-Control-Allow-Origin: *`, `Accept-Ranges: bytes`
+- Upstream 5xx / unreachable → `502`.
 
-**`PUT /<key>`**
-- `Authorization: Bearer <DATA_WRITE_TOKEN>` — missing/wrong → `401`.
-- Key not in allowlist → `400`.
-- Body > 8 MiB → `413`.
-- `R2.put(key, body, { httpMetadata: { contentType } })`.
-- Response `200 {"ok":true,"key":…,"size":…,"etag":…}`.
-
-**Other methods / paths** → `405` / `404`. `OPTIONS` → CORS preflight 204.
+**Other methods** (`PUT`, `DELETE`, …) → `405`. `OPTIONS` → `204` + CORS. Unknown key → `404`.
 
 **Tests (TDD, write first):**
-- GET unknown key → 404
-- GET known key returns bytes + correct `Content-Type` + `Cache-Control`
-- GET with `If-None-Match: <etag>` → 304
-- GET with `Range: bytes=0-99` → 206, `Content-Range`, body length 100
-- PUT without token → 401; PUT bad key → 400; PUT oversize → 413
-- PUT valid → 200, then GET returns the new bytes with the right content type
-- round-trip: PUT `flight-data-recent.js`, GET `Range: bytes=0-599`, assert `"fetchedAt"`
-  substring present (the dispatcher's real access pattern)
+- GET unknown key → 404, and no upstream `fetch` was made
+- GET `flight-data.js` → 200, JS content-type, `max-age=60`, upstream URL is the CMD_CTR raw URL
+- GET `cache.json` → JSON content-type, upstream is the DB001 raw URL
+- GET with `Cache-Control: no-cache` → upstream URL has `?_=<ts>` and forwards `no-cache`
+- GET with `Range: bytes=0-19` → 206, `Content-Range` passthrough, `Range` forwarded
+- GET with `If-None-Match` → 304 passthrough
+- upstream 500 → 502
+- `PUT` / `DELETE` → 405; `OPTIONS` → 204 + `Access-Control-Allow-Origin: *`
+- edge-cache path: a second identical plain GET makes no new upstream fetch
 
-### 4.2 Seed R2
+### 4.2 Writers — **unchanged**
 
-Before any consumer is repointed: `curl -X PUT` the *current* `flight-data.js`,
-`flight-data-recent.js` (from `flight-schedule-feed/`) and `cache.json` (from a fresh
-`ap127-db001.pages.dev/cache.json` fetch) into R2 via the Worker. Verify each GET.
+There is no write path. The Pi, `fetch_schedule.yml`, and `update-cache.yml` keep committing
+data to git exactly as they do today; that git state *is* the data plane. No new secrets, no
+`curl PUT`, no ordering concerns.
 
-### 4.3 Writers
+### 4.3 Freshness characteristics
 
-All writers use the same helper shape — `curl -sf -X PUT`, **3 attempts** with a short sleep,
-non-fatal (log a warning; a *persistent* failure escalates per that writer's existing
-mechanism). Rationale for non-fatal: R2 being briefly unreachable should not stop a Git commit
-that still records the data and still feeds `raw.githubusercontent.com`.
-
-| Writer | File(s) | Placement | Escalation on repeated failure |
-|---|---|---|---|
-| `pi-native/run_fetch.sh` | `flight-data.js`, `flight-data-recent.js` | immediately **after** `generate_flight_data.py`, **before** `git add` | `report_pi_failure` (existing) |
-| `.github/workflows/fetch_schedule.yml` | same two | new step after the generate step, gated `if: steps.backoff.outputs.skip != 'true'` | existing `fetch-failure` issue step |
-| `DB001/.github/workflows/update-cache.yml` | `cache.json` | new step after `build-student.js` | existing `update-cache` failure issue step |
-
-- `DATA_WRITE_TOKEN`:
-  - Pi: add to `pi-native/.env` and document in `pi-native/.env.example`.
-  - CMD_CTR repo: Actions secret.
-  - DB001 repo: Actions secret.
-- Ordering note: the Pi PUTs to R2 *before* the Git commit/push. R2 may momentarily lead Git by
-  a few seconds; that is harmless (data is monotonic and the next cycle reconciles). If the Git
-  push then fails, R2 is briefly ahead — also harmless.
+- **Browser reads** land within our 60 s edge cache + raw.github propagation. GitHub purges the
+  `raw.githubusercontent.com` CDN on push (usually seconds, occasionally up to ~5 min). Net:
+  data visible to a dashboard ~1–5 min after a Pi commit — acceptable for a schedule view.
+- **Watchdog / dispatcher reads** send `Cache-Control: no-cache`; the Worker bypasses both
+  caches and cache-busts raw.github, so these see a push within seconds. This is what makes the
+  `POST /notify` path (§4.6) deliver Telegram in seconds without any payload plumbing.
 
 ### 4.4 Readers
 
@@ -196,7 +193,7 @@ that still records the data and still feeds `raw.githubusercontent.com`.
 | `AP127_V2/ops/index.html` | 37 | same |
 | `AP127_V2/crosscheck/index.html` | 91 | same (was `../flight-data.js`) |
 | `AP127_V2/overview/index.html` | 64 | same (was `../flight-data.js`) |
-| `AP127_Portal/mindmap.html` | TBD — inspect during impl | same if it is a `<script src>`; if a `fetch()`, point that at the Worker |
+| `AP127_Portal/mindmap.html` | — | **not a functional consumer** — the "flight-data" strings are labels inside a mermaid architecture diagram. Update the diagram text to match §3 (docs only). |
 
 Cross-origin `<script src>` still loads synchronously and sets `window.FLIGHT_DATA`; load order
 and downstream init are unaffected. DB_Share inherits the change automatically (it proxies
@@ -267,9 +264,11 @@ Phase 2). After decoupling this is no longer a Pages-build cost, but it is waste
 - `update-cache.yml`'s own `0 * * * *` fallback cron stays as the safety net.
 - Result: DB001 cache refreshes every 15 min (~96 runs/day, down from 288).
 
-**Phase 1 result:** portal change → Pi scrape (≤ ~18 min, unchanged in Phase 1) → commit + R2
-PUT + `/notify` → Telegram within **seconds**. The ~5 min poll wait is gone. Pages builds
-flatline. Fetch cadence has no metered ceiling. DB001 CI churn drops to a third.
+**Phase 1 result:** portal change → Pi scrape (≤ ~18 min, unchanged in Phase 1) → `git push` +
+`/notify` → the watchdog reads `flight-data-recent.js` via the Worker with `no-cache` (bypasses
+both caches, sees the push in seconds) → Telegram within **seconds**. The ~5 min poll wait is
+gone. Pages builds flatline. Fetch cadence has no metered ceiling. DB001 CI churn drops to a
+third.
 
 ---
 
@@ -324,51 +323,51 @@ new faster cadence — widening the margin, not shrinking it.
 
 ## 6. Rollout order
 
-1. Create R2 bucket; deploy `ap127-data` Worker with tests green; set `DATA_WRITE_TOKEN`.
-2. Seed R2 with current files; verify GET / Range / ETag by hand.
-3. Add the writer PUT step to **the Pi only**; watch 2–3 cycles; confirm via Worker logs +
-   `curl GET` that R2 tracks Git.
-4. Add the writer PUT steps to `fetch_schedule.yml` and `update-cache.yml`.
-5. Repoint **one** browser consumer (`flight-schedule-feed/index.html`); load the live site,
-   confirm data freshness + clean console.
-6. Repoint the remaining browser consumers and the backend Workers; delete `AP127_V2/flight-data.js`;
-   trim `refresh_snapshots.mjs`.
-7. Add the watchdog `POST /notify` endpoint + callers; tighten its cron to `*/2`.
-8. Gate the dispatcher's DB001 target to */15 (§4.7); redeploy the dispatcher.
-9. Set build watch paths on all three Pages projects.
-10. **Soak 48 h:** CF API deployment count per project flatlines to ~0; feed stays fresh;
-    watchdog + dispatcher error-free; Telegram latency measured in seconds after a Pi commit.
-11. **Phase 2:** implement §5.1 behind `FETCH_RPC_CONCURRENCY=1`; test at `4` for several
-    cycles with output diffing; then flip the timer + `STANDBY_MAX_AGE_MIN`; monitor
-    bot-detection for a week.
+1. Deploy `ap127-data` Worker (`wrangler deploy`, tests green). No bucket, no secret.
+2. Verify by hand against the live Worker: `GET` each key (content-type, `max-age=60`), a
+   `Range: bytes=0-599` on `flight-data-recent.js` returns the `fetchedAt`, `Cache-Control:
+   no-cache` returns a fresh read, an unknown key is 404.
+3. Repoint **one** browser consumer (`flight-schedule-feed/index.html`); push; load the live
+   site; confirm the request goes to the Worker, data is current, console clean.
+4. Repoint the remaining browser consumers; delete `AP127_V2/flight-data.js`; trim
+   `refresh_snapshots.mjs`; push CMDV2.
+5. Repoint the backend Workers (`watchdog` `FLIGHT_SRC`, `dispatcher` feed URL); deploy both.
+6. Add the watchdog `POST /notify` endpoint + Pi/CI callers; tighten its cron to `*/2`; deploy.
+7. Gate the dispatcher's DB001 target to */15 (§4.7); push (auto-deploys).
+8. Set build watch paths on all three Pages projects.
+9. **Soak 48 h:** CF API deployment count per project flatlines to ~0; feed stays fresh via the
+   Worker; watchdog + dispatcher error-free; Telegram latency in seconds after a Pi commit.
+10. **Phase 2:** implement §5.1 behind `FETCH_RPC_CONCURRENCY=1`; test at `4` for several cycles
+    with output diffing; then flip the timer + `STANDBY_MAX_AGE_MIN`; monitor bot-detection for
+    a week.
 
 ## 7. Rollback
 
 - **Browser:** revert the one-line `<script src>` changes (Git) and re-run a real build. Sites
   are back on the bundled `flight-data.js`.
 - **Build watch paths:** clear the exclude lists in the dashboard; builds resume immediately.
-- **Writers:** the PUT steps are non-fatal and independent — remove them or leave them writing
-  to an unread bucket.
+- **Backend Workers:** revert `FLIGHT_SRC` / feed URL to `raw.githubusercontent.com`; redeploy.
 - **Watchdog:** remove `/notify` callers; restore `*/5` cron.
 - **Phase 2:** `FETCH_RPC_CONCURRENCY=1` restores serial scraping; revert the timer /
   `STANDBY_MAX_AGE_MIN` to `5min` / `6`.
-- The `ap127-data` Worker + R2 bucket can stay deployed unused — zero cost, no side effects.
+- The `ap127-data` Worker is stateless — it can stay deployed unused, or be deleted; either way
+  zero cost, no side effects.
 
 ## 8. Documentation updates (per the AP127 universal update rule)
 
-- `flight-schedule-feed/CLAUDE.md` — new "Data plane" section: the Worker URL, the R2 write
-  path, build-watch-paths config, the `/notify` push, the Phase-2 cadence knobs. Update the
-  fetch-roles table.
+- `flight-schedule-feed/CLAUDE.md` — new "Data plane" section: the Worker URL, the proxy model
+  (raw.github, `no-cache` bypass), build-watch-paths config, the `/notify` push, the Phase-2
+  cadence knobs. Update the fetch-roles table.
 - `AP127_V2/CLAUDE.md`, `AP127_NGT_001/CLAUDE.md` — note the feed source is now the `ap127-data`
   Worker; note build watch paths.
 - `AP127_Docs/README.md` — §2.1 / §2.2 / §2.4 architecture + §10 dated log entry; deploy the
   docs site.
-- `pi-native/README.md` — the two new secrets, the PUT step, the Phase-2 cadence change.
+- `pi-native/README.md` — the new `WATCHDOG_NOTIFY_KEY` env key, the `/notify` call, the Phase-2
+  cadence change.
 - Bump CMD_CTR's `index.html` cache token per its update rule (the `<script src>` line changes).
 
 ## 9. Open items to resolve during implementation
 
-- `AP127_Portal/mindmap.html` — confirm how it consumes `flight-data` and fold into §4.4.
 - Whether build watch paths are settable via the CF API (`build_config.path_excludes`) or
   dashboard-only.
 - Confirm the watchdog's `WATCHDOG_API_KEY` is the right gate for `/notify` (vs. a dedicated
