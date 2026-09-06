@@ -57,15 +57,39 @@ describe('GET', () => {
     expect(lastFetch.url).toContain('AP127CMD/DB001/main/cache.json');
   });
 
-  it('Cache-Control: no-cache busts raw.github and sends no-store upstream', async () => {
+  it('Cache-Control: no-cache forwards no-cache + no-store, no query buster', async () => {
     const res = await worker.fetch(
       req('GET', '/flight-data-recent.js', { headers: { 'Cache-Control': 'no-cache' } }),
       {}, {},
     );
     expect(res.status).toBe(200);
-    expect(lastFetch.url).toMatch(/flight-data-recent\.js\?_=\d+$/);
+    expect(lastFetch.url).toBe(
+      'https://raw.githubusercontent.com/AP127CMD/CMD_CTR/main/flight-data-recent.js',
+    );
     expect(lastFetch.opts.headers['Cache-Control']).toBe('no-cache');
     expect(lastFetch.opts.cache).toBe('no-store');
+  });
+
+  it('serves the last good copy from cache when upstream 404s', async () => {
+    const store = new Map();
+    globalThis.caches = {
+      default: {
+        async match(r) { return store.get(r.url) || undefined; },
+        async put(r, resp) { store.set(r.url, resp); },
+      },
+    };
+    const ctx = { waitUntil: (p) => p };
+    // prime the cache with a good fetch
+    await worker.fetch(req('GET', '/flight-data.js'), {}, ctx);
+    await new Promise((r) => setTimeout(r, 0));
+    // now upstream breaks
+    installFetch(() => new Response('gone', { status: 404 }));
+    const res = await worker.fetch(
+      req('GET', '/flight-data.js', { headers: { 'Cache-Control': 'no-cache' } }),
+      {}, ctx,
+    );
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe(FULL);
   });
 
   it('Range: slices locally with a correct Content-Range against the full length', async () => {
