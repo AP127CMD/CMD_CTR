@@ -20,14 +20,21 @@ stateless proxy in `data-worker/` that re-serves the git-committed data files fr
   change reaches Telegram in seconds instead of on the watchdog's `*/2` cron.
 - Full design + rollout: `docs/superpowers/specs/2026-09-06-r2-data-plane-decoupling-design.md`,
   `docs/superpowers/plans/2026-09-06-r2-data-plane-decoupling.md`.
-- **Phase 2 (LIVE 2026-09-06):** the per-date `getStudentSchedule` loop runs
-  `FETCH_RPC_CONCURRENCY` (default 4) dates at once — `_gather_dates_bounded()` + a FIFO
-  semaphore; `=1` is exact serial. The Pi's `.env` sets it to 4. The Pi timer is `3min`
-  (`pi-native/ap127-fetch.timer`) and `STANDBY_MAX_AGE_MIN` default is `3`. Full window went
-  ~7.5 min → ~3 min; effective cadence ~3–6 min. Verified live: concurrency 1 and 4 both produce
-  byte-identical output (404/18 dates, 6117 total). **Revert if Google bot-detection reacts:**
-  `FETCH_RPC_CONCURRENCY=1` in `pi-native/.env`, and/or `OnUnitActiveSec=5min` +
-  `STANDBY_MAX_AGE_MIN=6` — each independent.
+- **Phase 2 (2026-09-06, partially reverted 2026-09-07):** the per-date `getStudentSchedule`
+  loop runs `FETCH_RPC_CONCURRENCY` dates at once — `_gather_dates_bounded()` + a FIFO
+  semaphore; `=1` is exact serial. **This parallel scrape is KEPT** (the real speedup, ~12 min →
+  ~6 min serial-equivalent). The Pi `.env` now sets it to **2** (was 4).
+  **The paired 3-min timer was REVERTED to 5-min** and `STANDBY_MAX_AGE_MIN` default back to
+  **6** (was 3), on 2026-09-07 after the Pi **hard-hung** (board powered but 100% unresponsive —
+  no SSH/ping/network — for ~17 h) about 4 h into the 3-min cadence. No crash logs survived
+  (no RTC, RAMlog wiped on the power-cycle); circumstantial read is an OOM/lockout from
+  memory-spike *frequency* on a 1 GB board also running CUPS, not the parallelism itself.
+  **Cloud fallback covered the whole outage** — the dispatcher's `STALE_TAKEOVER_MIN=35` kept
+  `github-actions[bot]` refreshing the feed every ~40 min (max gap 44 min, 0 gaps >60 min, so
+  the 60-min Telegram-staleness page never tripped).
+  Effective cadence now: parallel scrape at a 5-min timer ≈ a fetch every ~6–8 min.
+  A [claude.ai cloud routine](https://claude.ai/code/routines) `trig_0166opottzeQnRm8nzKMzxXC`
+  watches Pi commit cadence + fetch issues every 2 h.
 
 ## ⚠️ Fetch-path roles — READ FIRST (changed 2026-09-02)
 
