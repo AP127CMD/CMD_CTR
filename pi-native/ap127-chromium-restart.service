@@ -1,0 +1,15 @@
+[Unit]
+Description=AP127 nightly Chromium recycle (clears accumulated memory bloat)
+After=ap127-chromium.service
+# Not Requires= — if Chromium is somehow down, the recycle script's own
+# systemctl restart brings it up.
+
+[Service]
+Type=oneshot
+# Runs as root: it drives systemctl on the ap127-fetch.timer / ap127-chromium
+# system units. The recycle script itself touches nothing user-owned.
+ExecStart=__HOME__/flight-schedule-feed/pi-native/recycle-chromium.sh
+TimeoutStartSec=240
+
+[Install]
+WantedBy=multi-user.target

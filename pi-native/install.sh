@@ -34,11 +34,13 @@ else
 fi
 
 echo "=== Installing systemd units ==="
-for unit in ap127-chromium.service ap127-fetch.service; do
+for unit in ap127-chromium.service ap127-fetch.service ap127-chromium-restart.service; do
   sed -e "s#__USER__#${THIS_USER}#g" -e "s#__HOME__#${THIS_HOME}#g" \
     "${REPO_ROOT}/pi-native/${unit}" | sudo tee "/etc/systemd/system/${unit}" >/dev/null
 done
 sudo cp "${REPO_ROOT}/pi-native/ap127-fetch.timer" /etc/systemd/system/
+sudo cp "${REPO_ROOT}/pi-native/ap127-chromium-restart.timer" /etc/systemd/system/
+chmod +x "${REPO_ROOT}/pi-native/recycle-chromium.sh"
 
 if [ ! -f "${REPO_ROOT}/pi-native/.env" ]; then
   echo "=== No pi-native/.env found — creating from example ==="
@@ -52,6 +54,7 @@ fi
 sudo systemctl daemon-reload
 sudo systemctl enable --now ap127-chromium.service
 sudo systemctl enable --now ap127-fetch.timer
+sudo systemctl enable --now ap127-chromium-restart.timer   # nightly 03:00 Chromium recycle
 
 echo
 echo "=== Done. Chromium is starting (may take ~10s). ==="

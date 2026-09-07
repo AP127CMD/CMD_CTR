@@ -1,0 +1,14 @@
+[Unit]
+Description=Nightly Chromium recycle at 03:00 local
+
+[Timer]
+# 03:00 in the Pi's local time (Asia/Bangkok) — dead of night, no flying, the
+# flight schedule is static so the one fetch cycle this pushes back costs
+# nothing. Jitter so it never lands on the exact same instant as anything else.
+OnCalendar=*-*-* 03:00:00
+RandomizedDelaySec=300
+# No Persistent= — a missed nightly recycle (Pi was off) isn't worth catching
+# up; a fresh boot already has fresh Chromium.
+
+[Install]
+WantedBy=timers.target

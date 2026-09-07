@@ -192,10 +192,11 @@ git clone https://github.com/AP127CMD/CMD_CTR ~/flight-schedule-feed
 cd ~/flight-schedule-feed/pi-native
 ./install.sh
 ```
-This installs Chromium + Xvfb + x11vnc + Python deps, sets up the two
-systemd units (`ap127-chromium.service`, `ap127-fetch.timer`), and prompts
-for your `GH_PAT` (see `.env.example`'s instructions for the exact scopes)
-before enabling everything.
+This installs Chromium + Xvfb + x11vnc + Python deps, sets up the systemd
+units (`ap127-chromium.service`, `ap127-fetch.timer`, and
+`ap127-chromium-restart.timer` — the nightly recycle), and prompts for your
+`GH_PAT` (see `.env.example`'s instructions for the exact scopes) before
+enabling everything.
 
 ### 5. One-time login — NOT NEEDED in practice (fallback only)
 
@@ -224,17 +225,20 @@ Google has no reason to flag it. Once you land on "Flight Student Portal"
 ### 6. Verify
 
 ```bash
-systemctl status ap127-chromium ap127-fetch.timer
+systemctl status ap127-chromium ap127-fetch.timer ap127-chromium-restart.timer
 journalctl -u ap127-fetch -n 50 --no-pager
 ```
 Should show a fetch completing within 5 minutes, ending in `Saved →` and
 (if there was new data) `Pushed on attempt N` + `CMDV2 refresh-data.yml
-dispatched`.
+dispatched`. `ap127-chromium-restart.timer` should list a `Trigger:` at the
+next 03:00 local. To exercise the recycle immediately:
+`sudo systemctl start ap127-chromium-restart.service && journalctl -u
+ap127-chromium-restart -n 20 --no-pager`.
 
 ## Memory cushion — why this matters and isn't optional
 
 Chromium alone typically holds 300-500MB+ RSS even idle. On a 1GB board
-that leaves genuinely little margin. Two things make this workable instead
+that leaves genuinely little margin. Three things make this workable instead
 of a constant OOM risk:
 1. **zram** (step 3 above) — compressed swap in RAM. Not a substitute for
    having enough real RAM, but a real cushion against transient spikes
@@ -244,11 +248,23 @@ of a constant OOM risk:
    (`--disable-gpu`, `--disable-dev-shm-usage`, `--disable-extensions`,
    etc.) — trims background work a single-purpose kiosk instance never
    needs.
+3. **Nightly Chromium recycle** — `ap127-chromium-restart.timer` fires
+   `recycle-chromium.sh` at 03:00 local: stops the fetch timer, restarts
+   `ap127-chromium.service`, waits for CDP on :9222, restarts the fetch
+   timer. Clears the renderer/tab bloat the persistent browser accumulates
+   over a day. The signed-in session is on disk (`--user-data-dir`) so the
+   restart doesn't log out. Added 2026-09-07 after the board hard-hung for
+   ~17 h — powered but fully unresponsive — roughly 4 h into a
+   (since-reverted) 3-min fetch cadence, almost certainly swap-thrash from
+   accumulated Chromium memory with no idle-recovery window. The parallel
+   scrape (`FETCH_RPC_CONCURRENCY`, now 2 on this board) was kept; the 5-min
+   timer was restored.
 
 If you see `journalctl -u ap127-chromium` showing repeated restarts, that's
 likely an OOM-kill — check `dmesg | grep -i oom` to confirm, and consider
 increasing the zram size (`dietpi-config` again) or, if it persists,
-revisit whether this board has enough headroom for this job after all.
+revisit whether this board has enough headroom for this job after all
+(moving the CUPS/AirPrint server off it is the obvious first cut).
 
 ## Session expired
 
