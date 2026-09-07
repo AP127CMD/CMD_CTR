@@ -1,13 +1,15 @@
 [Unit]
-Description=Run ap127-fetch every 3 minutes
+Description=Run ap127-fetch every 5 minutes
 
 [Timer]
 OnBootSec=2min
-# Phase 2 (2026-09-06): 5 -> 3 min. The per-date RPC loop now runs in parallel
-# (FETCH_RPC_CONCURRENCY) so a full window is ~3-4 min. oneshot means cycles
-# never overlap — a fetch still in progress just delays the next, it doesn't
-# stack. Revert to 5min + STANDBY_MAX_AGE_MIN=6 if Google bot-detection reacts.
-OnUnitActiveSec=3min
+# 2026-09-06: briefly ran at 3 min (Phase 2, paired with FETCH_RPC_CONCURRENCY).
+# Reverted to 5 min on 2026-09-07 after the Pi hard-hung ~4 h into the 3-min
+# cadence (board powered but fully unresponsive — likely OOM / lockout under the
+# tighter memory-spike interval on a 1 GB board also running CUPS). The parallel
+# scrape (concurrency) is kept — it is the real speed win; only the interval
+# reverted, to give the board idle-recovery time between heavy cycles.
+OnUnitActiveSec=5min
 # Spread slightly so it doesn't always land exactly when ap127-chromium.service
 # might be mid-restart after a crash.
 AccuracySec=30sec
