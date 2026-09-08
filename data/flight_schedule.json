@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-08T15:38:22Z",
+  "fetched_at": "2026-09-08T15:56:56Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -194169,12 +194169,12 @@
         "date": "2026-09-08",
         "rowIdx": "BK-MTQZ2LEF",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "19:20",
@@ -194190,15 +194190,15 @@
         "condition": "XC / Night",
         "type": "R44",
         "tail": "HS-TZU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "R44",
+        "tkoff": "19:25",
+        "ldgTime": "20:20",
+        "airborne": "00:55",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "19:20",
+        "blockOn": "20:20",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -209505,8 +209505,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -209541,8 +209541,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -209559,14 +209559,14 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -209589,8 +209589,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -209637,8 +209637,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -209661,8 +209661,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -209673,8 +209673,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -209687,8 +209687,8 @@
     {
       "tail": "HS-TCB",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TCP",
@@ -209705,14 +209705,14 @@
     {
       "tail": "HS-TPG",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPH",
       "acType": "C172",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPL",
@@ -209723,8 +209723,8 @@
     {
       "tail": "HS-TPM",
       "acType": "DA42TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TPO",
@@ -209765,8 +209765,8 @@
     {
       "tail": "HS-TPW",
       "acType": "DA40TDI",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Trouble"
     },
     {
       "tail": "HS-TPX",
@@ -209783,8 +209783,8 @@
     {
       "tail": "HS-TVB",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TVC",
@@ -209813,8 +209813,8 @@
     {
       "tail": "HS-TVG",
       "acType": "DA40CS",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Trouble"
     },
     {
       "tail": "HS-TVH",
@@ -209831,8 +209831,8 @@
     {
       "tail": "HS-TZS",
       "acType": "R44",
-      "isMaint": false,
-      "maintReason": null
+      "isMaint": true,
+      "maintReason": "Maintenance"
     },
     {
       "tail": "HS-TZT",
