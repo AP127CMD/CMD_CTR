@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-09T01:16:32Z",
+  "fetched_at": "2026-09-09T01:34:02Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -196869,12 +196869,12 @@
         "date": "2026-09-09",
         "rowIdx": "BK-AP-126-NABH-68HQR",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "07:00",
@@ -196890,15 +196890,15 @@
         "condition": "A.UPRT",
         "type": "C172",
         "tail": "HS-TPF",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "C172",
+        "tkoff": "07:18",
+        "ldgTime": "07:58",
+        "airborne": "00:40",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "07:04",
+        "blockOn": "08:04",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -209581,14 +209581,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -209599,32 +209599,32 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -209635,8 +209635,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -209647,8 +209647,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -209683,8 +209683,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -209713,14 +209713,14 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
