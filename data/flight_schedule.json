@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-10T03:14:37Z",
+  "fetched_at": "2026-09-10T03:55:06Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -198619,12 +198619,12 @@
         "date": "2026-09-10",
         "rowIdx": "BK-AP-127-PICH-KL8T3",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "07:40",
@@ -198640,15 +198640,15 @@
         "condition": "SPIC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "07:50",
+        "ldgTime": "08:50",
+        "airborne": "01:00",
+        "ldg": 3,
+        "to": 3,
+        "inst": 0,
+        "blockOff": "07:40",
+        "blockOn": "08:55",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -199113,12 +199113,12 @@
         "date": "2026-09-10",
         "rowIdx": "BK-AP-127-VASA-IUVUJ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:20",
@@ -199134,15 +199134,15 @@
         "condition": "SPIC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "09:25",
+        "ldgTime": "10:24",
+        "airborne": "00:59",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "09:13",
+        "blockOn": "10:28",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -199493,7 +199493,7 @@
         "date": "2026-09-10",
         "rowIdx": "BK-AP-129-MARC-67BTQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -199523,8 +199523,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": "Not Fit to Fly"
       },
       {
         "id": "BK-AP-126-SIWA-ZQA7R",
@@ -211307,8 +211307,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -211331,8 +211331,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -211355,8 +211355,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -211391,14 +211391,14 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -211427,38 +211427,38 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -217325,6 +217325,19 @@
       "lesson": "CSPXV 42",
       "acType": "DA40TDI",
       "acReg": "HS-TPR"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-MARC-67BTQ|10/09/2026 10:13:20",
+      "bookingId": "BK-AP-129-MARC-67BTQ",
+      "date": "2026-09-10",
+      "reason": "Student Sick",
+      "remarks": "Not Fit to Fly",
+      "instructor": "PHUMIN T.",
+      "student": "MARC W.",
+      "batch": "AP-129",
+      "lesson": "CDIL 17",
+      "acType": "DA40CS",
+      "acReg": "HS-TVE"
     }
   ],
   "_regressionStreaks": {}
