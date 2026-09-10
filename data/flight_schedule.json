@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-10T09:14:51Z",
+  "fetched_at": "2026-09-10T09:31:29Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -200491,8 +200491,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "09:30",
+        "start": "07:00",
+        "end": "10:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -200605,8 +200605,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "09:30",
+        "start": "07:00",
+        "end": "10:00",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -200833,8 +200833,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "08:30",
+        "start": "08:00",
+        "end": "10:00",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
@@ -200948,16 +200948,16 @@
         "isSimulator": false,
         "isStandby": false,
         "start": "08:20",
-        "end": "09:35",
-        "duration": "01:15",
-        "durationMin": 75,
+        "end": "09:50",
+        "duration": "01:30",
+        "durationMin": 90,
         "planDur": null,
         "planDurMin": null,
         "student": "MARC W.",
         "instructor": "PHUMIN T.",
         "batch": "AP-129",
-        "lesson": "CSGL 18",
-        "condition": "Solo",
+        "lesson": "CDIL 17",
+        "condition": null,
         "type": "DA40CS",
         "tail": "HS-TVA",
         "actualType": null,
@@ -200991,7 +200991,7 @@
         "durationMin": 90,
         "planDur": null,
         "planDurMin": null,
-        "student": "CHAIPAT T.",
+        "student": "TUPPAWAT S.",
         "instructor": "PHAHOLYUTH P.",
         "batch": "AP-129",
         "lesson": "CDIL 19",
@@ -201137,8 +201137,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "11:30",
+        "start": "06:40",
+        "end": "08:10",
         "duration": "01:30",
         "durationMin": 90,
         "planDur": null,
@@ -201149,7 +201149,7 @@
         "lesson": "CDIL 19",
         "condition": null,
         "type": "DA40CS",
-        "tail": "HS-TVA",
+        "tail": "HS-TVG",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -201213,8 +201213,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "09:00",
-        "end": "11:00",
+        "start": "10:30",
+        "end": "12:30",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
@@ -201365,8 +201365,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:00",
-        "end": "13:00",
+        "start": "10:30",
+        "end": "13:30",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
@@ -201593,19 +201593,19 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "11:00",
-        "end": "12:15",
+        "start": "10:00",
+        "end": "11:15",
         "duration": "01:15",
         "durationMin": 75,
         "planDur": null,
         "planDurMin": null,
         "student": "NAPON S.",
-        "instructor": "CHAROENCHAI U.",
+        "instructor": "THAWATANAN P.",
         "batch": "AP-127",
         "lesson": "CSPGL 36",
         "condition": "SPIC",
         "type": "DA40CS",
-        "tail": "HS-TVE",
+        "tail": "HS-TVA",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -201693,45 +201693,6 @@
         "blockOn": null,
         "cancelReason": null,
         "cancelRemarks": null
-      },
-      {
-        "id": "BK-AP-129-SURA-LA7S5",
-        "date": "2026-09-11",
-        "rowIdx": "BK-AP-129-SURA-LA7S5",
-        "realRowIdx": null,
-        "status": "Canceled",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "06:30",
-        "end": "07:45",
-        "duration": "01:15",
-        "durationMin": 75,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "SURATHEE S.",
-        "instructor": "SOWAN C.",
-        "batch": "AP-129",
-        "lesson": "CSGL 20",
-        "condition": "Solo",
-        "type": "DA40TDI",
-        "tail": "HS-TPT",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
       }
     ],
     "2026-09-12": [],
@@ -212871,14 +212832,14 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -212895,8 +212856,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212913,8 +212874,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -212937,20 +212898,20 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "WISANU T.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "WUTTHICHAI L.",
+      "name": "WISANU T.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "WUTTHICHAI L.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212961,8 +212922,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -212973,8 +212934,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -212985,26 +212946,26 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -213021,8 +212982,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -213033,8 +212994,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213045,8 +213006,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
