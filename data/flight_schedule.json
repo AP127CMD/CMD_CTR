@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-11T03:04:29Z",
+  "fetched_at": "2026-09-11T03:21:35Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -200901,7 +200901,7 @@
         "date": "2026-09-11",
         "rowIdx": "BK-AP-127-SETA-8NZZT",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -200931,8 +200931,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-MARC-NGGO2",
@@ -212757,6 +212757,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/09/2026 10:10:32",
+      "name": "EKKAPHOP R.",
+      "batch": "N/A",
+      "start": "2026-09-12",
+      "end": "2026-09-14",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
+    },
+    {
       "id": "Leave Record|key|04/09/2026 15:29:27",
       "name": "KANTAPONG A.",
       "batch": "AP-126",
@@ -212777,6 +212788,17 @@
       "reason": "Personal Leave",
       "note": "ขออนุญาติลากิจ 2 วันไปธุระที่บ้านครับ ขอบคุณครับ",
       "role": "Student"
+    },
+    {
+      "id": "Leave Record|key|11/09/2026 10:10:14",
+      "name": "NANTAWAT D.",
+      "batch": "N/A",
+      "start": "2026-09-12",
+      "end": "2026-09-14",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Instructor"
     },
     {
       "id": "Leave Record|key|05/09/2026 20:11:47",
@@ -212976,8 +212998,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212988,20 +213010,20 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213012,14 +213034,14 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213030,8 +213052,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -213048,14 +213070,14 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -213078,8 +213100,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213096,8 +213118,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
@@ -213120,8 +213142,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -213132,8 +213154,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -213144,8 +213166,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -219032,6 +219054,19 @@
       "lesson": "CSPXV 39",
       "acType": "DA40CS",
       "acReg": "HS-TVC"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-SETA-8NZZT|11/09/2026 10:03:02",
+      "bookingId": "BK-AP-127-SETA-8NZZT",
+      "date": "2026-09-11",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "EKKAPHOP R.",
+      "student": "SETASIT P.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 41",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-128-DOLS-HYRM0|11/09/2026 08:18:57",
