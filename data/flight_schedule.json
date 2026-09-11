@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-11T02:31:02Z",
+  "fetched_at": "2026-09-11T02:47:38Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -201433,7 +201433,7 @@
         "date": "2026-09-11",
         "rowIdx": "BK-AP-127-KORN-79EF4",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -201463,8 +201463,8 @@
         "inst": null,
         "blockOff": null,
         "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Instructor Sick",
+        "cancelRemarks": "Instructor ask to cancel due to sickness "
       },
       {
         "id": "BK-AP-127-WATC-R152W",
@@ -201771,7 +201771,46 @@
         "cancelRemarks": null
       }
     ],
-    "2026-09-12": [],
+    "2026-09-12": [
+      {
+        "id": "BK-MTWCQMJ7",
+        "date": "2026-09-12",
+        "rowIdx": "BK-MTWCQMJ7",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "06:30",
+        "end": "07:45",
+        "duration": "01:15",
+        "durationMin": 75,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "AKINKORN L.",
+        "instructor": "SORRAWUT P.",
+        "batch": "AP-129",
+        "lesson": "CSGL 22",
+        "condition": "Solo",
+        "type": "DA40TDI",
+        "tail": null,
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      }
+    ],
     "2026-09-13": [],
     "2026-09-14": [],
     "2026-09-15": [],
@@ -212806,6 +212845,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|11/09/2026 09:31:16",
+      "name": "PICHAKORN J.",
+      "batch": "AP-127",
+      "start": "2026-09-19",
+      "end": "2026-09-20",
+      "duration": "Full Day",
+      "reason": "Personal Leave",
+      "note": "",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|key|03/09/2026 21:13:49",
       "name": "KITTHANYA T.",
       "batch": "AP-127",
@@ -212932,14 +212982,14 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212950,14 +213000,14 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212974,8 +213024,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -212992,20 +213042,20 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -213022,8 +213072,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213034,8 +213084,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -213064,8 +213114,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -213076,14 +213126,14 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -213094,8 +213144,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -218969,6 +219019,19 @@
       "lesson": "CDIL 17",
       "acType": "DA40CS",
       "acReg": "HS-TVE"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-KORN-79EF4|11/09/2026 09:33:55",
+      "bookingId": "BK-AP-127-KORN-79EF4",
+      "date": "2026-09-11",
+      "reason": "Instructor Sick",
+      "remarks": "Instructor ask to cancel due to sickness ",
+      "instructor": "PHUMIN T.",
+      "student": "KORN S.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 39",
+      "acType": "DA40CS",
+      "acReg": "HS-TVC"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-128-DOLS-HYRM0|11/09/2026 08:18:57",
