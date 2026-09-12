@@ -537,6 +537,13 @@ source and verifying the diff was scoped to exactly the expected changes before 
     scrape cycle — absorbed by the existing freshness thresholds and the ≥35 min cloud takeover.
   - Full detail (queue name, driver, device URI, admin URL) is in **AP127_Docs §5.4** — deliberately not
     repeated here, since this repo is public.
+- **`run_fetch.sh` now sends a heartbeat, unconditionally, on every timer firing (2026-09-12).** Found
+  live: the Pi went hard-down for ~1h49m with nothing noticing, because the cloud fallback above kept
+  the feed fresh throughout — masking "Pi dead" as identical to "Pi correctly standing by." A `POST` to
+  `ap127-watchdog-monitor`'s `/pi-heartbeat` (needs `PI_HEARTBEAT_KEY` in `pi-native/.env`) now fires
+  regardless of whether that cycle fetches or skips — a gap means the systemd timer itself stopped.
+  Full detail (detector logic, KV write-rate-gating, live verification): **AP127_Docs §6.9** +
+  `AP127_V2/CLAUDE.md`'s 2026-09-12 watchdog-monitor entry.
 
 ## Master reference
 Full architecture, deploy steps, secrets: https://ap127-docs.pages.dev  (§2.1)
