@@ -122,6 +122,19 @@ close_pi_failure_if_open() {
 
 echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) — starting fetch ==="
 
+# Heartbeat — fires on EVERY invocation, before the freshness gate below decides whether
+# to actually fetch or stand by. That's deliberate: a standing-by Pi is healthy and commits
+# nothing for long stretches on purpose, so "last commit" can't be the liveness signal —
+# only "the timer is still firing at all" can. See watchdog-monitor/src/index.js's
+# evaluatePi() for what reads this. Best-effort, non-fatal, short timeout — a heartbeat
+# failure must never block or fail the actual fetch cycle.
+if [ -n "${PI_HEARTBEAT_KEY:-}" ]; then
+  curl -fsS -m 10 -X POST -H "X-API-Key: ${PI_HEARTBEAT_KEY}" \
+    "https://ap127-watchdog-monitor.anusorn-tanmetha.workers.dev/pi-heartbeat" >/dev/null \
+    && echo "heartbeat ✓" \
+    || echo "WARNING: heartbeat POST failed (non-fatal)" >&2
+fi
+
 # A failed cycle leaves an uncommitted backoff_state.json bump behind (this
 # script only commits on the success path) — without this, EVERY cycle
 # after a failure would fail again immediately on git pull, forever. It's
