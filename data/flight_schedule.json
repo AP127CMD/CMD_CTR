@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-19T02:59:25Z",
+  "fetched_at": "2026-09-19T03:39:17Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -210075,12 +210075,12 @@
         "date": "2026-09-19",
         "rowIdx": "BK-AP-127-TAKO-T8HSY",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "07:00",
@@ -210096,15 +210096,15 @@
         "condition": "SPIC / XC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40CS",
+        "tkoff": "07:10",
+        "ldgTime": "09:55",
+        "airborne": "02:45",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "07:00",
+        "blockOn": "10:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -210795,44 +210795,6 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-AP-129-SURA-HSFEB",
-        "date": "2026-09-20",
-        "rowIdx": "BK-AP-129-SURA-HSFEB",
-        "realRowIdx": null,
-        "status": "Pending",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "06:30",
-        "end": "07:45",
-        "duration": "01:15",
-        "durationMin": 75,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "SURATHEE S.",
-        "instructor": "APIRATKUNPAK K.",
-        "batch": "AP-129",
-        "lesson": "CSGL 24",
-        "condition": "Solo",
-        "type": "DA40TDI",
-        "tail": "HS-TPO",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null
-      },
-      {
         "id": "BK-AP-128-KITT-R6AXB",
         "date": "2026-09-20",
         "rowIdx": "BK-AP-128-KITT-R6AXB",
@@ -210883,8 +210845,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "07:00",
-        "end": "08:30",
+        "start": "10:00",
+        "end": "11:30",
         "duration": "01:30",
         "durationMin": 90,
         "planDur": null,
@@ -210997,19 +210959,19 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "08:20",
-        "end": "11:20",
+        "start": "06:30",
+        "end": "09:30",
         "duration": "03:00",
         "durationMin": 180,
         "planDur": null,
         "planDurMin": null,
         "student": "TEERAWAJ C.",
-        "instructor": "APIRATKUNPAK K.",
+        "instructor": "WISANU T.",
         "batch": "AP-127",
         "lesson": "CSPXV 42",
         "condition": "SPIC / XC",
-        "type": "DA40TDI",
-        "tail": "HS-TPO",
+        "type": "DA40CS",
+        "tail": "HS-TVD",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -211213,48 +211175,9 @@
         "cancelRemarks": null
       },
       {
-        "id": "BK-MU7M8800",
+        "id": "BK-AP-129-SURA-HSFEB",
         "date": "2026-09-20",
-        "rowIdx": "BK-MU7M8800",
-        "realRowIdx": null,
-        "status": "Canceled",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": false,
-        "isStandby": false,
-        "start": "09:00",
-        "end": "10:20",
-        "duration": "01:20",
-        "durationMin": 80,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "KRAISEE L.",
-        "instructor": "THAWATANAN P.",
-        "batch": "AP-127",
-        "lesson": "CSPGL 52",
-        "condition": "SPIC",
-        "type": "DA40TDI",
-        "tail": "HS-TPR",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "cancelReason": null,
-        "cancelRemarks": null,
-        "recovered": true
-      },
-      {
-        "id": "BK-MU7MB5FN",
-        "date": "2026-09-20",
-        "rowIdx": "BK-MU7MB5FN",
+        "rowIdx": "BK-AP-129-SURA-HSFEB",
         "realRowIdx": null,
         "status": "Canceled",
         "statusOverride": null,
@@ -211265,18 +211188,18 @@
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
-        "end": "07:50",
-        "duration": "01:20",
-        "durationMin": 80,
+        "end": "07:45",
+        "duration": "01:15",
+        "durationMin": 75,
         "planDur": null,
         "planDurMin": null,
-        "student": "WATCHARAPONG C.",
-        "instructor": "THAWATANAN P.",
-        "batch": "AP-127",
-        "lesson": "CSPGL 52",
-        "condition": "SPIC",
+        "student": "SURATHEE S.",
+        "instructor": "APIRATKUNPAK K.",
+        "batch": "AP-129",
+        "lesson": "CSGL 24",
+        "condition": "Solo",
         "type": "DA40TDI",
-        "tail": "HS-TPR",
+        "tail": "HS-TPO",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -211393,7 +211316,7 @@
         "lesson": "SCPLME",
         "condition": "XC / ME",
         "type": "DA42TDI",
-        "tail": "HS-TPQ",
+        "tail": "HS-TPL",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -211431,7 +211354,7 @@
         "lesson": "SCPLME",
         "condition": "XC / ME",
         "type": "DA42TDI",
-        "tail": "HS-TPQ",
+        "tail": "HS-TPL",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -222911,8 +222834,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -222929,8 +222852,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -222947,14 +222870,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -222971,8 +222894,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -222983,14 +222906,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -223001,8 +222924,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -223019,8 +222942,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -223037,8 +222960,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
@@ -223049,8 +222972,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -223067,14 +222990,14 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -223085,8 +223008,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
