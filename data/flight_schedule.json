@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-21T12:25:14Z",
+  "fetched_at": "2026-09-21T12:30:35Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -212207,12 +212207,12 @@
         "date": "2026-09-21",
         "rowIdx": "BK-AP-127-SIWA-UYYGW",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "18:00",
@@ -212228,15 +212228,15 @@
         "condition": "Solo / Night",
         "type": "DA40TDI",
         "tail": "HS-TPR",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
+        "actualType": "DA40TDI",
+        "tkoff": "18:08",
+        "ldgTime": "18:56",
+        "airborne": "00:48",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "18:00",
+        "blockOn": "19:00",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -225975,6 +225975,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|21/09/2026 19:23:17",
+      "name": "WANUT S.",
+      "batch": "AP-129",
+      "start": "2026-09-23",
+      "end": "2026-09-23",
+      "duration": "Full Day",
+      "reason": "Sick Leave",
+      "note": "Incision and Drainage (ผ่าฝี)",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|key|19/09/2026 11:25:59",
       "name": "EKKAPHOP R.",
       "batch": "N/A",
@@ -226128,14 +226139,14 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -226176,8 +226187,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -226254,8 +226265,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -226278,8 +226289,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
