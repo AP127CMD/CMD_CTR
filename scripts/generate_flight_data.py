@@ -114,6 +114,17 @@ def transform(raw: dict) -> dict:
                 if f.get("inst")    is not None: entry["inst"]    = f["inst"]
                 if f.get("blockOff")is not None: entry["blockOff"]= f["blockOff"]
                 if f.get("blockOn") is not None: entry["blockOn"] = f["blockOn"]
+                # Flight-record detail (2026-09-24) — route, leg, flight type,
+                # remark, and the full per-leg list on multi-leg bookings
+                # (fetch_schedule.attach_legs). Display only: hours stay durMin.
+                # For a multi-leg booking the single-valued fields above
+                # describe only its LATEST leg; `legs` has all of them.
+                if f.get("routeFrom"):  entry["routeFrom"]  = f["routeFrom"]
+                if f.get("routeTo"):    entry["routeTo"]    = f["routeTo"]
+                if f.get("actualLeg"):  entry["leg"]        = f["actualLeg"]
+                if f.get("flightType"): entry["flightType"] = f["flightType"]
+                if f.get("remark"):     entry["remark"]     = f["remark"]
+                if f.get("legs"):       entry["legs"]       = f["legs"]
             # Cancel reason/remarks — only present on Canceled flights, and
             # only once the matching Cancel Record has been detail-fetched
             # (incremental backfill in fetch_schedule.py — may lag briefly

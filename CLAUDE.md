@@ -82,7 +82,31 @@ grep -o '?v=r[0-9]*' index.html | sort -u
 git log --oneline | grep -v "chore: update flight data" | head -6
 gh workflow list -R AP127CMD/CMD_CTR --all   # fetch_schedule.yml is ENABLED again as of 2026-08-29 (was disabled 2026-08-26) — see below
 ```
-**Last known:** token = `r47` (2026-09-06 — **ASF cache URL → the `ap127-data`
+**Last known:** token = `r47` (2026-09-24 — **flight-record detail + per-leg Flight Records
+captured** (scraper/feed-only — token NOT bumped, no browser asset changed). User wanted the
+Watchdog "Completed" notice to show the flight record — leg, block off, T/O, LDG, block on,
+departure, destination. Found live via the portal RPC: `normalize_entry()` was **dropping**
+`actual.routeFrom/routeTo/leg/flightType/remark` — now kept as `routeFrom`/`routeTo`/`actualLeg`/
+`flightType`/`remark` (feed: `routeFrom`/`routeTo`/`leg`/`flightType`/`remark`, Completed only,
+emitted only when non-empty). **Second, deeper gap:** a booking's `actual{}` holds only its
+**latest leg** — a 3-leg XC booked as one 06:30–11:30 slot (`BK-AP-127-SETA-EHX3N`) came back as
+leg 3 VTSE→VTPH only. Every leg survives as its own **Flight Record** submission
+(`Student Records|key|<bookingId>|<dd/mm/yyyy hh:mm:ss>`). New `_fetch_flight_legs()` detail-fetches
+only bookings with **≥2** Flight Records (count read from the id — no detail call), last
+`FLIGHT_LEG_DAYS_BACK`=3 days, `FLIGHT_LEG_DETAIL_MAX_PER_RUN`=12/run newest-first (details are
+**~8 s each**, measured), cache `flightLegRecords` in `data/flight_schedule.json` pruned at
+`FLIGHT_LEG_CACHE_DAYS`=14. `attach_legs()` bakes a sorted, re-submission-deduped `legs[]` onto each
+multi-leg Completed entry, **unioned with the entry's own actual{} leg** (so a still-backfilling
+detail never hides a known leg) and **never touching bookings the cache doesn't know** (so pruning
+can't strip already-baked legs). Single-leg bookings get no `legs` (their own fields are the leg).
+Bonus: `getMySubmissions` (~16 s, ~9.5k items) is now fetched **once** per run and shared by the
+leave / cancel-record / flight-leg backfills (was called twice). **Verified with a real full scrape
+in a scratch copy** (headless Playwright, same as the cloud fallback): 2m40s, leaves/cancels
+unchanged, 12 leg records fetched (22 queued for the next runs), per-leg detail attached to the 4
+AP-127 XCs of 09-23; watchdog feed 228→240 KB. Hours are untouched — still `durMin` block time;
+multi-leg flights' single-valued `blockOff`/`tkoff`/… describe the LATEST leg only (pre-existing,
+now documented). 18 new tests (105 total). Consumer: `AP127_V2/watchdog` (see its CLAUDE.md).)
+(2026-09-06 — **ASF cache URL → the `ap127-data`
 Worker** (r47). `js/view-autoslotfinder.js` `ASF_CACHE_URL` was
 `ap127-db001.pages.dev/cache.json`, which is now `[CI Skip]`-frozen in DB001's
 Pages deploy — repointed to `ap127-data.anusorn-tanmetha.workers.dev/cache.json`

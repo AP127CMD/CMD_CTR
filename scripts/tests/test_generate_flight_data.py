@@ -112,3 +112,29 @@ def test_filter_recent_preserves_fetched_at_and_tz():
     out = gfd.filter_recent(_transformed(), NOW)
     assert out["fetchedAt"] == "2026-08-16T07:00:00Z"
     assert out["tz"] == "Asia/Bangkok"
+
+
+# --- flight-record detail on Completed flights (2026-09-24) ----------------------------------
+
+def test_completed_forwards_route_leg_type_remark_and_legs():
+    legs = [{"leg": "1", "routeFrom": "VTPH", "routeTo": "VTSB"}, {"leg": "2", "routeFrom": "VTSB", "routeTo": "VTPH"}]
+    out = gfd.transform(_raw({"status": "Completed", "isActual": True, "routeFrom": "VTSB", "routeTo": "VTPH",
+                              "actualLeg": "2", "flightType": "Solo", "remark": "ECU fail", "legs": legs}))
+    f = out["flights"][0]
+    assert f["id"] == "ACTUAL_ONLY_BK-1"
+    assert (f["routeFrom"], f["routeTo"], f["leg"], f["flightType"], f["remark"]) == \
+        ("VTSB", "VTPH", "2", "Solo", "ECU fail")
+    assert f["legs"] == legs
+
+
+def test_completed_omits_empty_flight_record_fields():
+    out = gfd.transform(_raw({"status": "Completed", "isActual": True, "routeFrom": None, "routeTo": None,
+                              "actualLeg": None, "flightType": None, "remark": None}))
+    f = out["flights"][0]
+    for k in ("routeFrom", "routeTo", "leg", "flightType", "remark", "legs"):
+        assert k not in f
+
+
+def test_non_completed_never_carries_flight_record_fields():
+    out = gfd.transform(_raw({"status": "Pending", "routeFrom": "VTPH", "actualLeg": "1", "legs": [{}, {}]}))
+    assert not {"routeFrom", "leg", "legs"} & set(out["flights"][0])

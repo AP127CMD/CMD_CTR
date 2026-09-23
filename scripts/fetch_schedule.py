@@ -382,6 +382,15 @@ def normalize_entry(entry, date, cancel_lookup=None):
         # scheduled start/end); new fields, may differ from start/end
         "blockOff": _null_dash(actual.get("blockOff") or ""),
         "blockOn": _null_dash(actual.get("blockOn") or ""),
+        # 2026-09-24: flight-record detail that was being dropped. Display
+        # only (Watchdog's Completed notice). NB for a multi-leg booking these
+        # describe only the LATEST leg — the full set is in `legs`, attached
+        # in main() from Flight Record submissions (see _fetch_flight_legs()).
+        "routeFrom": _null_dash(actual.get("routeFrom") or ""),
+        "routeTo": _null_dash(actual.get("routeTo") or ""),
+        "actualLeg": normalize_leg_number(actual.get("leg")),
+        "flightType": _null_dash(actual.get("flightType") or ""),
+        "remark": (actual.get("remark") or "").strip() or None,
         # cancellation — from the matching Cancel Record submission, joined
         # by bookingId (see cancel_lookup docstring above). Both None if no
         # Cancel Record has been fetched yet for this booking (backfill in
@@ -389,6 +398,151 @@ def normalize_entry(entry, date, cancel_lookup=None):
         "cancelReason": (cancel or {}).get("reason"),
         "cancelRemarks": (cancel or {}).get("remarks"),
     }
+
+
+# ─── Per-leg Flight Records (2026-09-24) ─────────────────────────────────────
+# Real user ask: the Watchdog "Completed" notice should say what the SP flew,
+# when and where — leg, block off, take-off, landing, block on, departure,
+# destination. getStudentSchedule's `actual{}` carries all of that, but only
+# for the booking's LATEST leg: a 3-leg XC booked as one 06:30-11:30 slot
+# (e.g. BK-AP-127-SETA-EHX3N, VTPH->VTSB->VTSE->VTPH, 2026-09-23) comes back
+# with just leg 3's VTSE->VTPH. Every leg survives only as its own Flight
+# Record submission (getMySubmissions lists them; the booking id is embedded
+# in the submission id, so the per-booking record count needs no detail call).
+
+_LEG_DIGITS_RE = re.compile(r"\d+")
+
+
+def normalize_leg_number(raw):
+    """'/3' (actual{}) or '3' (Flight Record) -> '3'; '' / '-' / None -> None."""
+    m = _LEG_DIGITS_RE.search(str(raw or ""))
+    return m.group(0).lstrip("0") or "0" if m else None
+
+
+def parse_flight_record_id(rec_id):
+    """'Student Records|key|<bookingId>|<dd/mm/yyyy hh:mm:ss>' ->
+    (bookingId, sortable 'yyyy-mm-dd hh:mm:ss' submission stamp).
+    Either part is None when the id doesn't have that shape."""
+    parts = str(rec_id or "").split("|")
+    if len(parts) < 4 or not parts[2]:
+        return None, None
+    stamp = None
+    m = re.match(r"^(\d{2})/(\d{2})/(\d{4}) (\d{2}:\d{2}:\d{2})$", parts[3].strip())
+    if m:
+        dd, mm, yyyy, hms = m.groups()
+        stamp = f"{yyyy}-{mm}-{dd} {hms}"
+    return parts[2], stamp
+
+
+def _us_date_to_iso(us_date):
+    """getMySubmissions' list 'date' is MM/DD/YYYY -> 'YYYY-MM-DD' (None if not)."""
+    m = re.match(r"^(\d{2})/(\d{2})/(\d{4})$", str(us_date or "").strip())
+    return f"{m.group(3)}-{m.group(1)}-{m.group(2)}" if m else None
+
+
+def flight_leg_record(rec_id, fields):
+    """Flatten one Flight Record's getSubmissionDetail `fields` onto the same
+    names the schedule entries use. Returns None when it has no bookingId."""
+    booking_id = str(fields.get("bookingId") or parse_flight_record_id(rec_id)[0] or "")
+    if not booking_id:
+        return None
+    return {
+        "id": rec_id,
+        "bookingId": booking_id,
+        "stamp": parse_flight_record_id(rec_id)[1],
+        "date": fields.get("date"),
+        "leg": normalize_leg_number(fields.get("leg")),
+        "routeFrom": _null_dash(fields.get("routeFrom") or ""),
+        "routeTo": _null_dash(fields.get("routeTo") or ""),
+        "blockOff": _null_dash(fields.get("blockOff") or ""),
+        "tkoff": _null_dash(fields.get("takeoff") or ""),
+        "ldgTime": _null_dash(fields.get("landing") or ""),
+        "blockOn": _null_dash(fields.get("blockOn") or ""),
+        "to": _int_or_none(fields.get("numTakeoffs")),
+        "ldg": _int_or_none(fields.get("numLandings")),
+        "inst": _int_or_none(fields.get("instApp")),
+        "tail": _null_dash(fields.get("acReg") or ""),
+        "flightType": _null_dash(fields.get("flightType") or ""),
+        "remark": (fields.get("remark") or "").strip() or None,
+    }
+
+
+# The subset of a leg record that is written onto a schedule entry's `legs`.
+_LEG_OUTPUT_FIELDS = ("leg", "routeFrom", "routeTo", "blockOff", "tkoff", "ldgTime",
+                      "blockOn", "to", "ldg", "inst", "tail", "remark")
+
+
+def _leg_sort_key(leg):
+    n = leg.get("leg")
+    return (0, int(n)) if n and n.isdigit() else (1, leg.get("blockOff") or leg.get("tkoff") or "")
+
+
+def build_legs_by_booking(records):
+    """{bookingId: [leg, ...]} from cached Flight Record details.
+
+    A re-submitted (corrected) leg arrives as a second record with the same
+    leg number and a later submission stamp — the latest one wins. Records
+    with no leg number can't be deduplicated that way and are all kept.
+    Legs are sorted by leg number, unnumbered ones after by block-off time."""
+    by_booking = {}
+    for rec in records or []:
+        bk = rec.get("bookingId")
+        if not bk:
+            continue
+        slot = by_booking.setdefault(bk, {})
+        key = rec.get("leg") or f"_{rec.get('id')}"
+        prev = slot.get(key)
+        if prev is None or (rec.get("stamp") or "") >= (prev.get("stamp") or ""):
+            slot[key] = rec
+    return {
+        bk: sorted(({k: r.get(k) for k in _LEG_OUTPUT_FIELDS} for r in slot.values()), key=_leg_sort_key)
+        for bk, slot in by_booking.items()
+    }
+
+
+def _entry_own_leg(entry):
+    """The single leg a schedule entry's own actual{} fields describe."""
+    return {
+        "leg": entry.get("actualLeg"),
+        "routeFrom": entry.get("routeFrom"), "routeTo": entry.get("routeTo"),
+        "blockOff": entry.get("blockOff"), "tkoff": entry.get("tkoff"),
+        "ldgTime": entry.get("ldgTime"), "blockOn": entry.get("blockOn"),
+        "to": entry.get("to"), "ldg": entry.get("ldg"), "inst": entry.get("inst"),
+        "tail": entry.get("tail"), "remark": entry.get("remark"),
+    }
+
+
+def attach_legs(schedules, legs_by_booking):
+    """Set `legs` on every Completed entry whose booking has >=2 known legs.
+
+    The entry's own actual{} leg (always the latest one, and available even
+    before its Flight Record detail has been fetched) is unioned in, so a
+    detail fetch that's still backfilling never HIDES a leg the schedule
+    already knows about. Single-leg bookings get no `legs` key — their own
+    top-level fields already describe that one leg (keeps the feed small).
+    A booking the leg cache doesn't know is left exactly as it is — that's
+    how an older entry keeps the `legs` baked in by an earlier run after its
+    records have been pruned from the cache (FLIGHT_LEG_CACHE_DAYS).
+    Returns how many entries got `legs`."""
+    attached = 0
+    for entries in schedules.values():
+        for entry in entries:
+            if entry.get("status") != "Completed":
+                continue
+            bk = str(entry.get("id"))
+            if bk not in legs_by_booking:
+                continue
+            legs = list(legs_by_booking[bk])
+            own = _entry_own_leg(entry)
+            if own["leg"] and own["leg"] not in {l.get("leg") for l in legs}:
+                legs.append(own)
+                legs.sort(key=_leg_sort_key)
+            if len(legs) >= 2:
+                entry["legs"] = legs
+                attached += 1
+            else:
+                entry.pop("legs", None)
+    return attached
 
 
 def recover_vanished_bookings(new_schedules, existing_schedules, cancel_lookup):
@@ -551,6 +705,19 @@ LEAVE_DETAIL_MAX_PER_RUN = int(os.environ.get("LEAVE_DETAIL_MAX_PER_RUN", "60"))
 # Same pattern for Cancel Record backfill (~340 historical cancels).
 CANCEL_DETAIL_MAX_PER_RUN = int(os.environ.get("CANCEL_DETAIL_MAX_PER_RUN", "60"))
 
+# Per-leg Flight Records (2026-09-24) — see _fetch_flight_legs(). A booking's
+# `actual{}` from getStudentSchedule holds only its LATEST leg; a multi-leg XC
+# booked as one slot keeps every leg only in its Flight Record submissions.
+# Details cost ~8 s each (measured 2026-09-24), so only bookings with >=2
+# Flight Records are detail-fetched, only for the last FLIGHT_LEG_DAYS_BACK
+# days, at most FLIGHT_LEG_DETAIL_MAX_PER_RUN per run (newest first). Steady
+# state is a handful per run (~5-10 multi-leg bookings/day).
+FLIGHT_LEG_DAYS_BACK = int(os.environ.get("FLIGHT_LEG_DAYS_BACK", "3"))
+FLIGHT_LEG_DETAIL_MAX_PER_RUN = int(os.environ.get("FLIGHT_LEG_DETAIL_MAX_PER_RUN", "12"))
+# Cached leg records older than this are pruned from data/flight_schedule.json
+# (their legs are already baked into the schedule entries by then).
+FLIGHT_LEG_CACHE_DAYS = int(os.environ.get("FLIGHT_LEG_CACHE_DAYS", "14"))
+
 
 # ─── Portal internal RPC API ─────────────────────────────────────────────────
 # The portal is a google.script.run SPA; its server functions are callable
@@ -697,7 +864,14 @@ def _load_existing_leaves():
         return []
 
 
-async def _fetch_leaves(user_frame):
+async def _list_all_submissions(user_frame):
+    """getMySubmissions for everyone (~9.5k items, ~16 s, 2026-09-24).
+    Fetched ONCE per run and shared by the leave / cancel-record / flight-leg
+    backfills — each used to call it separately."""
+    return await _rpc(user_frame, "getMySubmissions", {"studentName": "", "batch": ""}, timeout_s=120) or []
+
+
+async def _fetch_leaves(user_frame, subs=None):
     """Rebuild the leaves feed from Leave Request submissions.
 
     The new portal's Leave Request form is submit-only in the UI, but the
@@ -714,7 +888,8 @@ async def _fetch_leaves(user_frame):
     """
     existing = [l for l in _load_existing_leaves() if l.get("id")]
     known = {l["id"] for l in existing}
-    subs = await _rpc(user_frame, "getMySubmissions", {"studentName": "", "batch": ""}, timeout_s=120)
+    if subs is None:
+        subs = await _list_all_submissions(user_frame)
     leave_subs = [s for s in subs or [] if s.get("formType") == "Leave Request" and s.get("id")]
     new_ids = [s["id"] for s in leave_subs if s["id"] not in known]
     fetched = []
@@ -992,7 +1167,7 @@ def _load_existing_cancel_records():
         return []
 
 
-async def _fetch_cancel_records(user_frame):
+async def _fetch_cancel_records(user_frame, subs=None):
     """Rebuild cancel-reason data from Cancel Record submissions.
 
     Corrected 2026-07-26: normalize_entry()'s cancelReason=None comment said
@@ -1007,7 +1182,8 @@ async def _fetch_cancel_records(user_frame):
     """
     existing = [c for c in _load_existing_cancel_records() if c.get("id")]
     known = {c["id"] for c in existing}
-    subs = await _rpc(user_frame, "getMySubmissions", {"studentName": "", "batch": ""}, timeout_s=120)
+    if subs is None:
+        subs = await _list_all_submissions(user_frame)
     cancel_subs = [s for s in subs or [] if s.get("formType") == "Cancel Record" and s.get("id")]
     new_ids = [s["id"] for s in cancel_subs if s["id"] not in known]
     fetched = []
@@ -1040,6 +1216,72 @@ async def _fetch_cancel_records(user_frame):
     records.sort(key=lambda c: (c.get("date") or "", c.get("bookingId") or ""))
     print(f"Cancel records: {len(existing)} cached + {len(fetched)} new = {len(records)}"
           + (f" ({remaining} still backfilling)" if remaining else ""))
+    return records
+
+
+def _load_existing_flight_leg_records():
+    if not OUTPUT_FILE.exists():
+        return []
+    try:
+        return json.loads(OUTPUT_FILE.read_text(encoding="utf-8")).get("flightLegRecords") or []
+    except Exception:
+        return []
+
+
+def select_flight_leg_ids(subs, known_ids, today_iso, days_back, max_per_run):
+    """Pick which Flight Record submissions still need a detail fetch.
+
+    Only bookings with >= 2 Flight Records dated within the last `days_back`
+    days (a single-record booking is fully described by its own actual{}),
+    only ids not already cached, newest submission first, capped. Pure — the
+    date filter uses the list's own MM/DD/YYYY `date`, no detail call.
+    Returns (ids_to_fetch, total_uncached_in_scope)."""
+    lo = (datetime.fromisoformat(today_iso).date() - timedelta(days=days_back)).isoformat()
+    by_booking = {}
+    for s in subs or []:
+        if s.get("formType") != "Flight Record" or not s.get("id"):
+            continue
+        iso = _us_date_to_iso(s.get("date"))
+        if not iso or not (lo <= iso <= today_iso):
+            continue
+        bk, stamp = parse_flight_record_id(s["id"])
+        if bk:
+            by_booking.setdefault(bk, []).append((stamp or "", s["id"]))
+    pending = [(stamp, rid) for recs in by_booking.values() if len(recs) >= 2
+               for stamp, rid in recs if rid not in known_ids]
+    pending.sort(reverse=True)  # newest submission first — today's flights beat backfill
+    return [rid for _, rid in pending[:max_per_run]], len(pending)
+
+
+async def _fetch_flight_legs(user_frame, subs, today_iso):
+    """Refresh the per-leg Flight Record cache — see the section comment above
+    normalize_leg_number(). Same incremental, submission-id-keyed pattern as
+    _fetch_leaves()/_fetch_cancel_records(); details are fetched at
+    FETCH_RPC_CONCURRENCY. A failed detail is simply retried next run. Cached
+    records dated before today - FLIGHT_LEG_CACHE_DAYS are pruned."""
+    cutoff = (datetime.fromisoformat(today_iso).date() - timedelta(days=FLIGHT_LEG_CACHE_DAYS)).isoformat()
+    existing = [r for r in _load_existing_flight_leg_records()
+                if r.get("id") and (r.get("date") or "") >= cutoff]
+    known = {r["id"] for r in existing}
+    ids, in_scope = select_flight_leg_ids(subs, known, today_iso, FLIGHT_LEG_DAYS_BACK,
+                                          FLIGHT_LEG_DETAIL_MAX_PER_RUN)
+
+    async def _one(rid):
+        try:
+            d = await _rpc(user_frame, "getSubmissionDetail", {"id": rid})
+            if d and d.get("ok"):
+                return rid, flight_leg_record(rid, d.get("fields") or {})
+        except Exception as exc:
+            print(f"WARNING: flight-record detail {rid} failed ({exc}) — retried next run", file=sys.stderr)
+        return rid, None
+
+    results = await _gather_dates_bounded(ids, _one, FETCH_RPC_CONCURRENCY) if ids else []
+    fetched = [rec for _, rec in results if rec]
+    records = existing + fetched
+    records.sort(key=lambda r: (r.get("date") or "", r.get("bookingId") or "", r.get("leg") or ""))
+    remaining = in_scope - len(fetched)
+    print(f"Flight-leg records: {len(existing)} cached + {len(fetched)} new = {len(records)}"
+          + (f" ({remaining} still backfilling)" if remaining > 0 else ""))
     return records
 
 
@@ -1138,7 +1380,8 @@ async def scrape_window(days_back, days_forward):
     schedules = {}
     failed_dates = []
     rosters = {"instructors": [], "resources": None, "leaves": _load_existing_leaves(),
-               "cancelRecords": _load_existing_cancel_records()}
+               "cancelRecords": _load_existing_cancel_records(),
+               "flightLegRecords": _load_existing_flight_leg_records()}
     async with async_playwright() as p:
         # 2026-08-25: the Ops Portal's Google Workspace policy requires sign-in
         # ("Anyone with Google account"), and Google's own bot-detection blocks
@@ -1224,14 +1467,27 @@ async def scrape_window(days_back, days_forward):
             instructors_rpc, resources_rpc = await _fetch_rosters(user_frame, today.isoformat())
             rosters["instructors"] = instructors_rpc or await _scrape_instructor_roster(user_frame)
             rosters["resources"] = resources_rpc
+            # One getMySubmissions list shared by all three backfills below.
+            # None on failure → leaves/cancels each retry the list themselves
+            # (their pre-2026-09-24 behaviour); flight legs just skip this run.
             try:
-                rosters["leaves"] = await _fetch_leaves(user_frame)
+                subs = await _list_all_submissions(user_frame)
+            except Exception as exc:
+                print(f"WARNING: submissions list failed ({exc}) — each backfill retries on its own", file=sys.stderr)
+                subs = None
+            try:
+                rosters["leaves"] = await _fetch_leaves(user_frame, subs)
             except Exception as exc:
                 print(f"WARNING: leaves fetch failed ({exc}) — keeping previous leaves", file=sys.stderr)
             try:
-                rosters["cancelRecords"] = await _fetch_cancel_records(user_frame)
+                rosters["cancelRecords"] = await _fetch_cancel_records(user_frame, subs)
             except Exception as exc:
                 print(f"WARNING: cancel-records fetch failed ({exc}) — keeping previous cancel records", file=sys.stderr)
+            if subs is not None:
+                try:
+                    rosters["flightLegRecords"] = await _fetch_flight_legs(user_frame, subs, today.isoformat())
+                except Exception as exc:
+                    print(f"WARNING: flight-leg fetch failed ({exc}) — keeping previous leg records", file=sys.stderr)
 
             # Per-date fetch, up to FETCH_RPC_CONCURRENCY in flight at once
             # (Phase 2). concurrency=1 is exactly the old serial loop. Each
@@ -1426,6 +1682,13 @@ async def main():
     if cancel_filled:
         print(f"Backfilled cancelReason on {cancel_filled} previously-normalized Canceled flight(s).")
 
+    # Per-leg detail for multi-leg bookings (see normalize_leg_number()'s
+    # section comment). Runs over the MERGED schedules so a leg record that
+    # lands a run after its booking completed still reaches that entry.
+    legs_attached = attach_legs(merged_schedules, build_legs_by_booking(rosters["flightLegRecords"]))
+    if legs_attached:
+        print(f"Attached per-leg detail to {legs_attached} multi-leg booking(s).")
+
     new_dates  = set(new_schedules.keys())
     kept_dates = set(existing_schedules.keys()) - new_dates
     print(f"Fetched {sum(len(v) for v in new_schedules.values())} flights across {len(new_dates)} date(s).")
@@ -1469,6 +1732,10 @@ async def main():
         # backfill cache only — not surfaced in flight-data.js; cancelReason/
         # cancelRemarks are already inlined onto each Canceled schedule entry.
         "cancelRecords": rosters["cancelRecords"],
+        # Flight Record leg cache (2026-09-24) — backfill cache only, pruned to
+        # FLIGHT_LEG_CACHE_DAYS; the legs themselves are baked onto each
+        # multi-leg schedule entry's `legs`.
+        "flightLegRecords": rosters["flightLegRecords"],
         # Regression-guard state (see REGRESSION_GUARD_MAX_STREAK) — internal bookkeeping only,
         # not surfaced in flight-data.js. Only ever holds dates currently mid-streak; a date that
         # passed its check (or wasn't fetched this run) is simply absent, not zeroed.
