@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-24T21:39:04Z",
+  "fetched_at": "2026-09-24T22:19:30Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -219903,7 +219903,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-127-PICH-T95TV",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -219938,8 +219938,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "ครูถ้ำติดประชุมสำคัญ"
       },
       {
         "id": "BK-AP-127-KHOB-8AT6G",
@@ -233049,20 +233049,20 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "NAPATTORN S.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "PARINYA B.",
+      "name": "NAPATTORN S.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PARINYA B.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -233079,8 +233079,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -233103,14 +233103,14 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -233121,26 +233121,26 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -233163,14 +233163,14 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -239449,6 +239449,19 @@
       "student": "NAPON S.",
       "batch": "AP-127",
       "lesson": "CSPXV 40",
+      "acType": "DA40CS",
+      "acReg": "HS-TVC"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-PICH-T95TV|25/09/2026 05:13:07",
+      "bookingId": "BK-AP-127-PICH-T95TV",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "ครูถ้ำติดประชุมสำคัญ",
+      "instructor": "THAWATANAN P.",
+      "student": "PICHAKORN J.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 43",
       "acType": "DA40CS",
       "acReg": "HS-TVC"
     },
