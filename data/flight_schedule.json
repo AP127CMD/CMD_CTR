@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-24T10:53:29Z",
+  "fetched_at": "2026-09-24T10:59:06Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -220462,7 +220462,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-TUPP-0HRU2",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220497,8 +220497,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Unsafe to fly"
       },
       {
         "id": "BK-AP-127-NATP-FXJ43",
@@ -220806,7 +220806,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-RAVE-X6JLB",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220841,8 +220841,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Due to other commitment."
       },
       {
         "id": "BK-AP-127-NUTT-YV5KT",
@@ -221150,7 +221150,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-RAVE-O0DM4",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -221185,8 +221185,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Due to other commitments."
       },
       {
         "id": "BK-AP-129-SURA-5X59B",
@@ -232895,8 +232895,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232907,8 +232907,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232919,8 +232919,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232931,14 +232931,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232955,8 +232955,8 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232967,8 +232967,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232985,8 +232985,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -233003,8 +233003,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -233021,14 +233021,14 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -233051,8 +233051,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -233063,8 +233063,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -239399,6 +239399,32 @@
       "lesson": "CDIL 21",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-RAVE-O0DM4|24/09/2026 17:54:18",
+      "bookingId": "BK-AP-129-RAVE-O0DM4",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "Due to other commitments.",
+      "instructor": "NUNTAPOB T.",
+      "student": "RAVEEVIT R.",
+      "batch": "AP-129",
+      "lesson": "CSGL 26",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-RAVE-X6JLB|24/09/2026 17:52:35",
+      "bookingId": "BK-AP-129-RAVE-X6JLB",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "Due to other commitment.",
+      "instructor": "NUNTAPOB T.",
+      "student": "RAVEEVIT R.",
+      "batch": "AP-129",
+      "lesson": "CDIL 25",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-SURA-5X59B|24/09/2026 13:30:34",
