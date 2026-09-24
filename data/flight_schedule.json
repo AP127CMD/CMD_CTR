@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-24T06:29:39Z",
+  "fetched_at": "2026-09-24T07:09:12Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -219824,8 +219824,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:30",
-        "end": "07:30",
+        "start": "12:30",
+        "end": "13:30",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -219945,7 +219945,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-MARC-S5MJ2",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -219980,8 +219980,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Personal commitment tonight that may affect my fitness for tomorrow’s flight"
       },
       {
         "id": "BK-AP-129-AKIN-2P73A",
@@ -220168,8 +220168,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "09:30",
-        "end": "10:30",
+        "start": "11:00",
+        "end": "12:00",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -220899,8 +220899,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "11:00",
-        "end": "12:00",
+        "start": "09:30",
+        "end": "10:30",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -220985,8 +220985,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "12:30",
-        "end": "13:30",
+        "start": "06:30",
+        "end": "07:30",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -221149,7 +221149,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-SURA-5X59B",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -221170,6 +221170,92 @@
         "condition": "Solo",
         "type": "DA40TDI",
         "tail": "HS-TPR",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": "Other",
+        "cancelRemarks": ""
+      },
+      {
+        "id": "BK-MUF69GRG",
+        "date": "2026-09-25",
+        "rowIdx": "BK-MUF69GRG",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:30",
+        "end": "12:10",
+        "duration": "01:40",
+        "durationMin": 100,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "SUBHAWICHAYA S.",
+        "instructor": "WUTTHICHAI L.",
+        "batch": "AP-126",
+        "lesson": "SCPLME",
+        "condition": "XC / ME",
+        "type": "DA42NG",
+        "tail": "HS-TVF",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MUF6CE36",
+        "date": "2026-09-25",
+        "rowIdx": "BK-MUF6CE36",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "10:30",
+        "end": "11:30",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "ATHINAT H.",
+        "instructor": "WISANU T.",
+        "batch": "FAM FI",
+        "lesson": "IFR",
+        "condition": "IR",
+        "type": "DA42TDI",
+        "tail": "HS-TPQ",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -232743,8 +232829,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232767,8 +232853,8 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232785,8 +232871,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232797,68 +232883,68 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "WISANU T.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "JIRAT R.",
       "type": "Simulator Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
+      "name": "CHAWIN K.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "JIRAT R.",
+      "category": "Airplane",
+      "type": "Simulator Instructor"
+    },
+    {
+      "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232887,20 +232973,20 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232911,8 +232997,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -239143,6 +239229,32 @@
       "lesson": "CSPXV 43",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-MARC-S5MJ2|24/09/2026 13:28:33",
+      "bookingId": "BK-AP-129-MARC-S5MJ2",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "Personal commitment tonight that may affect my fitness for tomorrow’s flight",
+      "instructor": "PHUMIN T.",
+      "student": "MARC W.",
+      "batch": "AP-129",
+      "lesson": "CDIL 21",
+      "acType": "DA40CS",
+      "acReg": "HS-TVD"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-SURA-5X59B|24/09/2026 13:30:34",
+      "bookingId": "BK-AP-129-SURA-5X59B",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "",
+      "instructor": "KOONPHOL U.",
+      "student": "SURATHEE S.",
+      "batch": "AP-129",
+      "lesson": "CSGL 24",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPR"
     }
   ],
   "flightLegRecords": [
