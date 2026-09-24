@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-24T07:09:12Z",
+  "fetched_at": "2026-09-24T07:50:28Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -219457,8 +219457,8 @@
         "inst": 0,
         "blockOff": "11:00",
         "blockOn": "12:00",
-        "routeFrom": "VTPR",
-        "routeTo": "VTPH",
+        "routeFrom": "VTPH",
+        "routeTo": "VTBP",
         "actualLeg": "2",
         "flightType": "SPIC",
         "remark": null,
@@ -219781,8 +219781,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "08:00",
-        "end": "10:00",
+        "start": "08:30",
+        "end": "10:30",
         "duration": "02:00",
         "durationMin": 120,
         "planDur": null,
@@ -220848,7 +220848,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-127-NAPO-J2OAQ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220883,8 +220883,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-126-CHAN-0FJI4",
@@ -221200,8 +221200,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "10:30",
-        "end": "12:10",
+        "start": "06:30",
+        "end": "08:10",
         "duration": "01:40",
         "durationMin": 100,
         "planDur": null,
@@ -232759,6 +232759,17 @@
       "role": "Student"
     },
     {
+      "id": "Leave Record|key|24/09/2026 14:36:25",
+      "name": "EKKASIT B.",
+      "batch": "AP-128",
+      "start": "2026-09-28",
+      "end": "2026-09-29",
+      "duration": "Full Day",
+      "reason": "CAAT Exam",
+      "note": "CAAT Exam on 28,29",
+      "role": "Student"
+    },
+    {
       "id": "Leave Record|row365",
       "name": "SOWAN C.",
       "batch": "-",
@@ -232835,20 +232846,20 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "ITTIPOL P.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232877,20 +232888,20 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "SANTI SUK.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "SOWAN C.",
+      "name": "SANTI SUK.",
       "type": "Flight Instructor",
       "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "SOWAN C.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232913,8 +232924,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -232931,50 +232942,50 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -232985,8 +232996,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -239229,6 +239240,19 @@
       "lesson": "CSPXV 43",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-NAPO-J2OAQ|24/09/2026 14:10:33",
+      "bookingId": "BK-AP-127-NAPO-J2OAQ",
+      "date": "2026-09-25",
+      "reason": "Student Sick",
+      "remarks": "",
+      "instructor": "CHAROENCHAI U.",
+      "student": "NAPON S.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 40",
+      "acType": "DA40CS",
+      "acReg": "HS-TVC"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-129-MARC-S5MJ2|24/09/2026 13:28:33",
