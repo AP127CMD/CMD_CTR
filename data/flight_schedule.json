@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-24T08:44:43Z",
+  "fetched_at": "2026-09-24T09:24:57Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -219040,12 +219040,12 @@
         "date": "2026-09-24",
         "rowIdx": "BK-AP-127-PANI-OTXV8",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -219061,22 +219061,66 @@
         "condition": "Solo / XC",
         "type": "DA40TDI",
         "tail": "HS-TPO",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40TDI",
+        "tkoff": "11:20",
+        "ldgTime": "12:30",
+        "airborne": "01:10",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "11:05",
+        "blockOn": "12:35",
+        "routeFrom": "VTSE",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
+        "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSB",
+            "blockOff": "07:05",
+            "tkoff": "07:33",
+            "ldgTime": "09:33",
+            "blockOn": "09:37",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TPO",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSB",
+            "routeTo": "VTSE",
+            "blockOff": "09:55",
+            "tkoff": "10:00",
+            "ldgTime": "10:50",
+            "blockOn": "10:55",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TPO",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTSE",
+            "routeTo": "VTPH",
+            "blockOff": "11:05",
+            "tkoff": "11:20",
+            "ldgTime": "12:30",
+            "blockOn": "12:35",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TPO",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-LPC-P'VO-WJLF2",
@@ -219988,7 +220032,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-AKIN-2P73A",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220023,8 +220067,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-127-VASA-7IZKJ",
@@ -220246,7 +220290,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-CHAI-PV9HF",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220281,8 +220325,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Due to personal commitments this evening, I may not be fit to travel on tomorrow’s flight."
       },
       {
         "id": "BK-AP-127-PUWA-AJRO7",
@@ -220676,7 +220720,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-TORN-T1HID",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220711,15 +220755,15 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "Due to personal commitments this evening, I may not be fit to travel on tomorrow’s flight."
       },
       {
         "id": "BK-AP-129-NALA-QDLGA",
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-NALA-QDLGA",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -220754,8 +220798,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-RAVE-X6JLB",
@@ -221063,7 +221107,7 @@
         "date": "2026-09-25",
         "rowIdx": "BK-AP-129-NALA-A5XB3",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -221098,8 +221142,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-RAVE-O0DM4",
@@ -232857,14 +232901,14 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232881,8 +232925,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232899,8 +232943,8 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -232911,20 +232955,20 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "THAWATANAN P.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232941,14 +232985,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232965,8 +233009,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -232977,14 +233021,14 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -232995,8 +233039,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -233007,8 +233051,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -233019,8 +233063,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -239266,6 +239310,32 @@
       "acReg": "HS-TVC"
     },
     {
+      "id": "Flight Cancels Record|key|BK-AP-129-AKIN-2P73A|24/09/2026 16:02:28",
+      "bookingId": "BK-AP-129-AKIN-2P73A",
+      "date": "2026-09-25",
+      "reason": "Student Sick",
+      "remarks": "",
+      "instructor": "SORRAWUT P.",
+      "student": "AKINKORN L.",
+      "batch": "AP-129",
+      "lesson": "CDIL 25",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-CHAI-PV9HF|24/09/2026 16:05:49",
+      "bookingId": "BK-AP-129-CHAI-PV9HF",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "Due to personal commitments this evening, I may not be fit to travel on tomorrow’s flight.",
+      "instructor": "NANTAWAT D.",
+      "student": "CHAIPAT T.",
+      "batch": "AP-129",
+      "lesson": "CDIL 21",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPR"
+    },
+    {
       "id": "Flight Cancels Record|key|BK-AP-129-MARC-HS01L|24/09/2026 15:37:42",
       "bookingId": "BK-AP-129-MARC-HS01L",
       "date": "2026-09-25",
@@ -239292,6 +239362,32 @@
       "acReg": "HS-TVD"
     },
     {
+      "id": "Flight Cancels Record|key|BK-AP-129-NALA-A5XB3|24/09/2026 15:51:24",
+      "bookingId": "BK-AP-129-NALA-A5XB3",
+      "date": "2026-09-25",
+      "reason": "Student Sick",
+      "remarks": "",
+      "instructor": "THAWATANAN P.",
+      "student": "NALAT S.",
+      "batch": "AP-129",
+      "lesson": "CSGL 22",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-NALA-QDLGA|24/09/2026 15:49:57",
+      "bookingId": "BK-AP-129-NALA-QDLGA",
+      "date": "2026-09-25",
+      "reason": "Student Sick",
+      "remarks": "",
+      "instructor": "THAWATANAN P.",
+      "student": "NALAT S.",
+      "batch": "AP-129",
+      "lesson": "CDIL 21",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
+    },
+    {
       "id": "Flight Cancels Record|key|BK-AP-129-SURA-5X59B|24/09/2026 13:30:34",
       "bookingId": "BK-AP-129-SURA-5X59B",
       "date": "2026-09-25",
@@ -239301,6 +239397,19 @@
       "student": "SURATHEE S.",
       "batch": "AP-129",
       "lesson": "CSGL 24",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPR"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-TORN-T1HID|24/09/2026 16:03:10",
+      "bookingId": "BK-AP-129-TORN-T1HID",
+      "date": "2026-09-25",
+      "reason": "Other",
+      "remarks": "Due to personal commitments this evening, I may not be fit to travel on tomorrow’s flight.",
+      "instructor": "SANTI PO.",
+      "student": "TORN M.",
+      "batch": "AP-129",
+      "lesson": "CDIL 21",
       "acType": "DA40TDI",
       "acReg": "HS-TPR"
     }
@@ -240007,6 +240116,63 @@
       "inst": null,
       "tail": "HS-TVA",
       "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PANI-OTXV8|24/09/2026 15:55:17",
+      "bookingId": "BK-AP-127-PANI-OTXV8",
+      "stamp": "2026-09-24 15:55:17",
+      "date": "2026-09-24",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSB",
+      "blockOff": "07:05",
+      "tkoff": "07:33",
+      "ldgTime": "09:33",
+      "blockOn": "09:37",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TPO",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PANI-OTXV8|24/09/2026 15:56:40",
+      "bookingId": "BK-AP-127-PANI-OTXV8",
+      "stamp": "2026-09-24 15:56:40",
+      "date": "2026-09-24",
+      "leg": "2",
+      "routeFrom": "VTSB",
+      "routeTo": "VTSE",
+      "blockOff": "09:55",
+      "tkoff": "10:00",
+      "ldgTime": "10:50",
+      "blockOn": "10:55",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TPO",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PANI-OTXV8|24/09/2026 15:57:55",
+      "bookingId": "BK-AP-127-PANI-OTXV8",
+      "stamp": "2026-09-24 15:57:55",
+      "date": "2026-09-24",
+      "leg": "3",
+      "routeFrom": "VTSE",
+      "routeTo": "VTPH",
+      "blockOff": "11:05",
+      "tkoff": "11:20",
+      "ldgTime": "12:30",
+      "blockOn": "12:35",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TPO",
+      "flightType": "SPIC",
       "remark": null
     },
     {
