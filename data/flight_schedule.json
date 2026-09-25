@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-25T23:51:47Z",
+  "fetched_at": "2026-09-25T23:59:51Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -222098,7 +222098,7 @@
         "date": "2026-09-26",
         "rowIdx": "BK-AP-127-JIRA-FYQKO",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -222133,8 +222133,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": "Weather not above minima "
       },
       {
         "id": "BK-AP-129-NATT-JVVFS",
@@ -236690,8 +236690,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236732,8 +236732,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236750,8 +236750,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -236780,14 +236780,14 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -236804,8 +236804,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -236816,8 +236816,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -236828,8 +236828,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -243327,6 +243327,19 @@
       "lesson": "FI(A) ME",
       "acType": "DA42TDI",
       "acReg": "HS-TPQ"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-JIRA-FYQKO|26/09/2026 06:56:38",
+      "bookingId": "BK-AP-127-JIRA-FYQKO",
+      "date": "2026-09-26",
+      "reason": "Weather (WX)",
+      "remarks": "Weather not above minima ",
+      "instructor": "SORRAWUT P.",
+      "student": "JIRAYU A.",
+      "batch": "AP-127",
+      "lesson": "CSPGL 52",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPX"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-NATP-7LR50|26/09/2026 06:18:04",
