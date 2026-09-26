@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-26T13:05:35Z",
+  "fetched_at": "2026-09-26T13:14:50Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -221883,7 +221883,7 @@
         "date": "2026-09-26",
         "rowIdx": "BK-PPL-41-PARO-G1O7R",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -221918,8 +221918,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-MATH-VXW8M",
@@ -222444,7 +222444,7 @@
         "date": "2026-09-27",
         "rowIdx": "BK-PPL-41-PARO-SDYAZ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -222479,8 +222479,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-TUPP-2BRQL",
@@ -236697,8 +236697,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236727,8 +236727,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236739,14 +236739,14 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236781,26 +236781,26 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -236811,20 +236811,20 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "PORNTEP B.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
+      "name": "PORNTEP B.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -236859,8 +236859,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -236871,8 +236871,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -243502,6 +243502,19 @@
       "acReg": "HS-TPO"
     },
     {
+      "id": "Flight Cancels Record|key|BK-PPL-41-PARO-G1O7R|26/09/2026 20:05:47",
+      "bookingId": "BK-PPL-41-PARO-G1O7R",
+      "date": "2026-09-26",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "ITTIPOL P.",
+      "student": "PAROON S.",
+      "batch": "PPL-41",
+      "lesson": "PSGH 20",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
+    },
+    {
       "id": "Flight Cancels Record|key|BK-AP-127-NATP-43FBY|26/09/2026 13:46:31",
       "bookingId": "BK-AP-127-NATP-43FBY",
       "date": "2026-09-27",
@@ -243565,6 +243578,19 @@
       "lesson": "CSGL 22",
       "acType": "DA40TDI",
       "acReg": "HS-TPO"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-PPL-41-PARO-SDYAZ|26/09/2026 20:06:59",
+      "bookingId": "BK-PPL-41-PARO-SDYAZ",
+      "date": "2026-09-27",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "ITTIPOL P.",
+      "student": "PAROON S.",
+      "batch": "PPL-41",
+      "lesson": "PDGH 21",
+      "acType": "DA40CS",
+      "acReg": "HS-TVD"
     }
   ],
   "flightLegRecords": [
