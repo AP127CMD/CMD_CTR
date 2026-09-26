@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-26T11:43:47Z",
+  "fetched_at": "2026-09-26T11:52:23Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -224289,6 +224289,49 @@
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
+      },
+      {
+        "id": "BK-MUIBPHKI",
+        "date": "2026-09-28",
+        "rowIdx": "BK-MUIBPHKI",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "11:30",
+        "end": "13:30",
+        "duration": "02:00",
+        "durationMin": 120,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "THAWATANAN P.",
+        "instructor": "WUTTHICHAI L.",
+        "batch": "FAM FI",
+        "lesson": "FI(A) ME",
+        "condition": "ME",
+        "type": "DA42TDI",
+        "tail": "HS-TPQ",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": null,
+        "cancelRemarks": null
       }
     ],
     "2026-09-29": [
@@ -236650,147 +236693,350 @@
       "role": "Instructor"
     }
   ],
-  "instructors": [],
+  "instructors": [
+    {
+      "isPartTime": false,
+      "name": "CHAROENCHAI U.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "EKKAPHOP R.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "ITTIPOL P.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "KITTICHAI C.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "KOONPHOL U.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NAPATTORN S.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PARINYA B.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PHAHOLYUTH P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "SANTI PO.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "SANTI SUK.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "SOWAN C.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "THAWATANAN P.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "WISANU T.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "WUTTHICHAI L.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "ATHINAT H.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "CHAWIN K.",
+      "category": "Airplane",
+      "type": "Simulator Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "JIRAT R.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "KAMONVICH O.",
+      "category": "Helicopter",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "PORNSAK P.",
+      "type": "Flight Instructor",
+      "category": "Helicopter"
+    },
+    {
+      "isPartTime": false,
+      "name": "SORRAWUT P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PORNTEP B.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "ATIDTAN P.",
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "PREECHA K.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "APIRATKUNPAK K.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "CHAMNONG S.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "TANAKRIT V.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": true,
+      "name": "VASSAPON K.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PHUMIN T.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "NANTAWAT D.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    }
+  ],
   "resources": [
     {
-      "tail": "HS - TPX",
-      "acType": "Solo",
-      "isMaint": true
+      "tail": "HS-TCB",
+      "acType": "DA42TDI",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TCP",
       "acType": "DA42TDI",
-      "isMaint": false
-    },
-    {
-      "tail": "HS-TCP (SIM)",
-      "acType": "DA42 (SIM)",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPF",
       "acType": "C172",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TPG",
+      "acType": "C172",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPH",
       "acType": "C172",
-      "isMaint": true
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPL",
       "acType": "DA42TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
-      "tail": "HS-TPN (SIM)",
-      "acType": "DA40_SIM",
-      "isMaint": false
+      "tail": "HS-TPM",
+      "acType": "DA42TDI",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPO",
       "acType": "DA40TDI",
-      "isMaint": false
-    },
-    {
-      "tail": "HS-TPO (SIM)",
-      "acType": "DA40_SIM",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPQ",
       "acType": "DA42TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPR",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPT",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPU",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPV",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPW",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TPX",
       "acType": "DA40TDI",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVA",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TVB",
+      "acType": "DA40CS",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVC",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVD",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVE",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVF",
       "acType": "DA42NG",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVG",
       "acType": "DA40CS",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TVH",
       "acType": "DA40CS",
-      "isMaint": false
-    },
-    {
-      "tail": "HS-TZQ (SIM)",
-      "acType": "R44 (SIM)",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZR",
       "acType": "R44",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
+    },
+    {
+      "tail": "HS-TZS",
+      "acType": "R44",
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZT",
       "acType": "R44",
-      "isMaint": false
+      "isMaint": false,
+      "maintReason": null
     },
     {
       "tail": "HS-TZU",
       "acType": "R44",
-      "isMaint": false
-    },
-    {
-      "tail": "HSTZU",
-      "acType": "Dual",
-      "isMaint": true
+      "isMaint": false,
+      "maintReason": null
     }
   ],
   "cancelRecords": [
