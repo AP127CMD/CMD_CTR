@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-28T03:54:45Z",
+  "fetched_at": "2026-09-28T04:35:26Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -222790,7 +222790,7 @@
         "date": "2026-09-28",
         "rowIdx": "BK-MUERM1NO",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -222825,8 +222825,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-MUERM52V",
@@ -224854,12 +224854,12 @@
         "date": "2026-09-28",
         "rowIdx": "BK-MUJOXU6P",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:10",
@@ -224875,19 +224875,19 @@
         "condition": null,
         "type": "R44",
         "tail": "HS-TZU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "R44",
+        "tkoff": "10:20",
+        "ldgTime": "11:10",
+        "airborne": "00:50",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "10:10",
+        "blockOn": "11:10",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -226075,7 +226075,7 @@
         "planDur": null,
         "planDurMin": null,
         "student": "TAKORN C.",
-        "instructor": "NANTAWAT D.",
+        "instructor": "PARINYA B.",
         "batch": "AP-127",
         "lesson": "CDNXC 48",
         "condition": "XC / Night",
@@ -226111,14 +226111,14 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "19:20",
-        "end": "20:20",
+        "start": "19:30",
+        "end": "20:30",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
         "planDurMin": null,
         "student": "TAKORN C.",
-        "instructor": "NANTAWAT D.",
+        "instructor": "PARINYA B.",
         "batch": "AP-127",
         "lesson": "CSNL 49",
         "condition": "Solo / Night",
@@ -226548,7 +226548,7 @@
         "planDur": null,
         "planDurMin": null,
         "student": "KRIDSADA K.",
-        "instructor": "PARINYA B.",
+        "instructor": "PHAHOLYUTH P.",
         "batch": "AP-128",
         "lesson": "CSNL 50",
         "condition": "Solo / Night",
@@ -238938,14 +238938,14 @@
     {
       "isPartTime": false,
       "name": "KOONPHOL U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -238968,20 +238968,20 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "SOWAN C.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "THAWATANAN P.",
+      "name": "SOWAN C.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "THAWATANAN P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -238992,8 +238992,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -239028,8 +239028,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -239052,20 +239052,20 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
-      "name": "CHAMNONG S.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": true,
-      "name": "TANAKRIT V.",
+      "name": "CHAMNONG S.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "TANAKRIT V.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -239088,8 +239088,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -245808,6 +245808,19 @@
       "lesson": "PDGH 21",
       "acType": "DA40CS",
       "acReg": "HS-TVD"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MUERM1NO|28/09/2026 10:54:10",
+      "bookingId": "BK-MUERM1NO",
+      "date": "2026-09-28",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "PARINYA B.",
+      "student": "AWIRUT S.",
+      "batch": "AP-127",
+      "lesson": "CSPXV 44",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
     },
     {
       "id": "Flight Cancels Record|key|BK-MUGI5M5C|28/09/2026 07:07:26",
