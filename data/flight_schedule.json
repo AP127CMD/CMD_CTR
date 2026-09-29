@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-29T11:21:32Z",
+  "fetched_at": "2026-09-29T11:27:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -226897,12 +226897,12 @@
         "date": "2026-09-29",
         "rowIdx": "BK-MUKO8517",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "12:00",
@@ -226918,19 +226918,19 @@
         "condition": null,
         "type": "DA40CS",
         "tail": "HS-TVA",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40CS",
+        "tkoff": "12:38",
+        "ldgTime": "13:40",
+        "airborne": "01:02",
+        "ldg": 6,
+        "to": 6,
+        "inst": 0,
+        "blockOff": "12:14",
+        "blockOn": "13:44",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -227585,12 +227585,12 @@
         "date": "2026-09-29",
         "rowIdx": "BK-MUL73LW2",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:00",
@@ -227606,20 +227606,20 @@
         "condition": "ME",
         "type": "DA42TDI",
         "tail": "HS-TPQ",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA42TDI",
+        "tkoff": "09:07",
+        "ldgTime": "09:52",
+        "airborne": "00:45",
+        "ldg": 1,
+        "to": 1,
+        "inst": 1,
+        "blockOff": "08:57",
+        "blockOn": "09:57",
+        "routeFrom": "VTPH",
+        "routeTo": "HOTEL-VTPH0",
         "actualLeg": null,
-        "flightType": null,
-        "remark": null,
+        "flightType": "Dual",
+        "remark": "FI/ME CONVERSION",
         "cancelReason": null,
         "cancelRemarks": null
       },
@@ -241809,8 +241809,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241845,32 +241845,32 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "WUTTHICHAI L.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "ATHINAT H.",
+      "name": "WUTTHICHAI L.",
       "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "ATHINAT H.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241947,8 +241947,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
