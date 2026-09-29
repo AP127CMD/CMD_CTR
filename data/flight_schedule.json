@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-29T04:45:22Z",
+  "fetched_at": "2026-09-29T05:15:02Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -226606,7 +226606,7 @@
         "date": "2026-09-29",
         "rowIdx": "BK-MUKO7SCN",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -226641,8 +226641,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Instructor Sick",
+        "cancelRemarks": "Instructor not available due to flooded at BKK"
       },
       {
         "id": "BK-MUKO7X82",
@@ -241230,8 +241230,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241254,8 +241254,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241290,8 +241290,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241308,14 +241308,14 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -241326,14 +241326,14 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -241350,8 +241350,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -241374,8 +241374,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -241398,8 +241398,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -248259,6 +248259,19 @@
       "lesson": "LS 113 (SPIC)",
       "acType": "R44",
       "acReg": "HS-TZR"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MUKO7SCN|29/09/2026 11:53:56",
+      "bookingId": "BK-MUKO7SCN",
+      "date": "2026-09-29",
+      "reason": "Instructor Sick",
+      "remarks": "Instructor not available due to flooded at BKK",
+      "instructor": "PHUMIN T.",
+      "student": "SORNSORAWITCH C.",
+      "batch": "AP-127",
+      "lesson": "CSPGL 51",
+      "acType": "DA40CS",
+      "acReg": "HS-TVH"
     },
     {
       "id": "Flight Cancels Record|key|BK-MUKO8EN1|29/09/2026 03:16:13",
