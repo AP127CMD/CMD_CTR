@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-30T06:40:57Z",
+  "fetched_at": "2026-09-30T06:45:54Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -228813,21 +228813,65 @@
         "type": "DA40CS",
         "tail": "HS-TVA",
         "actualType": "DA40CS",
-        "tkoff": "06:40",
-        "ldgTime": "07:55",
-        "airborne": "01:15",
+        "tkoff": "11:05",
+        "ldgTime": "11:50",
+        "airborne": "00:45",
         "ldg": 1,
         "to": 1,
         "inst": 0,
-        "blockOff": "06:30",
-        "blockOn": "08:00",
-        "routeFrom": "VTPH",
-        "routeTo": "VTSE",
-        "actualLeg": "1",
+        "blockOff": "10:55",
+        "blockOn": "11:55",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
         "flightType": "Solo",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSE",
+            "blockOff": "06:30",
+            "tkoff": "06:40",
+            "ldgTime": "07:55",
+            "blockOn": "08:00",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSE",
+            "routeTo": "VTBK",
+            "blockOff": "08:15",
+            "tkoff": "08:25",
+            "ldgTime": "10:40",
+            "blockOn": "10:45",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:55",
+            "tkoff": "11:05",
+            "ldgTime": "11:50",
+            "blockOn": "11:55",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-MUM5N1DV",
@@ -242316,8 +242360,8 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -242346,8 +242390,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -242364,14 +242408,14 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -242394,14 +242438,14 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -242424,8 +242468,8 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -242442,14 +242486,14 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -242460,12 +242504,18 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "NUNTAPOB T.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "NUNTAPOB T.",
+      "name": "PHUMIN T.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
@@ -250557,6 +250607,63 @@
       "inst": null,
       "tail": "HS-TVC",
       "flightType": "Dual",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUM5MXGE|30/09/2026 13:38:20",
+      "bookingId": "BK-MUM5MXGE",
+      "stamp": "2026-09-30 13:38:20",
+      "date": "2026-09-30",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSE",
+      "blockOff": "06:30",
+      "tkoff": "06:40",
+      "ldgTime": "07:55",
+      "blockOn": "08:00",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUM5MXGE|30/09/2026 13:39:30",
+      "bookingId": "BK-MUM5MXGE",
+      "stamp": "2026-09-30 13:39:30",
+      "date": "2026-09-30",
+      "leg": "2",
+      "routeFrom": "VTSE",
+      "routeTo": "VTBK",
+      "blockOff": "08:15",
+      "tkoff": "08:25",
+      "ldgTime": "10:40",
+      "blockOn": "10:45",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUM5MXGE|30/09/2026 13:41:13",
+      "bookingId": "BK-MUM5MXGE",
+      "stamp": "2026-09-30 13:41:13",
+      "date": "2026-09-30",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:55",
+      "tkoff": "11:05",
+      "ldgTime": "11:50",
+      "blockOn": "11:55",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "Solo",
       "remark": null
     },
     {
