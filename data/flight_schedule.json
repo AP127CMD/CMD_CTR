@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-01T02:59:41Z",
+  "fetched_at": "2026-10-01T03:05:39Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -230301,12 +230301,12 @@
         "date": "2026-09-30",
         "rowIdx": "BK-MUMH6P31",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "14:10",
@@ -230322,19 +230322,19 @@
         "condition": "Sim R44",
         "type": "R44 (SIM)",
         "tail": "HS-TZQ (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "R44 (SIM)",
+        "tkoff": "14:10",
+        "ldgTime": "15:40",
+        "airborne": "01:30",
+        "ldg": 5,
+        "to": 5,
+        "inst": 0,
+        "blockOff": "14:10",
+        "blockOn": "15:40",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -244997,14 +244997,14 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -245051,8 +245051,8 @@
     {
       "isPartTime": false,
       "name": "SANTI SUK.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -245063,8 +245063,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -245075,20 +245075,20 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
+      "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "CHAWIN K.",
+      "name": "ATHINAT H.",
       "category": "Airplane",
       "type": "Simulator Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "CHAWIN K.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -245099,14 +245099,14 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -245117,20 +245117,20 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -245141,8 +245141,8 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -245159,8 +245159,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -245171,8 +245171,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
