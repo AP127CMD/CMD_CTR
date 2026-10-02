@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-02T05:09:28Z",
+  "fetched_at": "2026-10-02T05:50:22Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -233118,12 +233118,12 @@
         "date": "2026-10-02",
         "rowIdx": "BK-MUMLE6GE",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -233139,19 +233139,19 @@
         "condition": "Solo / XC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40CS",
+        "tkoff": "06:40",
+        "ldgTime": "08:55",
+        "airborne": "02:15",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "06:30",
+        "blockOn": "09:00",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPP",
+        "actualLeg": "1",
+        "flightType": "Solo",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -233183,21 +233183,65 @@
         "type": "DA40CS",
         "tail": "HS-TVH",
         "actualType": "DA40CS",
-        "tkoff": "06:35",
-        "ldgTime": "08:47",
-        "airborne": "02:12",
+        "tkoff": "10:52",
+        "ldgTime": "11:48",
+        "airborne": "00:56",
         "ldg": 1,
         "to": 1,
         "inst": 0,
-        "blockOff": "06:30",
-        "blockOn": "08:52",
-        "routeFrom": "VTPH",
-        "routeTo": "VTPP",
-        "actualLeg": "1",
+        "blockOff": "10:47",
+        "blockOn": "11:53",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
         "flightType": "Solo",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTPP",
+            "blockOff": "06:30",
+            "tkoff": "06:35",
+            "ldgTime": "08:47",
+            "blockOn": "08:52",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTPP",
+            "routeTo": "VTBK",
+            "blockOff": "09:10",
+            "tkoff": "09:20",
+            "ldgTime": "10:37",
+            "blockOn": "10:42",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:47",
+            "tkoff": "10:52",
+            "ldgTime": "11:48",
+            "blockOn": "11:53",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-MUNSC1MB",
@@ -234408,12 +234452,12 @@
         "date": "2026-10-02",
         "rowIdx": "BK-MUP7B6QZ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:00",
@@ -234429,19 +234473,19 @@
         "condition": "SPIC / XC",
         "type": "DA40TDI",
         "tail": "HS-TPX",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40TDI",
+        "tkoff": "10:40",
+        "ldgTime": "11:55",
+        "airborne": "01:15",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "10:30",
+        "blockOn": "12:00",
+        "routeFrom": "VTPH - VTPB",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -247439,14 +247483,14 @@
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -247457,14 +247501,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -247487,8 +247531,8 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -247499,8 +247543,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -247511,14 +247555,14 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -247529,14 +247573,14 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -247553,8 +247597,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -247565,20 +247609,20 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -247589,8 +247633,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -247608,7 +247652,7 @@
     },
     {
       "tail": "HS-TCP (SIM)",
-      "acType": "DA42 (SIM) (SIM)",
+      "acType": "DA42 (SIM)",
       "isMaint": false,
       "maintReason": null
     },
@@ -247644,7 +247688,7 @@
     },
     {
       "tail": "HS-TPN (SIM)",
-      "acType": "DA40 (SIM) (SIM)",
+      "acType": "DA40 (SIM)",
       "isMaint": false,
       "maintReason": null
     },
@@ -247656,7 +247700,7 @@
     },
     {
       "tail": "HS-TPO (SIM)",
-      "acType": "DA40 (SIM) (SIM)",
+      "acType": "DA40 (SIM)",
       "isMaint": false,
       "maintReason": null
     },
@@ -247752,7 +247796,7 @@
     },
     {
       "tail": "HS-TZQ (SIM)",
-      "acType": "R44 (SIM) (SIM)",
+      "acType": "R44 (SIM)",
       "isMaint": false,
       "maintReason": null
     },
@@ -256213,6 +256257,63 @@
       "inst": null,
       "tail": "HS-TVH",
       "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUNSBYZO|02/10/2026 12:04:59",
+      "bookingId": "BK-MUNSBYZO",
+      "stamp": "2026-10-02 12:04:59",
+      "date": "2026-10-02",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTPP",
+      "blockOff": "06:30",
+      "tkoff": "06:35",
+      "ldgTime": "08:47",
+      "blockOn": "08:52",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUNSBYZO|02/10/2026 12:08:43",
+      "bookingId": "BK-MUNSBYZO",
+      "stamp": "2026-10-02 12:08:43",
+      "date": "2026-10-02",
+      "leg": "2",
+      "routeFrom": "VTPP",
+      "routeTo": "VTBK",
+      "blockOff": "09:10",
+      "tkoff": "09:20",
+      "ldgTime": "10:37",
+      "blockOn": "10:42",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUNSBYZO|02/10/2026 12:10:01",
+      "bookingId": "BK-MUNSBYZO",
+      "stamp": "2026-10-02 12:10:01",
+      "date": "2026-10-02",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:47",
+      "tkoff": "10:52",
+      "ldgTime": "11:48",
+      "blockOn": "11:53",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "Solo",
       "remark": null
     }
   ],
