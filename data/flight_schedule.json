@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-02T07:54:50Z",
+  "fetched_at": "2026-10-02T07:58:59Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -233379,12 +233379,12 @@
         "date": "2026-10-02",
         "rowIdx": "BK-MUOSN8E8",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "11:00",
@@ -234648,21 +234648,65 @@
         "type": "DA40CS",
         "tail": "HS-TVA",
         "actualType": "DA40CS",
-        "tkoff": "06:50",
-        "ldgTime": "12:10",
-        "airborne": "05:20",
-        "ldg": 3,
-        "to": 3,
+        "tkoff": "07:50",
+        "ldgTime": "09:20",
+        "airborne": "01:30",
+        "ldg": 1,
+        "to": 1,
         "inst": 0,
-        "blockOff": "06:30",
-        "blockOn": "12:15",
-        "routeFrom": "VTPH-VTBK-VTPP",
-        "routeTo": "VTPH",
-        "actualLeg": null,
+        "blockOff": "07:50",
+        "blockOn": "09:25",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPP",
+        "actualLeg": "2",
         "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTBK",
+            "blockOff": "06:30",
+            "tkoff": "06:50",
+            "ldgTime": "07:50",
+            "blockOn": "07:50",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPP",
+            "blockOff": "07:50",
+            "tkoff": "07:50",
+            "ldgTime": "09:20",
+            "blockOn": "09:25",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          },
+          {
+            "leg": null,
+            "routeFrom": "VTPH-VTBK-VTPP",
+            "routeTo": "VTPH",
+            "blockOff": "06:30",
+            "tkoff": "06:50",
+            "ldgTime": "12:10",
+            "blockOn": "12:15",
+            "to": 3,
+            "ldg": 3,
+            "inst": null,
+            "tail": "HS-TVA",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-MUP8KY8L",
@@ -248377,26 +248421,26 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -248407,14 +248451,14 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -248425,14 +248469,14 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -248461,26 +248505,26 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -248503,8 +248547,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -248521,8 +248565,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -248533,44 +248577,44 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "WACHIRAWIT WORAWETMONGKON",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "WATTANAPHON INTARASIRITORN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "KRIANGKRAIN NA NAN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -248587,8 +248631,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -257382,6 +257426,63 @@
       "inst": null,
       "tail": "HS-TVH",
       "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUP866IR|02/10/2026 14:23:36",
+      "bookingId": "BK-MUP866IR",
+      "stamp": "2026-10-02 14:23:36",
+      "date": "2026-10-02",
+      "leg": null,
+      "routeFrom": "VTPH-VTBK-VTPP",
+      "routeTo": "VTPH",
+      "blockOff": "06:30",
+      "tkoff": "06:50",
+      "ldgTime": "12:10",
+      "blockOn": "12:15",
+      "to": 3,
+      "ldg": 3,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUP866IR|02/10/2026 14:54:02",
+      "bookingId": "BK-MUP866IR",
+      "stamp": "2026-10-02 14:54:02",
+      "date": "2026-10-02",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTBK",
+      "blockOff": "06:30",
+      "tkoff": "06:50",
+      "ldgTime": "07:50",
+      "blockOn": "07:50",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-MUP866IR|02/10/2026 14:55:23",
+      "bookingId": "BK-MUP866IR",
+      "stamp": "2026-10-02 14:55:23",
+      "date": "2026-10-02",
+      "leg": "2",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPP",
+      "blockOff": "07:50",
+      "tkoff": "07:50",
+      "ldgTime": "09:20",
+      "blockOn": "09:25",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVA",
+      "flightType": "SPIC",
       "remark": null
     }
   ],
