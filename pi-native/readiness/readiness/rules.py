@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from datetime import date, datetime, timedelta
 
 from .models import Flight, Move, Plan, RunAdvice, Signals, Verdict, Workout
 
 _DOW = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+_HHMM = re.compile(r"([01]\d|2[0-3]):[0-5]\d")
 _SEARCH = (1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6)
 
 
@@ -16,6 +18,17 @@ def _d(s: str) -> date:
 
 def _at(day: str, hhmm: str) -> datetime:
     return datetime.fromisoformat(f"{day}T{hhmm}")
+
+
+def _valid_time(hhmm: str) -> bool:
+    return bool(_HHMM.fullmatch(hhmm or ""))
+
+
+def _lands_late(f: Flight, rules: dict) -> bool:
+    """Block-on after the late threshold, or after midnight (on < off). Unparseable/empty on -> not late."""
+    if not _valid_time(f.on):
+        return False
+    return f.on > rules["late_block_on"] or f.on < f.off
 
 
 def dow(day: str) -> str:
@@ -55,7 +68,7 @@ def verdict(sig: Signals, rules: dict) -> Verdict:
 
 def conflict(kind: str, day: str, flights: list[Flight], rules: dict) -> tuple[str, str] | None:
     """(rule, reason) if a hard workout of `kind` on `day` clashes with flying, else None."""
-    air = sorted((f for f in flights if f.aircraft), key=lambda f: (f.date, f.off))
+    air = sorted((f for f in flights if f.aircraft and _valid_time(f.off)), key=lambda f: (f.date, f.off))
     run_at = _at(day, rules["run_time"])
     for f in air:
         gap_h = (_at(f.date, f.off) - run_at).total_seconds() / 3600
@@ -69,18 +82,19 @@ def conflict(kind: str, day: str, flights: list[Flight], rules: dict) -> tuple[s
     if kind == "quality":
         prev = (_d(day) - timedelta(days=1)).isoformat()
         for f in air:
-            if f.date == prev and f.on > rules["late_block_on"]:
+            if f.date == prev and _lands_late(f, rules):
                 return "R3", f"{f.lesson} block-on {f.on} {dow(f.date)}"
     return None
 
 
 def find_slot(w: Workout, workouts: list[Workout], flights: list[Flight], today: str,
-              race_date: str | None, rules: dict) -> str | None:
+              race_date: str | None, rules: dict, hard_days: set[str] | None = None) -> str | None:
     """R6: nearest day in the same ISO week, not before today, not on/after race day,
     no hard workout on it or either neighbour, and no clash of its own."""
     d0 = _d(w.date)
     week = d0.isocalendar()[:2]
-    hard_days = {o.date for o in workouts if o.hard and o.uuid != w.uuid}
+    if hard_days is None:
+        hard_days = {o.date for o in workouts if o.hard and o.uuid != w.uuid}
     for k in _SEARCH:
         c = d0 + timedelta(days=k)
         cs = c.isoformat()
@@ -101,6 +115,7 @@ def evaluate(today: str, sig: Signals, workouts: list[Workout], flights: list[Fl
     moves: list[Move] = []
     notes: dict[str, str] = {}
     advice: dict[str, tuple[str, str]] = {}
+    hard_on = {o.uuid: o.date for o in workouts if o.hard}  # current dates, updated as moves are accepted
     for w in sorted(workouts, key=lambda w: (w.date, w.title)):
         if not w.hard or w.date < today:
             continue
@@ -108,13 +123,15 @@ def evaluate(today: str, sig: Signals, workouts: list[Workout], flights: list[Fl
         if not hit:
             continue
         rule, reason = hit
-        slot = find_slot(w, workouts, flights, today, race_date, rules)
+        others = {d for u, d in hard_on.items() if u != w.uuid}
+        slot = find_slot(w, workouts, flights, today, race_date, rules, others)
         if slot:
+            hard_on[w.uuid] = slot
             moves.append(Move(move_id(w, w.date, slot), w, w.date, slot, rule, reason))
             notes[w.date] = f"> {dow(slot)} ({rule})"
             how = "Apply on watch" if w.applyable else "move it in Garmin Connect"
             advice[w.uuid] = (f"Move to {_short(slot)} - {how}", rule)
-        elif w.kind == "long" and race_date and (_d(race_date) - _d(w.date)).days <= rules["race_protect_days"]:
+        elif w.kind == "long" and race_date and 0 <= (_d(race_date) - _d(w.date)).days <= rules["race_protect_days"]:
             days = (_d(race_date) - _d(w.date)).days
             notes[w.date] = f"keep ({rule})"
             advice[w.uuid] = (f"Keep - race in {days} d, no safe slot", rule)

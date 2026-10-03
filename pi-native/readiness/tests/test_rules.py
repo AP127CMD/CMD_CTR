@@ -52,7 +52,6 @@ def test_r1_ignores_a_flight_that_is_earlier_the_same_day():
 
 
 def test_r1_triggers_for_an_early_flight_next_morning():
-    ws = [wk("2026-10-06", "Tempo", "quality")]
     assert R.conflict("quality", "2026-10-06", [fl("2026-10-07", "04:30", "06:00")], RULES)[0] == "R1"
 
 
@@ -173,3 +172,45 @@ def test_r7_hint_when_the_flight_behind_an_applied_move_is_gone():
         "Tempo: flight gone - could move back to Tue 10-06 (R7)"]
     still = [fl("2026-10-06", "18:10", "19:10")]
     assert R.move_back_hints(applied, ws, still, TODAY, RULES) == []
+
+
+# ---- review fixes (fix round 1) ----------------------------------------------------------------
+def test_r6_multiple_moves_in_one_pass_never_land_on_adjacent_days():
+    ws = [wk("2026-10-06", "Tempo", "quality"), wk("2026-10-09", "Intervals", "quality")]
+    flights = [fl("2026-10-06", "18:00", "19:00"), fl("2026-10-09", "18:00", "19:00"),
+               fl("2026-10-10", "18:00", "19:00")]
+    plan = R.evaluate(TODAY, GOOD, ws, flights, None, RULES)
+    dates = {w.uuid: w.date for w in ws}
+    for m in plan.moves:
+        dates[m.workout.uuid] = m.to
+    days = sorted(R._d(d) for d in dates.values())
+    assert all((b - a).days > 1 for a, b in zip(days, days[1:]))
+
+
+def test_r3_triggers_when_block_on_is_after_midnight():
+    hit = R.conflict("quality", "2026-10-06", [fl("2026-10-05", "22:30", "00:10")], RULES)
+    assert hit is not None and hit[0] == "R3"
+
+
+def test_r3_boundary_block_on_at_threshold_does_not_trigger():
+    assert R.conflict("quality", "2026-10-06", [fl("2026-10-05", "19:00", "21:00")], RULES) is None
+
+
+def test_r3_empty_block_on_does_not_trigger():
+    assert R.conflict("quality", "2026-10-06", [fl("2026-10-05", "19:00", "")], RULES) is None
+
+
+def test_malformed_times_are_ignored_not_fatal():
+    ws = [wk("2026-10-06", "Tempo", "quality")]
+    flights = [fl("2026-10-06", "TBA", "19:00"), fl("2026-10-06", "24:00", "19:00"),
+               fl("2026-10-06", "9:30", "11:00"), fl("2026-10-06", "18:00", "19:00")]
+    plan = R.evaluate(TODAY, GOOD, ws, flights, None, RULES)
+    assert len(plan.moves) == 1 and plan.moves[0].rule == "R1"
+
+
+def test_negative_race_day_count_is_not_race_protected():
+    ws = [wk("2026-11-18", "Long Run", "long")]
+    flights = [fl("2026-11-19", "08:00", "10:30", lesson="CSPXC 52", cond="XC")]
+    plan = R.evaluate("2026-11-10", GOOD, ws, flights, "2026-11-15", RULES)
+    assert plan.moves == []
+    assert plan.notes["2026-11-18"] == "easy (R2)"
