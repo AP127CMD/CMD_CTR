@@ -1,0 +1,10 @@
+name = "ap127-readiness"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Readiness Planner relay (FR570 watch <-> Orange Pi). Stores the latest watch
+# payload and the Apply queue. Secrets: PI_KEY, WATCH_KEY (different values).
+# Spec: /Users/nugui/CLAUDE/Garmin/docs/superpowers/specs/2026-10-03-readiness-planner-design.md
+[[kv_namespaces]]
+binding = "READINESS_KV"
+id = "8311acd0763841c49ef2f448b0acaa68"
