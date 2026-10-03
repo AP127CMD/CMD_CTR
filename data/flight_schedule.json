@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-03T06:54:19Z",
+  "fetched_at": "2026-10-03T07:34:04Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -235398,21 +235398,65 @@
         "type": "DA40CS",
         "tail": "HS-TVC",
         "actualType": "DA40CS",
-        "tkoff": "06:40",
-        "ldgTime": "07:55",
-        "airborne": "01:15",
+        "tkoff": "10:52",
+        "ldgTime": "11:50",
+        "airborne": "00:58",
         "ldg": 1,
         "to": 1,
         "inst": 0,
-        "blockOff": "06:35",
-        "blockOn": "08:00",
-        "routeFrom": "VTPH",
-        "routeTo": "VTSE",
-        "actualLeg": "1",
+        "blockOff": "10:45",
+        "blockOn": "11:55",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
         "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSE",
+            "blockOff": "06:35",
+            "tkoff": "06:40",
+            "ldgTime": "07:55",
+            "blockOn": "08:00",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVC",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSE",
+            "routeTo": "VTBK",
+            "blockOff": "08:10",
+            "tkoff": "08:17",
+            "ldgTime": "10:30",
+            "blockOn": "10:35",
+            "to": 2,
+            "ldg": 2,
+            "inst": null,
+            "tail": "HS-TVC",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:45",
+            "tkoff": "10:52",
+            "ldgTime": "11:50",
+            "blockOn": "11:55",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVC",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-AP-127-NAPO-QDQ16",
@@ -249016,8 +249060,8 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -249034,14 +249078,14 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -249058,32 +249102,32 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "WISANU T.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -249094,8 +249138,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -249106,8 +249150,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -249130,8 +249174,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -249148,8 +249192,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -249166,8 +249210,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -249190,8 +249234,8 @@
     {
       "isPartTime": true,
       "name": "WATTANAPHON INTARASIRITORN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -249202,26 +249246,26 @@
     {
       "isPartTime": true,
       "name": "KRIANGKRAIN NA NAN",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "THANIT PATIYASEVI",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": true,
-      "name": "THANIT PATIYASEVI",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
       "name": "ROTTAPORN KWANGPAN",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -258205,6 +258249,63 @@
       "inst": null,
       "tail": "HS-TVG",
       "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NATP-K7Q07|03/10/2026 13:49:59",
+      "bookingId": "BK-AP-127-NATP-K7Q07",
+      "stamp": "2026-10-03 13:49:59",
+      "date": "2026-10-03",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSE",
+      "blockOff": "06:35",
+      "tkoff": "06:40",
+      "ldgTime": "07:55",
+      "blockOn": "08:00",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVC",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NATP-K7Q07|03/10/2026 13:53:27",
+      "bookingId": "BK-AP-127-NATP-K7Q07",
+      "stamp": "2026-10-03 13:53:27",
+      "date": "2026-10-03",
+      "leg": "2",
+      "routeFrom": "VTSE",
+      "routeTo": "VTBK",
+      "blockOff": "08:10",
+      "tkoff": "08:17",
+      "ldgTime": "10:30",
+      "blockOn": "10:35",
+      "to": 2,
+      "ldg": 2,
+      "inst": null,
+      "tail": "HS-TVC",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NATP-K7Q07|03/10/2026 13:55:56",
+      "bookingId": "BK-AP-127-NATP-K7Q07",
+      "stamp": "2026-10-03 13:55:56",
+      "date": "2026-10-03",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:45",
+      "tkoff": "10:52",
+      "ldgTime": "11:50",
+      "blockOn": "11:55",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVC",
+      "flightType": "SPIC",
       "remark": null
     },
     {
