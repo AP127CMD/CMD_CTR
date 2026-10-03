@@ -69,3 +69,57 @@ def test_ops_today_groups_ap127_by_tail_with_status_and_totals():
 def test_feed_age_minutes():
     now = datetime(2026, 10, 4, 1, 30, tzinfo=timezone.utc)
     assert FS.feed_age_min(data(), now) == 30.0
+
+
+def _raw_with(cancel_extra=(), rows=()):
+    import copy
+    raw = copy.deepcopy(RAW)
+    raw["cancelRecords"].extend(copy.deepcopy(list(cancel_extra)))
+    raw["schedules"]["2026-10-04"].extend(rows)
+    return raw
+
+
+def test_duplicate_owner_cancel_record_emitted_once():
+    dup = dict(RAW["cancelRecords"][0])
+    d = FS.gfd.transform(_raw_with(cancel_extra=[dup]))
+    assert len([c for c in d["cancellations"] if c["bookingId"] == "BK-C"]) == 2   # feed really duplicates
+    fs = FS.my_flights(d, "ANUSORN T.", "2026-10-04", "2026-10-10")
+    assert [f.id for f in fs] == ["BK-1", "BK-C"]
+
+
+def test_duplicate_same_day_cancel_record_counted_once_in_cx():
+    dup = dict(RAW["cancelRecords"][1])
+    d = FS.gfd.transform(_raw_with(cancel_extra=[dup]))
+    assert FS.ops_today(d, "AP-127", "2026-10-04")["tot"]["cx"] == 1
+
+
+def test_cancel_record_skipped_when_booking_already_a_flight_row():
+    rec = dict(RAW["cancelRecords"][0], bookingId="BK-1", date="2026-10-04")
+    d = FS.gfd.transform(_raw_with(cancel_extra=[rec]))
+    fs = FS.my_flights(d, "ANUSORN T.", "2026-10-04", "2026-10-10")
+    assert [f.id for f in fs].count("BK-1") == 1
+    assert not [f for f in fs if f.id == "BK-1"][0].cancelled
+
+
+def _flight(**kw):
+    base = {"id": "BK-9", "date": "2026-10-04", "start": "09:00", "end": "10:00"}
+    base.update(kw)
+    return FS._to_flight(base)
+
+
+def test_malformed_actual_times_fall_back_to_planned():
+    f = _flight(status="Completed", blockOff="905", blockOn="1010")
+    assert (f.off, f.on) == ("09:00", "10:00")
+
+
+def test_only_one_actual_time_uses_both_planned():
+    f = _flight(blockOff="09:05")
+    assert (f.off, f.on) == ("09:00", "10:00")
+    f = _flight(blockOn="10:05")
+    assert (f.off, f.on) == ("09:00", "10:00")
+
+
+def test_missing_planned_time_becomes_empty():
+    f = _flight(start=None)
+    assert f.off == "" and f.on == "10:00"
+    assert _flight(start="9am", end=None).on == "" 

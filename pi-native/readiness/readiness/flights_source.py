@@ -3,6 +3,7 @@ reads the feed exactly the way CMDV2 does — never a second, drifting parser.""
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,10 +19,25 @@ def load(path: Path = REPO / "data" / "flight_schedule.json") -> dict:
     return gfd.transform(json.loads(path.read_text()))
 
 
+_HHMM = re.compile(r"^\d\d:\d\d$")
+
+
+def _hhmm(v) -> bool:
+    return isinstance(v, str) and bool(_HHMM.match(v))
+
+
+def _times(f: dict) -> tuple[str, str]:
+    """Actual block times only if BOTH are strict HH:MM, else planned start/end; junk becomes ""."""
+    off, on = f.get("blockOff"), f.get("blockOn")
+    if not (_hhmm(off) and _hhmm(on)):
+        off, on = f.get("start"), f.get("end")
+    return (off if _hhmm(off) else ""), (on if _hhmm(on) else "")
+
+
 def _to_flight(f: dict) -> Flight:
+    off, on = _times(f)
     return Flight(
-        id=f["id"].removeprefix("ACTUAL_ONLY_"), date=f["date"],
-        off=f.get("blockOff") or f.get("start") or "", on=f.get("blockOn") or f.get("end") or "",
+        id=f["id"].removeprefix("ACTUAL_ONLY_"), date=f["date"], off=off, on=on,
         lesson=f.get("lesson") or "", cond=f.get("cond") or "", instructor=f.get("instructor") or "",
         tail=f.get("tail") or "", route="-".join(x for x in (f.get("routeFrom"), f.get("routeTo")) if x),
         ftype=f.get("flightType") or "", status=f.get("status") or "Pending",
@@ -37,6 +53,7 @@ def my_flights(data: dict, owner: str, start: str, end: str) -> list[Flight]:
     seen = {f.id for f in out}
     for c in data.get("cancellations", []):
         if c.get("student") == owner and start <= c.get("date", "") <= end and c.get("bookingId") not in seen:
+            seen.add(c["bookingId"])
             out.append(Flight(id=c["bookingId"], date=c["date"], off="", on="", lesson=c.get("lesson") or "",
                               cond="", instructor=c.get("instructor") or "", tail=c.get("acReg") or "",
                               route="", ftype="", status="Canceled", is_sim=False, is_standby=False,
@@ -48,9 +65,10 @@ def ops_today(data: dict, batch: str, today: str) -> dict:
     rows = [f for f in data["flights"]
             if f["date"] == today and f.get("batch") == batch and not f.get("isNonFlight")]
     live = [f for f in rows if f.get("status") != "Canceled"]
-    cx_ids = {f["id"] for f in rows if f.get("status") == "Canceled"}
-    cx = len(cx_ids) + sum(1 for c in data.get("cancellations", [])
-                           if c.get("date") == today and c.get("batch") == batch and c.get("bookingId") not in cx_ids)
+    cx_ids = {f["id"].removeprefix("ACTUAL_ONLY_") for f in rows if f.get("status") == "Canceled"}
+    cx_ids |= {c.get("bookingId") for c in data.get("cancellations", [])
+               if c.get("date") == today and c.get("batch") == batch}
+    cx = len(cx_ids)
     maint = {r.get("tail"): bool(r.get("isMaint")) for r in data.get("resources", [])}
     by_tail: dict[str, list] = {}
     for f in sorted(live, key=lambda f: f.get("start") or ""):
