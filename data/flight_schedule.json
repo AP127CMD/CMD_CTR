@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-03T06:13:55Z",
+  "fetched_at": "2026-10-03T06:54:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -235159,12 +235159,12 @@
         "date": "2026-10-03",
         "rowIdx": "BK-AP-127-PICH-4ULV7",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -235180,22 +235180,66 @@
         "condition": "SPIC / XC",
         "type": "DA40CS",
         "tail": "HS-TVH",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40CS",
+        "tkoff": "11:05",
+        "ldgTime": "11:50",
+        "airborne": "00:45",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "10:55",
+        "blockOn": "11:55",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
+        "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSE",
+            "blockOff": "06:30",
+            "tkoff": "06:40",
+            "ldgTime": "07:55",
+            "blockOn": "08:00",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSE",
+            "routeTo": "VTBK",
+            "blockOff": "08:15",
+            "tkoff": "08:25",
+            "ldgTime": "10:40",
+            "blockOn": "10:45",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:55",
+            "tkoff": "11:05",
+            "ldgTime": "11:50",
+            "blockOn": "11:55",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-AP-127-BULA-6K8GK",
@@ -235332,12 +235376,12 @@
         "date": "2026-10-03",
         "rowIdx": "BK-AP-127-NATP-K7Q07",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -235353,19 +235397,19 @@
         "condition": "SPIC / XC",
         "type": "DA40CS",
         "tail": "HS-TVC",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40CS",
+        "tkoff": "06:40",
+        "ldgTime": "07:55",
+        "airborne": "01:15",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "06:35",
+        "blockOn": "08:00",
+        "routeFrom": "VTPH",
+        "routeTo": "VTSE",
+        "actualLeg": "1",
+        "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -235375,12 +235419,12 @@
         "date": "2026-10-03",
         "rowIdx": "BK-AP-127-NAPO-QDQ16",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -235396,22 +235440,66 @@
         "condition": "Solo / XC",
         "type": "DA40CS",
         "tail": "HS-TVG",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40CS",
+        "tkoff": "10:38",
+        "ldgTime": "11:43",
+        "airborne": "01:05",
+        "ldg": 1,
+        "to": 1,
+        "inst": 0,
+        "blockOff": "10:28",
+        "blockOn": "11:48",
+        "routeFrom": "VTBK",
+        "routeTo": "VTPH",
+        "actualLeg": "3",
+        "flightType": "Solo",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSE",
+            "blockOff": "06:28",
+            "tkoff": "06:39",
+            "ldgTime": "07:53",
+            "blockOn": "07:58",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVG",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSE",
+            "routeTo": "VTBK",
+            "blockOff": "08:08",
+            "tkoff": "08:18",
+            "ldgTime": "10:13",
+            "blockOn": "10:18",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVG",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:28",
+            "tkoff": "10:38",
+            "ldgTime": "11:43",
+            "blockOn": "11:48",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVG",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-AP-127-WATC-PZQLM",
@@ -248922,20 +249010,20 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "EKKAPHOP R.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "ITTIPOL P.",
+      "name": "EKKAPHOP R.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "ITTIPOL P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -248946,14 +249034,14 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -248988,14 +249076,14 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -249030,14 +249118,14 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -249048,20 +249136,20 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
-      "name": "CHAMNONG S.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": true,
-      "name": "TANAKRIT V.",
+      "name": "CHAMNONG S.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "TANAKRIT V.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -249072,14 +249160,14 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -249090,14 +249178,14 @@
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "WACHIRAWIT WORAWETMONGKON",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -249108,20 +249196,20 @@
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "KRIANGKRAIN NA NAN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -249132,8 +249220,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -258059,6 +258147,120 @@
       "ldg": 1,
       "inst": null,
       "tail": "HS-TVD",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NAPO-QDQ16|03/10/2026 13:26:29",
+      "bookingId": "BK-AP-127-NAPO-QDQ16",
+      "stamp": "2026-10-03 13:26:29",
+      "date": "2026-10-03",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSE",
+      "blockOff": "06:28",
+      "tkoff": "06:39",
+      "ldgTime": "07:53",
+      "blockOn": "07:58",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVG",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NAPO-QDQ16|03/10/2026 13:27:54",
+      "bookingId": "BK-AP-127-NAPO-QDQ16",
+      "stamp": "2026-10-03 13:27:54",
+      "date": "2026-10-03",
+      "leg": "2",
+      "routeFrom": "VTSE",
+      "routeTo": "VTBK",
+      "blockOff": "08:08",
+      "tkoff": "08:18",
+      "ldgTime": "10:13",
+      "blockOn": "10:18",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVG",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-NAPO-QDQ16|03/10/2026 13:49:32",
+      "bookingId": "BK-AP-127-NAPO-QDQ16",
+      "stamp": "2026-10-03 13:49:32",
+      "date": "2026-10-03",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:28",
+      "tkoff": "10:38",
+      "ldgTime": "11:43",
+      "blockOn": "11:48",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVG",
+      "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-4ULV7|03/10/2026 13:23:48",
+      "bookingId": "BK-AP-127-PICH-4ULV7",
+      "stamp": "2026-10-03 13:23:48",
+      "date": "2026-10-03",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSE",
+      "blockOff": "06:30",
+      "tkoff": "06:40",
+      "ldgTime": "07:55",
+      "blockOn": "08:00",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-4ULV7|03/10/2026 13:25:15",
+      "bookingId": "BK-AP-127-PICH-4ULV7",
+      "stamp": "2026-10-03 13:25:15",
+      "date": "2026-10-03",
+      "leg": "2",
+      "routeFrom": "VTSE",
+      "routeTo": "VTBK",
+      "blockOff": "08:15",
+      "tkoff": "08:25",
+      "ldgTime": "10:40",
+      "blockOn": "10:45",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-4ULV7|03/10/2026 13:32:19",
+      "bookingId": "BK-AP-127-PICH-4ULV7",
+      "stamp": "2026-10-03 13:32:19",
+      "date": "2026-10-03",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:55",
+      "tkoff": "11:05",
+      "ldgTime": "11:50",
+      "blockOn": "11:55",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
       "flightType": "SPIC",
       "remark": null
     }
