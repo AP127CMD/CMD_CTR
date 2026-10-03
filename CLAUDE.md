@@ -72,6 +72,12 @@ This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below 
 3. Update `/Users/nugui/AP127_Docs/README.md` §2.1 (add to §10 log) — then push AP127_Docs
 4. `git add . && git commit -m "rNN: <what changed>" && git pull --rebase && git push`
 
+## Readiness Planner Worker (2026-10-03)
+`readiness-worker/` is the Cloudflare Worker `ap127-readiness` (https://ap127-readiness.anusorn-tanmetha.workers.dev, KV `READINESS_KV`). It relays between the owner's **private** Garmin FR570 Readiness Planner watch app and the Pi job (`pi-native/readiness/`, later plan) — it is **not** an AP127 dashboard and nothing in the dashboards reads it.
+- Routes: `PUT /plan` (PI_KEY) · `GET /plan` (WATCH_KEY) · `POST /apply` (WATCH_KEY) · `GET /apply/pending` (PI_KEY) · `POST /apply/result` (PI_KEY). Auth via `X-Key` header.
+- Keys: `~/.ap127-readiness/{pi,watch}.key` (Mac), never in git; Worker secrets `PI_KEY`, `WATCH_KEY`.
+- Test `cd readiness-worker && npm test` (30 tests) · deploy `npx wrangler deploy`. Apply queue uses `kv.list` (eventually consistent, ~60 s lag).
+
 ## What this project is
 Real-time flight-schedule dashboard. 8 views: Day Glance · Board · Gantt · Weekly · Analytics · Roster · Slot Finder · Auto Slot Finder.
 GitHub: `AP127CMD/CMD_CTR` | Live: https://ap127-cmd-ctr.pages.dev | Local: `/Users/nugui/flight-schedule-feed/`
