@@ -73,10 +73,14 @@ This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below 
 4. `git add . && git commit -m "rNN: <what changed>" && git pull --rebase && git push`
 
 ## Readiness Planner Worker (2026-10-03)
-`readiness-worker/` is the Cloudflare Worker `ap127-readiness` (https://ap127-readiness.anusorn-tanmetha.workers.dev, KV `READINESS_KV`). It relays between the owner's **private** Garmin FR570 Readiness Planner watch app and the Pi job (`pi-native/readiness/`, later plan) — it is **not** an AP127 dashboard and nothing in the dashboards reads it.
+`readiness-worker/` is the Cloudflare Worker `ap127-readiness` (https://ap127-readiness.anusorn-tanmetha.workers.dev, KV `READINESS_KV`). It relays between the owner's **private** Garmin FR570 Readiness Planner watch app and the Pi job (`pi-native/readiness/`) — it is **not** an AP127 dashboard and nothing in the dashboards reads it.
 - Routes: `PUT /plan` (PI_KEY) · `GET /plan` (WATCH_KEY) · `POST /apply` (WATCH_KEY) · `GET /apply/pending` (PI_KEY) · `POST /apply/result` (PI_KEY). Auth via `X-Key` header.
 - Keys: `~/.ap127-readiness/{pi,watch}.key` (Mac), never in git; Worker secrets `PI_KEY`, `WATCH_KEY`.
 - Test `cd readiness-worker && npm test` (30 tests) · deploy `npx wrangler deploy`. Apply queue uses `kv.list` (eventually consistent, ~60 s lag).
+- **Pi job (live 2026-10-04):** `ap127-readiness.timer` (07/22/37/52) -> `ap127-readiness.service`, user `dietpi`, Nice 10, MemoryMax 150M (measured peak ~83 MB), dry_run=true. Garmin tokens `/home/dietpi/.garminconnect` (700). Sign in: `ssh -t root@DietPi.local 'cd /home/dietpi/flight-schedule-feed/pi-native/readiness && sudo -u dietpi -H .venv/bin/python -m readiness login'`. Verify: `ssh root@DietPi.local 'journalctl -u ap127-readiness -n 5 --no-pager'` shows `published NNNN B (HTTP 204)`; `curl -H "X-Key: $(cat ~/.ap127-readiness/watch.key)" https://ap127-readiness.anusorn-tanmetha.workers.dev/plan`. Dry print: `systemd-run --wait --collect --pipe -p User=dietpi -p WorkingDirectory=<dir> .venv/bin/python -m readiness --print` (no /usr/bin/time on DietPi).
+
+## Pi scraper fix (2026-10-04)
+Pi scraper had failed every cycle since 2026-09-18: a failed cycle left `data/portal_fingerprint.json` dirty and `run_fetch.sh` only reset `backoff_state.json` before `git pull --rebase`. Fixed (8e969f35f): same reset added for `portal_fingerprint.json`; a cycle succeeded afterwards. Pi-failure issues #21-#30 still open - close by hand (GH_PAT lacks Issues:Write).
 
 ## What this project is
 Real-time flight-schedule dashboard. 8 views: Day Glance · Board · Gantt · Weekly · Analytics · Roster · Slot Finder · Auto Slot Finder.

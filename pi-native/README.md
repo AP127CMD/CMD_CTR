@@ -44,6 +44,15 @@ opens **one** issue rather than one per cycle. To enable auto-close, grant the
 PAT `Issues: Read and write` on AP127CMD/CMD_CTR at
 github.com/settings/personal-access-tokens — no code change needed.
 
+**Incident 2026-10-04 — Pi scraper failed every cycle 2026-09-18 -> 2026-10-04 (fixed, commit `8e969f35f`).**
+A failed cycle left `data/portal_fingerprint.json` dirty (timestamp only), and
+`run_fetch.sh` only reset `backoff_state.json` before `git pull --rebase`, so
+every later pull aborted on the dirty tree (the cloud fallback masked it).
+Fix: restored the file on the Pi and `run_fetch.sh` now resets
+`portal_fingerprint.json` the same way before the pull; a cycle succeeded
+afterwards. Pi-failure issues #21-#30 are still open and must be closed by
+hand (`GH_PAT` lacks `Issues: Write`, see the known limitation above).
+
 **Earlier the same week: `fetch_schedule.yml` re-enabled, runs PERMANENTLY
 alongside the Pi, not disabled.** A live `workflow_dispatch -f force=true`
 test proved GitHub Actions' own fetch works again too (same "anonymous portal
@@ -285,3 +294,12 @@ touching.
   there's no standing unauthenticated VNC exposure on your network. If you
   want it password-protected too for extra safety during the brief window
   it's up, add `-passwd <something>` to the command in step 5.
+
+## Readiness Planner (2026-10-03)
+
+A second, independent timer `ap127-readiness.timer` (minutes 07/22/37/52) runs
+`pi-native/readiness/` as user `dietpi` with `Nice=10` / `MemoryMax=150M`. It
+builds the owner's FR570 watch payload and PUTs it to the `ap127-readiness`
+Worker. Measured peak 83 MB (`systemd-run --wait` Memory peak), ~3 s CPU. It
+never touches the scraper (separate units, no shared files). See
+`pi-native/readiness/README.md`.
