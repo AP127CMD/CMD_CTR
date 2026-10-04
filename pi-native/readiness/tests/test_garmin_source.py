@@ -97,3 +97,52 @@ def test_fetch_isolates_one_failing_signal():
 def test_fetch_spans_month_boundary():
     _, ws, _ = G.fetch(FakeApi(), "2026-09-28")    # window 09-28..10-11 needs Sep and Oct calendars
     assert ws[0].date == "2026-10-03"
+
+
+class OddApi(FakeApi):
+    def __init__(self, **over):
+        super().__init__()
+        self.over = over
+
+    def get_training_readiness(self, d): return self.over.get("readiness", READINESS)
+    def get_hrv_data(self, d): return self.over.get("hrv", HRV)
+    def get_sleep_data(self, d): return self.over.get("sleep", SLEEP)
+    def get_body_battery(self, d): return self.over.get("bb", BB)
+    def get_rhr_day(self, d): return self.over.get("rhr", RHR)
+    def get_scheduled_workouts(self, y, m):
+        return self.over.get("calendar", {"calendarItems": ITEMS if m == 10 else []})
+
+
+import pytest
+
+
+@pytest.mark.parametrize("name,value,blank", [
+    ("bb", {"oops": 1}, "bb"),
+    ("bb", [{"bodyBatteryValuesArray": [[1, "x"]]}], "bb"),
+    ("readiness", [None, "x", 5], "tr"),
+    ("hrv", [1, 2], "hrv"),
+    ("sleep", [1, 2], None),   # sleep falls back to readiness.sleepScore, so it stays 87
+    ("rhr", {"allMetrics": {"metricsMap": {"WELLNESS_RESTING_HEART_RATE": [{"value": "n/a"}]}}}, "rhr"),
+])
+def test_fetch_odd_signal_shape_blanks_only_that_signal(name, value, blank):
+    sig, ws, errors = G.fetch(OddApi(**{name: value}), "2026-10-03")
+    ok = G.fetch(OddApi(), "2026-10-03")[0]
+    for f in ("sleep", "bb", "tr", "hrv", "rhr"):
+        assert getattr(sig, f) == (None if f == blank else getattr(ok, f)), f
+    assert len(ws) == 5
+
+
+def test_fetch_scheduled_workouts_list_does_not_raise():
+    sig, ws, _ = G.fetch(OddApi(calendar=[1, 2]), "2026-10-03")
+    assert ws == [] and sig.tr == 81
+
+
+def test_calendar_skips_null_date_and_non_dict_items():
+    bad = [{"id": 9, "itemType": "workout", "title": "x", "date": None}, "junk", None] + ITEMS
+    _, ws, _ = G.fetch(OddApi(calendar={"calendarItems": bad}), "2026-10-03")
+    assert len(ws) == 5
+
+
+def test_workouts_deduped_across_month_calls():
+    _, ws, _ = G.fetch(OddApi(calendar={"calendarItems": ITEMS}), "2026-09-28")
+    assert len(ws) == 5 and len({w.uuid for w in ws}) == 5

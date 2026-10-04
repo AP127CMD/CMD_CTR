@@ -33,38 +33,66 @@ def classify(title: str, sport: str, task: dict | None) -> str:
     return "easy"
 
 
+def _d(x) -> dict:
+    return x if isinstance(x, dict) else {}
+
+
+def _int(x):
+    return None if x is None or isinstance(x, bool) else int(float(x))
+
+
+def _readiness_parts(readiness):
+    rows = [r for r in (readiness if isinstance(readiness, list) else [readiness]) if isinstance(r, dict)]
+    if not rows:
+        return None, None
+    latest = max(rows, key=lambda r: str(r.get("timestamp") or ""))
+    return latest.get("score"), latest.get("sleepScore")
+
+
+def _sleep_value(sleep, fallback):
+    overall = _d(_d(_d(_d(sleep).get("dailySleepDTO")).get("sleepScores")).get("overall"))
+    return overall.get("value") if overall.get("value") is not None else fallback
+
+
+def _hrv_status(hrv):
+    return _d(_d(hrv).get("hrvSummary")).get("status")
+
+
+def _bb_value(bb):
+    if not isinstance(bb, list) or not bb:
+        return None
+    vals = [v for v in (_d(bb[0]).get("bodyBatteryValuesArray") or []) if v and v[-1] is not None]
+    return int(vals[-1][-1]) if vals else None
+
+
+def _rhr_value(rhr):
+    metrics = _d(_d(_d(rhr).get("allMetrics")).get("metricsMap")).get("WELLNESS_RESTING_HEART_RATE") or []
+    return _int(_d(metrics[0]).get("value")) if metrics else None
+
+
 def parse_signals(readiness, hrv, sleep, bb, rhr) -> Signals:
-    tr = sleep_from_tr = None
-    if readiness:
-        rows = readiness if isinstance(readiness, list) else [readiness]
-        latest = max(rows, key=lambda r: r.get("timestamp") or "")
-        tr, sleep_from_tr = latest.get("score"), latest.get("sleepScore")
-    overall = (((sleep or {}).get("dailySleepDTO") or {}).get("sleepScores") or {}).get("overall") or {}
-    sleep_v = overall.get("value") if overall.get("value") is not None else sleep_from_tr
-    hrv_s = ((hrv or {}).get("hrvSummary") or {}).get("status")
-    bb_v = None
-    if bb:
-        vals = [v for v in (bb[0].get("bodyBatteryValuesArray") or []) if v and v[-1] is not None]
-        if vals:
-            bb_v = int(vals[-1][-1])
-    metrics = ((((rhr or {}).get("allMetrics") or {}).get("metricsMap") or {})
-               .get("WELLNESS_RESTING_HEART_RATE") or [])
-    rhr_v = int(metrics[0]["value"]) if metrics and metrics[0].get("value") is not None else None
-    return Signals(sleep_v, bb_v, tr, hrv_s, rhr_v)
+    tr, sleep_from_tr = _readiness_parts(readiness) if readiness else (None, None)
+    return Signals(_sleep_value(sleep, sleep_from_tr), _bb_value(bb), tr, _hrv_status(hrv), _rhr_value(rhr))
 
 
 def parse_workouts(items: list, task_list: list, start: str, end: str) -> list[Workout]:
     tasks = {}
     for t in task_list or []:
-        uuid = (t.get("taskWorkout") or {}).get("workoutUuid")
+        uuid = _d(_d(t).get("taskWorkout")).get("workoutUuid")
         if uuid:
             tasks[uuid] = t
     out = []
+    seen: set = set()
     for it in items or []:
+        if not isinstance(it, dict):
+            continue
         item_type = it.get("itemType")
-        if item_type not in ("fbtAdaptiveWorkout", "workout") or not (start <= it.get("date", "") <= end):
+        if item_type not in ("fbtAdaptiveWorkout", "workout") or not (start <= (it.get("date") or "") <= end):
             continue
         uuid = it.get("workoutUuid") or f"sched-{it.get('id')}"
+        if uuid in seen:   # Garmin returns the same coach items for every month call
+            continue
+        seen.add(uuid)
         task = tasks.get(uuid)
         tw = (task or {}).get("taskWorkout") or {}
         dist, dur = tw.get("estimatedDistanceInMeters"), tw.get("estimatedDurationInSecs")
@@ -90,19 +118,27 @@ def fetch(api, today: str, days: int = 14) -> tuple[Signals, list[Workout], list
             errors.append(f"{name}: {type(e).__name__}")
             return None
 
-    sig = parse_signals(safe("readiness", api.get_training_readiness, today), safe("hrv", api.get_hrv_data, today),
-                        safe("sleep", api.get_sleep_data, today), safe("bb", api.get_body_battery, today),
-                        safe("rhr", api.get_rhr_day, today))
+    readiness = safe("readiness", api.get_training_readiness, today)
+    tr, sleep_tr = (safe("readiness", _readiness_parts, readiness) if readiness else None) or (None, None)
+    sig = Signals(
+        safe("sleep", lambda: _sleep_value(api.get_sleep_data(today), sleep_tr)),
+        safe("bb", lambda: _bb_value(api.get_body_battery(today))),
+        tr,
+        safe("hrv", lambda: _hrv_status(api.get_hrv_data(today))),
+        safe("rhr", lambda: _rhr_value(api.get_rhr_day(today))),
+    )
     d0 = date.fromisoformat(today)
     d1 = d0 + timedelta(days=days - 1)
     items: list = []
     for y, m in sorted({(d0.year, d0.month), (d1.year, d1.month)}):
         cal = safe("calendar", api.get_scheduled_workouts, y, m)
-        items += (cal or {}).get("calendarItems") or []
+        got = _d(cal).get("calendarItems")
+        items += got if isinstance(got, list) else []
     tasks: list = []
-    for pid in sorted({it["trainingPlanId"] for it in items if it.get("trainingPlanId")}):
+    for pid in sorted({it["trainingPlanId"] for it in items if isinstance(it, dict) and it.get("trainingPlanId")}, key=str):
         plan = safe("plan", api.get_adaptive_training_plan_by_id, pid)
-        tasks += (plan or {}).get("taskList") or []
+        got = _d(plan).get("taskList")
+        tasks += got if isinstance(got, list) else []
     return sig, parse_workouts(items, tasks, today, d1.isoformat()), errors
 
 
