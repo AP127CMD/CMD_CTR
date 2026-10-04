@@ -1,0 +1,14 @@
+[Unit]
+Description=AP127 Readiness Planner (FR570 watch payload)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=dietpi
+WorkingDirectory=/home/dietpi/flight-schedule-feed/pi-native/readiness
+EnvironmentFile=/home/dietpi/flight-schedule-feed/pi-native/readiness/.env
+ExecStart=/home/dietpi/flight-schedule-feed/pi-native/readiness/.venv/bin/python -m readiness
+Nice=10
+MemoryMax=150M
+TimeoutStartSec=120
