@@ -135,11 +135,14 @@ if [ -n "${PI_HEARTBEAT_KEY:-}" ]; then
     || echo "WARNING: heartbeat POST failed (non-fatal)" >&2
 fi
 
-# A failed cycle leaves an uncommitted backoff_state.json bump behind (this
-# script only commits on the success path) — without this, EVERY cycle
-# after a failure would fail again immediately on git pull, forever. It's
-# pure bookkeeping, not precious; this run's own outcome rewrites it anyway.
+# A failed cycle leaves uncommitted bookkeeping behind (this script only
+# commits on the success path) — without this, EVERY cycle after a failure
+# would fail again immediately on git pull, forever. Both files are pure
+# bookkeeping, not precious; this run's own outcome rewrites them anyway.
+# 2026-10-04: portal_fingerprint.json added — a failed cycle on 2026-09-18 left
+# only its _expensive_checked_at timestamp dirty and blocked the Pi for ~2 weeks.
 git checkout -- data/backoff_state.json 2>/dev/null || true
+git checkout -- data/portal_fingerprint.json 2>/dev/null || true
 
 if ! git pull --rebase origin main; then
   echo "git pull failed — skipping this cycle" >&2
