@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-04T06:23:21Z",
+  "fetched_at": "2026-10-04T06:34:26Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -236492,7 +236492,51 @@
         "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH",
+            "routeTo": "VTSE",
+            "blockOff": "06:30",
+            "tkoff": "06:40",
+            "ldgTime": "07:55",
+            "blockOn": "08:00",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTSE",
+            "routeTo": "VTBK",
+            "blockOff": "08:15",
+            "tkoff": "08:25",
+            "ldgTime": "10:40",
+            "blockOn": "10:45",
+            "to": 2,
+            "ldg": 2,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          },
+          {
+            "leg": "3",
+            "routeFrom": "VTBK",
+            "routeTo": "VTPH",
+            "blockOff": "10:55",
+            "tkoff": "11:05",
+            "ldgTime": "11:50",
+            "blockOn": "11:55",
+            "to": 1,
+            "ldg": 1,
+            "inst": null,
+            "tail": "HS-TVH",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-AP-127-WATC-1FX5G",
@@ -251680,26 +251724,26 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
-      "name": "EKKAPHOP R.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "ITTIPOL P.",
+      "name": "EKKAPHOP R.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
+      "name": "ITTIPOL P.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -251710,26 +251754,26 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "SANTI PO.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "SOWAN C.",
+      "name": "PHAHOLYUTH P.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "SANTI PO.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "SOWAN C.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -251746,26 +251790,26 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -251776,14 +251820,14 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -251794,8 +251838,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -251806,8 +251850,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -251818,8 +251862,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -251836,8 +251880,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -251866,20 +251910,20 @@
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "KRIANGKRAIN NA NAN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -251890,8 +251934,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -261072,6 +261116,63 @@
       "inst": null,
       "tail": "HS-TVD",
       "flightType": "Solo",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-AXD69|04/10/2026 13:19:05",
+      "bookingId": "BK-AP-127-PICH-AXD69",
+      "stamp": "2026-10-04 13:19:05",
+      "date": "2026-10-04",
+      "leg": "1",
+      "routeFrom": "VTPH",
+      "routeTo": "VTSE",
+      "blockOff": "06:30",
+      "tkoff": "06:40",
+      "ldgTime": "07:55",
+      "blockOn": "08:00",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-AXD69|04/10/2026 13:20:12",
+      "bookingId": "BK-AP-127-PICH-AXD69",
+      "stamp": "2026-10-04 13:20:12",
+      "date": "2026-10-04",
+      "leg": "2",
+      "routeFrom": "VTSE",
+      "routeTo": "VTBK",
+      "blockOff": "08:15",
+      "tkoff": "08:25",
+      "ldgTime": "10:40",
+      "blockOn": "10:45",
+      "to": 2,
+      "ldg": 2,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "SPIC",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-PICH-AXD69|04/10/2026 13:21:16",
+      "bookingId": "BK-AP-127-PICH-AXD69",
+      "stamp": "2026-10-04 13:21:16",
+      "date": "2026-10-04",
+      "leg": "3",
+      "routeFrom": "VTBK",
+      "routeTo": "VTPH",
+      "blockOff": "10:55",
+      "tkoff": "11:05",
+      "ldgTime": "11:50",
+      "blockOn": "11:55",
+      "to": 1,
+      "ldg": 1,
+      "inst": null,
+      "tail": "HS-TVH",
+      "flightType": "SPIC",
       "remark": null
     }
   ],
