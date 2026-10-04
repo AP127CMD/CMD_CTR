@@ -19,7 +19,7 @@ FEED_STALE_MIN = 60
 NET_ERRORS = (urllib.error.URLError, OSError)  # HTTPError is a URLError subclass
 
 
-def build_payload(today, settings, rules, data, api, now, applied, pending):
+def build_payload(today, settings, rules, data, api, now, applied, pending, on_applied=None):
     """Returns (payload, apply results, this run's moves). Flights include yesterday for R3."""
     start = (date.fromisoformat(today) - timedelta(days=1)).isoformat()
     end = (date.fromisoformat(today) + timedelta(days=13)).isoformat()
@@ -37,7 +37,18 @@ def build_payload(today, settings, rules, data, api, now, applied, pending):
     # never re-apply a move that is already recorded as applied
     done = [(p.get("id"), "ok", "already applied") for p in pending if p.get("id") in applied]
     todo = [p for p in pending if p.get("id") not in applied]
-    results = done + applier.run_pending(todo, plan.moves, dry, mover)
+    if not dry and api is None:
+        ran = [(p.get("id"), "failed", "garmin auth") for p in todo]
+    else:
+        ran = applier.run_pending(todo, plan.moves, dry, mover)
+    results = done + ran
+    by_id = {m.id: m for m in plan.moves}
+    for move_id, st, why in ran:  # record real applies at once, before anything else can fail
+        if st == "ok" and not why and move_id in by_id and on_applied:
+            try:
+                on_applied(by_id[move_id])
+            except OSError as e:
+                print(f"record_applied {move_id} failed: {e}", file=sys.stderr)
     age = flights_source.feed_age_min(data, now.astimezone(timezone.utc))
     src = {"garmin": "error" if errors else "ok", "flights": "stale" if age > FEED_STALE_MIN else "ok"}
     p = payload.build(plan, [f for f in flights if f.date >= today], ops, workouts, now, hints, src,
@@ -61,36 +72,34 @@ def main(argv=None) -> int:
     rules = config.load_rules(HERE / "rules.json")
     now = datetime.now(BKK)
     today = a.today or now.date().isoformat()
+    url, key = settings["worker_url"], os.environ.get("READINESS_PI_KEY", "")
+    if not a.print and not key:
+        print("READINESS_PI_KEY is not set; not publishing", file=sys.stderr)
+        return 2
     try:
         api = garmin_source.connect()
     except garmin_source.GarminAuthRequired as e:
         print(e, file=sys.stderr)
         api = None
-    url, key = settings["worker_url"], os.environ.get("READINESS_PI_KEY", "")
-    if not a.print and not key:
-        print("READINESS_PI_KEY is not set; not publishing", file=sys.stderr)
-        return 2
     pending = []
     if not a.print:
         try:
             pending = publisher.get_pending(url, key)
-        except NET_ERRORS as e:
+        except NET_ERRORS + (ValueError,) as e:
             print(f"get_pending failed: {type(e).__name__}: {e}", file=sys.stderr)
     applied_path = STATE / "applied.json"
     p, results, moves = build_payload(today, settings, rules, flights_source.load(), api, now,
-                                      applier.load_applied(applied_path), pending)
+                                      applier.load_applied(applied_path), pending,
+                                      lambda m: applier.record_applied(applied_path, m))
     if a.print:
         print(json.dumps(p, ensure_ascii=False, indent=1))
         print(f"{payload.size_of(p)} bytes", file=sys.stderr)
         return 0
-    by_id = {m.id: m for m in moves}
     for move_id, st, why in results:
         try:
             publisher.post_result(url, key, move_id, st, why)
         except NET_ERRORS as e:
             print(f"post_result {move_id} failed: {type(e).__name__}: {e}", file=sys.stderr)
-        if st == "ok" and move_id in by_id:
-            applier.record_applied(applied_path, by_id[move_id])
     try:
         status = publisher.publish(p, url, key)
     except NET_ERRORS as e:

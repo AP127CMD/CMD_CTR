@@ -62,3 +62,33 @@ def test_main_survives_network_failures(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(publisher, "publish", bad)
     assert M.main(["run", "--today", "2026-10-04"]) == 1
     assert "secret-key" not in capsys.readouterr().err
+
+
+def test_applies_recorded_before_payload_failure(monkeypatch):
+    class Mv:
+        id = "m-1"
+    mv = Mv()
+    monkeypatch.setattr(M.R, "evaluate", lambda *a, **k: type("P", (), {"moves": [mv]})())
+    monkeypatch.setattr(M.applier, "run_pending", lambda *a: [("m-1", "ok", "")])
+    monkeypatch.setattr(M.payload, "build", lambda *a, **k: (_ for _ in ()).throw(ValueError("too big")))
+    rec = []
+    try:
+        M.build_payload("2026-10-04", SETTINGS, copy.deepcopy(DEFAULT_RULES), FS.gfd.transform(RAW),
+                        FakeApi(), NOW, {"m-old": {"uuid": "u", "frm": "a", "to": "b"}}, [{"id": "m-1"}, {"id": "m-old"}], rec.append)
+    except ValueError:
+        pass
+    assert rec == [mv]          # recorded; "already applied" m-old is not
+
+
+def test_auth_failed_applies_fail_when_live():
+    s = dict(SETTINGS, dry_run=False)
+    _, results, _ = M.build_payload("2026-10-04", s, copy.deepcopy(DEFAULT_RULES), FS.gfd.transform(RAW),
+                                    None, NOW, {}, [{"id": "m-x"}])
+    assert results == [("m-x", "failed", "garmin auth")]
+
+
+def test_key_checked_before_connect(monkeypatch):
+    monkeypatch.delenv("READINESS_PI_KEY", raising=False)
+    monkeypatch.setattr(M.config, "load_settings", lambda p: dict(SETTINGS))
+    monkeypatch.setattr(M.garmin_source, "connect", lambda: (_ for _ in ()).throw(AssertionError("connected")))
+    assert M.main(["run"]) == 2
