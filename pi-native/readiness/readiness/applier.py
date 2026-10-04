@@ -9,11 +9,25 @@ from typing import Callable
 from .models import Move
 
 
+class ApplyError(Exception):
+    """Apply failure whose message is controlled by us (safe to show on the watch)."""
+
+
+def _reason(e: Exception) -> str:
+    if isinstance(e, ApplyError):
+        return str(e)[:80]
+    code = getattr(getattr(e, "response", None), "status_code", None) or getattr(e, "status", None)
+    return (f"{type(e).__name__} {code}" if isinstance(code, int) else type(e).__name__)[:80]
+
+
 def run_pending(pending: list[dict], moves: list[Move], dry_run: bool,
                 mover: Callable[[Move], None] | None) -> list[tuple[str, str, str]]:
     by_id = {m.id: m for m in moves if m.workout.applyable}
-    results = []
+    results, seen = [], set()
     for p in pending:
+        if p.get("id") in seen:
+            continue
+        seen.add(p.get("id"))
         mv = by_id.get(p.get("id"))
         if mv is None:
             results.append((p.get("id"), "failed", "superseded"))
@@ -24,7 +38,7 @@ def run_pending(pending: list[dict], moves: list[Move], dry_run: bool,
                 mover(mv)
                 results.append((mv.id, "ok", ""))
             except Exception as e:  # the calendar is left as it was; the watch shows the reason
-                results.append((mv.id, "failed", f"{type(e).__name__}: {e}"[:80]))
+                results.append((mv.id, "failed", _reason(e)))
     return results
 
 
@@ -35,14 +49,20 @@ def garmin_mover(api) -> Callable[[Move], None]:
         w = mv.workout
         if not (w.workout_id and w.sched_id):
             raise ValueError("workout has no workoutId/scheduleId")
-        new = api.schedule_workout(w.workout_id, mv.to) or {}
+        new = api.schedule_workout(w.workout_id, mv.to)
         try:
             api.unschedule_workout(w.sched_id)
-        except Exception:
-            new_id = new.get("workoutScheduleId")
+        except Exception as orig:
+            new_id = new.get("workoutScheduleId") if isinstance(new, dict) else None
+            rolled_back = False
             if new_id is not None:
-                api.unschedule_workout(str(new_id))
-            raise
+                try:
+                    api.unschedule_workout(str(new_id))
+                    rolled_back = True
+                except Exception:
+                    pass
+            tail = "rolled back" if rolled_back else f"duplicate left on {mv.to}"
+            raise ApplyError(f"unschedule failed ({type(orig).__name__}); {tail}") from orig
     return move
 
 
