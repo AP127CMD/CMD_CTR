@@ -41,6 +41,13 @@ def _int(x):
     return None if x is None or isinstance(x, bool) else int(float(x))
 
 
+def _num(x):
+    try:
+        return _int(x)
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
 def _readiness_parts(readiness):
     rows = [r for r in (readiness if isinstance(readiness, list) else [readiness]) if isinstance(r, dict)]
     if not rows:
@@ -87,7 +94,9 @@ def parse_workouts(items: list, task_list: list, start: str, end: str) -> list[W
         if not isinstance(it, dict):
             continue
         item_type = it.get("itemType")
-        if item_type not in ("fbtAdaptiveWorkout", "workout") or not (start <= (it.get("date") or "") <= end):
+        if not isinstance(it.get("date"), str):
+            continue
+        if item_type not in ("fbtAdaptiveWorkout", "workout") or not (start <= it["date"] <= end):
             continue
         uuid = it.get("workoutUuid") or f"sched-{it.get('id')}"
         if uuid in seen:   # Garmin returns the same coach items for every month call
@@ -95,12 +104,12 @@ def parse_workouts(items: list, task_list: list, start: str, end: str) -> list[W
         seen.add(uuid)
         task = tasks.get(uuid)
         tw = (task or {}).get("taskWorkout") or {}
-        dist, dur = tw.get("estimatedDistanceInMeters"), tw.get("estimatedDurationInSecs")
+        dist, dur = _num(tw.get("estimatedDistanceInMeters")), _num(tw.get("estimatedDurationInSecs"))
         plain = item_type == "workout"
         out.append(Workout(
             uuid=uuid, date=it["date"], title=it.get("title") or "Workout",
             kind=classify(it.get("title") or "", it.get("sportTypeKey") or "", task),
-            dist_m=int(dist) if dist else None, dur_s=int(dur) if dur else None,
+            dist_m=dist or None, dur_s=dur or None,
             applyable=plain,
             sched_id=str(it["id"]) if plain and it.get("id") is not None else None,
             workout_id=str(it["workoutId"]) if plain and it.get("workoutId") is not None else None,
@@ -139,7 +148,7 @@ def fetch(api, today: str, days: int = 14) -> tuple[Signals, list[Workout], list
         plan = safe("plan", api.get_adaptive_training_plan_by_id, pid)
         got = _d(plan).get("taskList")
         tasks += got if isinstance(got, list) else []
-    return sig, parse_workouts(items, tasks, today, d1.isoformat()), errors
+    return sig, safe("workouts", parse_workouts, items, tasks, today, d1.isoformat()) or [], errors
 
 
 def connect(token_dir: str = TOKEN_DIR):

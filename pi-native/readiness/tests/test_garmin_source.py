@@ -1,3 +1,5 @@
+import pytest
+
 from readiness import garmin_source as G
 
 READINESS = [
@@ -113,8 +115,6 @@ class OddApi(FakeApi):
         return self.over.get("calendar", {"calendarItems": ITEMS if m == 10 else []})
 
 
-import pytest
-
 
 @pytest.mark.parametrize("name,value,blank", [
     ("bb", {"oops": 1}, "bb"),
@@ -146,3 +146,19 @@ def test_calendar_skips_null_date_and_non_dict_items():
 def test_workouts_deduped_across_month_calls():
     _, ws, _ = G.fetch(OddApi(calendar={"calendarItems": ITEMS}), "2026-09-28")
     assert len(ws) == 5 and len({w.uuid for w in ws}) == 5
+
+
+def test_workouts_skip_non_string_date():
+    bad = [{"id": 9, "itemType": "workout", "title": "x", "date": 20261004}] + ITEMS
+    _, ws, _ = G.fetch(OddApi(calendar={"calendarItems": bad}), "2026-10-03")
+    assert len(ws) == 5
+
+
+def test_workouts_bad_task_number_becomes_none():
+    class Api(OddApi):
+        def get_adaptive_training_plan_by_id(self, pid):
+            return {"taskList": [{"taskWorkout": {"workoutUuid": "u-long", "estimatedDistanceInMeters": "x",
+                                                  "estimatedDurationInSecs": "y"}}]}
+    _, ws, _ = G.fetch(Api(), "2026-10-03")
+    long = next(w for w in ws if w.uuid == "u-long")
+    assert long.dist_m is None and long.dur_s is None and len(ws) == 5
