@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-06T11:57:26Z",
+  "fetched_at": "2026-10-06T12:14:28Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -241622,7 +241622,7 @@
         "date": "2026-10-06",
         "rowIdx": "BK-AP-127-MAET-HMOI3",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -241657,8 +241657,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Magneto dropped over 210\nRPM when idle 580 (lower than 600)"
       },
       {
         "id": "BK-AP-127-VASA-1AFR1",
@@ -243447,8 +243447,8 @@
         "student": "PICHAKORN J.",
         "instructor": "PORNTEP B.",
         "batch": "AP-127",
-        "lesson": "CDNXC 48",
-        "condition": "XC / Night",
+        "lesson": "CDNL 47",
+        "condition": "Night",
         "type": "DA40CS",
         "tail": "HS-TVB",
         "actualType": null,
@@ -243576,8 +243576,8 @@
         "student": "MAETHAPHAN R.",
         "instructor": "NAPATTORN S.",
         "batch": "AP-127",
-        "lesson": "CDNXC 48",
-        "condition": "XC / Night",
+        "lesson": "CDNL 47",
+        "condition": "Night",
         "type": "DA40CS",
         "tail": "HS-TVH",
         "actualType": null,
@@ -243748,8 +243748,8 @@
         "student": "MAETHAPHAN R.",
         "instructor": "NAPATTORN S.",
         "batch": "AP-127",
-        "lesson": "CSNL 49",
-        "condition": "Solo / Night",
+        "lesson": "CDNXC 48",
+        "condition": "XC / Night",
         "type": "DA40CS",
         "tail": "HS-TVH",
         "actualType": null,
@@ -245554,8 +245554,8 @@
         "student": "PICHAKORN J.",
         "instructor": "PORNTEP B.",
         "batch": "AP-127",
-        "lesson": "CSNL 49",
-        "condition": "Solo / Night",
+        "lesson": "CDNXC 48",
+        "condition": "XC / Night",
         "type": "DA40CS",
         "tail": "HS-TVB",
         "actualType": null,
@@ -257475,14 +257475,14 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -257493,20 +257493,20 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -257517,20 +257517,20 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -257541,20 +257541,20 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
+      "category": "Airplane",
+      "type": "Simulator Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "CHAWIN K.",
       "type": "Simulator Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "CHAWIN K.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
-    },
-    {
-      "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -257571,8 +257571,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -257583,8 +257583,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -257595,8 +257595,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -257643,8 +257643,8 @@
     {
       "isPartTime": true,
       "name": "WACHIRAWIT WORAWETMONGKON",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -257655,8 +257655,8 @@
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -257679,8 +257679,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -264650,6 +264650,19 @@
       "lesson": "CDNL 47",
       "acType": "DA40TDI",
       "acReg": "HS-TPV"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-MAET-HMOI3|06/10/2026 19:04:47",
+      "bookingId": "BK-AP-127-MAET-HMOI3",
+      "date": "2026-10-06",
+      "reason": "Aircraft Trouble",
+      "remarks": "Magneto dropped over 210\nRPM when idle 580 (lower than 600)",
+      "instructor": "PORNTEP B.",
+      "student": "MAETHAPHAN R.",
+      "batch": "AP-127",
+      "lesson": "CDNL 47",
+      "acType": "DA40CS",
+      "acReg": "HS-TVH"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-PICH-EVTVS|06/10/2026 18:52:08",
