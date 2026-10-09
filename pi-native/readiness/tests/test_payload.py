@@ -72,3 +72,14 @@ def test_shrinks_to_fit_and_reports_when_it_cannot():
     assert all(len(a["slots"]) <= 4 for a in p["ops"]["ac"])
     with pytest.raises(ValueError, match="payload"):
         P.build(plan, flights, ops, ws, GEN, [], {}, 300)
+
+
+def test_race_date_included_when_given():
+    ws, flights, plan = _plan()
+    p = P.build(plan, flights, OPS, ws, GEN, [], {}, 8192, race_date="2026-11-15")
+    assert p["race"] == {"d": "2026-11-15"}
+
+
+def test_race_omitted_by_default():
+    ws, flights, plan = _plan()
+    assert "race" not in P.build(plan, flights, OPS, ws, GEN, [], {}, 8192)

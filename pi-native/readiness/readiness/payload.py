@@ -38,7 +38,7 @@ def _flight(f: Flight) -> dict:
 
 
 def build(plan: Plan, flights: list[Flight], ops: dict, workouts: list[Workout], gen: datetime,
-          hints: list[str], src: dict, max_bytes: int) -> dict:
+          hints: list[str], src: dict, max_bytes: int, race_date: str | None = None) -> dict:
     today = date.fromisoformat(plan.today)
     days = [(today + timedelta(days=i)).isoformat() for i in range(7)]
     flying = {f.date for f in flights if f.aircraft}
@@ -64,6 +64,8 @@ def build(plan: Plan, flights: list[Flight], ops: dict, workouts: list[Workout],
         "hints": list(hints),
         "src": src,
     }
+    if race_date:
+        p["race"] = {"d": race_date}
     return _shrink(_deep_ascii(p), max_bytes)
 
 

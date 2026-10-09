@@ -52,7 +52,7 @@ def build_payload(today, settings, rules, data, api, now, applied, pending, on_a
     age = flights_source.feed_age_min(data, now.astimezone(timezone.utc))
     src = {"garmin": "error" if errors else "ok", "flights": "stale" if age > FEED_STALE_MIN else "ok"}
     p = payload.build(plan, [f for f in flights if f.date >= today], ops, workouts, now, hints, src,
-                      rules["max_payload_bytes"])
+                      rules["max_payload_bytes"], race_date=race)
     if errors:
         print(f"garmin errors: {errors}", file=sys.stderr)
     return p, results, plan.moves
