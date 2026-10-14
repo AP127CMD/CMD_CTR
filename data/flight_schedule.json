@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-14T08:25:28Z",
+  "fetched_at": "2026-10-14T08:42:13Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -255483,7 +255483,7 @@
         "date": "2026-10-14",
         "rowIdx": "BK-AP-126-PRAN-Z368X",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -255518,8 +255518,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Weather (WX)",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-127-BULA-X0A1L",
@@ -257557,8 +257557,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "06:40",
-        "end": "07:40",
+        "start": "07:00",
+        "end": "08:00",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -258940,7 +258940,7 @@
         "planDur": null,
         "planDurMin": null,
         "student": "EKKASIT B.",
-        "instructor": "CHAMNONG S.",
+        "instructor": "CHATRA PINPAK",
         "batch": "AP-128",
         "lesson": "CDIF(SIM) 63",
         "condition": "Sim DA40",
@@ -259284,7 +259284,7 @@
         "planDur": null,
         "planDurMin": null,
         "student": "WATCHARAPOL A.",
-        "instructor": "CHAMNONG S.",
+        "instructor": "CHATRA PINPAK",
         "batch": "AP-127",
         "lesson": "CDIF(SIM) 58",
         "condition": "Sim DA40",
@@ -271623,8 +271623,8 @@
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -271641,14 +271641,14 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -271659,8 +271659,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -271677,8 +271677,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -271689,8 +271689,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -271707,38 +271707,38 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
+      "category": "Airplane",
+      "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "CHAMNONG S.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": true,
-      "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -271779,14 +271779,14 @@
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
       "name": "KRIANGKRAIN NA NAN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -271797,14 +271797,14 @@
     {
       "isPartTime": true,
       "name": "ROTTAPORN KWANGPAN",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -279138,6 +279138,19 @@
       "lesson": "PDGH 21",
       "acType": "DA40CS",
       "acReg": "HS-TVH"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-126-PRAN-Z368X|14/10/2026 15:35:57",
+      "bookingId": "BK-AP-126-PRAN-Z368X",
+      "date": "2026-10-14",
+      "reason": "Weather (WX)",
+      "remarks": "",
+      "instructor": "KITTICHAI C.",
+      "student": "PRAN P.",
+      "batch": "AP-126",
+      "lesson": "AUPRT 01",
+      "acType": "C172",
+      "acReg": "HS-TPF"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-126-RANG-FAW1I|14/10/2026 11:51:39",
