@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-16T06:33:40Z",
+  "fetched_at": "2026-10-16T06:49:34Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -261859,8 +261859,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "12:30",
-        "end": "13:30",
+        "start": "11:50",
+        "end": "12:50",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -261902,8 +261902,8 @@
         "isActual": false,
         "isSimulator": false,
         "isStandby": false,
-        "start": "11:00",
-        "end": "12:00",
+        "start": "10:40",
+        "end": "11:40",
         "duration": "01:00",
         "durationMin": 60,
         "planDur": null,
@@ -262281,7 +262281,7 @@
         "date": "2026-10-16",
         "rowIdx": "BK-MVABX81F",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -262316,8 +262316,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Other",
+        "cancelRemarks": "เครื่อง Ezy ยางแตกบนรันเวย์ ไม่สามารถเอาเครื่องขึ้นได้"
       },
       {
         "id": "BK-MVABXDNO",
@@ -262431,6 +262431,49 @@
         "condition": "Sim DA42",
         "type": "DA42 (SIM)",
         "tail": "HS-TCP (SIM)",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MVALTIAI",
+        "date": "2026-10-16",
+        "rowIdx": "BK-MVALTIAI",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "12:50",
+        "end": "13:50",
+        "duration": "01:00",
+        "durationMin": 60,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "SARACH C.",
+        "instructor": "KITTICHAI C.",
+        "batch": "AP-126",
+        "lesson": "AUPRT 02",
+        "condition": "A.UPRT",
+        "type": "C172",
+        "tail": "HS-TPF",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -274467,8 +274510,8 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -274485,8 +274528,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -274521,8 +274564,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -274533,14 +274576,14 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -274551,8 +274594,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -274569,8 +274612,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -274581,26 +274624,26 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -274611,8 +274654,8 @@
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -274629,8 +274672,8 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -274641,8 +274684,8 @@
     {
       "isPartTime": true,
       "name": "WACHIRAWIT WORAWETMONGKON",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -274653,20 +274696,20 @@
     {
       "isPartTime": true,
       "name": "CHATRA PINPAK",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "KRIANGKRAI NA NAN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -274683,8 +274726,8 @@
     {
       "isPartTime": true,
       "name": "AMONTHEP KRUSATA",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -282441,6 +282484,19 @@
       "lesson": "CDXV 29",
       "acType": "DA40TDI",
       "acReg": "HS-TPV"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MVABX81F|16/10/2026 13:41:55",
+      "bookingId": "BK-MVABX81F",
+      "date": "2026-10-16",
+      "reason": "Other",
+      "remarks": "เครื่อง Ezy ยางแตกบนรันเวย์ ไม่สามารถเอาเครื่องขึ้นได้",
+      "instructor": "ITTIPOL P.",
+      "student": "KANANON V.",
+      "batch": "AP-126",
+      "lesson": "SIRME",
+      "acType": "DA42TDI",
+      "acReg": "HS-TPQ"
     }
   ],
   "flightLegRecords": [
