@@ -17,7 +17,18 @@ if [ -z "${GH_PAT:-}" ]; then
   exit 1
 fi
 
-git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/AP127CMD/CMD_CTR"
+# A watchdog reset or power cut in the middle of a git command leaves stale .git/*.lock files
+# that make every later git write fail (seen 2026-10-19: .git/config.lock broke this very line
+# for every cycle after a reboot). Nothing else uses git on this box except the nightly
+# repack, which this script yields to below, so if no git process is running a lock is stale.
+if ! pgrep -x git >/dev/null 2>&1; then
+  find .git -name '*.lock' -type f -delete 2>/dev/null || true
+fi
+
+# stderr is silenced on purpose: on failure git echoes the URL — i.e. the PAT — into the
+# journal (it did, 2026-10-19).
+git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/AP127CMD/CMD_CTR" >/dev/null 2>&1 \
+  || echo "WARNING: git remote set-url failed (stale lock or unwritable .git/config?)" >&2
 
 # Failure alerting — mirrors .github/workflows/fetch_schedule.yml's own
 # "Report/Close fetch-failure issue" steps, so a Pi-side failure surfaces the
