@@ -27,7 +27,14 @@ POLL="${POLL:-2}"
 IDLE_POLLS="${IDLE_POLLS:-3}"              # consecutive idle polls before thawing (debounce)
 MAX_FREEZE="${MAX_FREEZE:-600}"
 read -r -a BG_UNITS <<< "${BG_UNITS:-ap127-fetch.service ap127-readiness.service ap127-gitmaint.service}"
-PAT='/usr/lib/cups/filter/(pdftoraster|rastertogutenprint|pdftopdf|gstoraster|mupdftoraster)'
+# Match by executable NAME (comm), NOT by command line. When cupsd launches a filter it sets argv[0] to the
+# PRINTER NAME ("Canon_E410 137 root blank.pdf 1 ..."), so the filter's path never appears in `ps` args: the
+# first version matched '/usr/lib/cups/filter/...', passed every stand-in test (which launched filters by
+# path) and was blind to real prints. comm is the real binary name, truncated by the kernel to 15 chars
+# (rastertogutenprint.5.3 -> "rastertogutenpr"). `gs` is Ghostscript, which gstoraster spawns to do the
+# actual rendering — the memory-heavy process on this queue's real chain
+# (pdftopdf -> gstoraster -> rastertogutenprint).
+PAT='pdftopdf|gstoraster|pdftoraster|mupdftoraster|rastertogutenpr|gs'
 
 frozen=(); since=0; idle=0; gave_up=0
 # Own small event log: the board's journald is a tiny RAM log that churns (it lost these very lines
@@ -40,7 +47,7 @@ log() {
     tail -n 200 "$LOGFILE" > "$LOGFILE.tmp" 2>/dev/null && mv "$LOGFILE.tmp" "$LOGFILE"
   fi
 }
-print_active() { pgrep -f "$PAT" >/dev/null 2>&1; }
+print_active() { pgrep -x "$PAT" >/dev/null 2>&1; }
 cg_of() { echo "/sys/fs/cgroup/system.slice/$1"; }
 is_frozen() { local u; for u in "${frozen[@]:-}"; do [ "$u" = "$1" ] && return 0; done; return 1; }
 # cgroup.procs is a virtual file (size is always 0), so test for CONTENT, never `[ -s ]`.

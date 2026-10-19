@@ -578,6 +578,10 @@ source and verifying the diff was scoped to exactly the expected changes before 
   throttle livelocked a 48 MP job). Measured: 48 MP page 310 MB/26 s; 94 MB 8-page PDF 434 MB/3.5 min — PDF *file size*
   drives memory, not megapixels or page count; ~17-27 s CPU per page. Install: `sudo bash pi-native/printprio/install.sh`.
   Event log: `/var/log/ap127-printprio.log`. The Telegram watchdog is a Cloudflare Worker, not Pi load. AP127_Docs §5.5.2.
+  **Detection gotcha (found 2026-10-20):** cupsd launches filters with `argv[0]` = the printer name, so match by
+  process NAME (`pgrep -x 'pdftopdf|gstoraster|pdftoraster|mupdftoraster|rastertogutenpr|gs'`), never by the
+  `/usr/lib/cups/filter/...` path — in `ap127-printprio.sh` and the `run_fetch.sh` guard. Filters DO run inside
+  `cups.service`'s cgroup (limits apply); sample while a job is running, not idle. Verified with a real `lp` job.
 - **The Pi's 2026-10-19 lockups were `git gc --auto`, not printing (2026-10-20).** 8,613 loose objects (1.57 GB,
   `.git` 1.7 GB) → auto-gc inside each fetch's `git pull` peaked 430-536 MB on top of Chromium, filled zram
   swap, and locked the board (retried every 5-min cycle). Fixed: `gc.auto=0` + bounded `pack.*` on the Pi's

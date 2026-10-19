@@ -154,7 +154,9 @@ fi
 # skipped cycle costs 5 min; the cloud fallback only takes over after 35 min.
 # Bounded so a stuck print job (printer in error, filters waiting forever) can never
 # starve the fetch: only yield while a render process is younger than 10 minutes.
-print_pids="$(pgrep -f '/usr/lib/cups/filter/(pdftoraster|rastertogutenprint|pdftopdf|gstoraster|mupdftoraster)|git-core/git (repack|gc)' 2>/dev/null || true)"
+# Match by process NAME, not command line: cupsd starts filters with argv[0]=the printer name, so a
+# '/usr/lib/cups/filter/...' pattern never matches a real print job (2026-10-20). `gs` = Ghostscript.
+print_pids="$( { pgrep -x 'pdftopdf|gstoraster|pdftoraster|mupdftoraster|rastertogutenpr|gs' ; pgrep -f 'git-core/git (repack|gc)'; } 2>/dev/null | sort -u || true)"
 if [ -n "$print_pids" ]; then
   youngest="$(ps -o etimes= -p $(echo "$print_pids" | paste -sd, -) 2>/dev/null | sort -n | head -1 | tr -d ' ')"
   if [ -n "$youngest" ] && [ "$youngest" -lt 600 ]; then
