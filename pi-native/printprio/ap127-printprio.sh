@@ -11,6 +11,14 @@
 # Chromium is deliberately NOT frozen: the fetch talks to it over a local CDP socket and its
 # signed-in session must stay alive. A frozen fetch resumes where it left off.
 #
+# WHY THE CGROUP FREEZER IS DRIVEN DIRECTLY, NOT VIA `systemctl freeze`: the fetch is a Type=oneshot
+# unit, and `systemctl freeze` refuses a oneshot that is still starting ("Unit has a pending job")
+# — which is exactly the state a running fetch is in. The first version used systemctl, the error
+# was swallowed, and a real fetch was never frozen (caught by the end-to-end test on 2026-10-20;
+# the stand-in unit tests all passed because a plain service has no pending job). Writing
+# cgroup.freeze is what systemd does underneath, works on any state, and a frozen unit can still
+# be stopped by systemd (verified), so a frozen fetch can never become unkillable.
+#
 # Guard rails: a print that "stays active" longer than MAX_FREEZE (printer jammed, filters waiting
 # forever) can never starve the fetch — background work is thawed and left alone until that print
 # goes idle. On stop/crash everything is thawed (trap + ExecStopPost).
@@ -24,10 +32,22 @@ PAT='/usr/lib/cups/filter/(pdftoraster|rastertogutenprint|pdftopdf|gstoraster|mu
 frozen=(); since=0; idle=0; gave_up=0
 log() { echo "$(date +%T) $*"; }
 print_active() { pgrep -f "$PAT" >/dev/null 2>&1; }
+cg_of() { echo "/sys/fs/cgroup/system.slice/$1"; }
 is_frozen() { local u; for u in "${frozen[@]:-}"; do [ "$u" = "$1" ] && return 0; done; return 1; }
+# cgroup.procs is a virtual file (size is always 0), so test for CONTENT, never `[ -s ]`.
+has_procs() { grep -q . "$(cg_of "$1")/cgroup.procs" 2>/dev/null; }          # unit has processes now
+freeze_unit() {
+  local cg; cg="$(cg_of "$1")"
+  [ -w "$cg/cgroup.freeze" ] || { log "WARN: cannot write $cg/cgroup.freeze"; return 1; }
+  echo 1 > "$cg/cgroup.freeze" 2>/dev/null || { log "WARN: freeze write failed for $1"; return 1; }
+  sleep 0.5
+  grep -q "^frozen 1" "$cg/cgroup.events" 2>/dev/null || log "WARN: $1 asked to freeze but not yet reporting frozen"
+  return 0
+}
+thaw_unit() { local cg; cg="$(cg_of "$1")"; [ -w "$cg/cgroup.freeze" ] && echo 0 > "$cg/cgroup.freeze" 2>/dev/null; return 0; }
 thaw_all() {
   local u
-  for u in "${frozen[@]:-}"; do [ -n "$u" ] && systemctl thaw "$u" >/dev/null 2>&1; done
+  for u in "${frozen[@]:-}"; do [ -n "$u" ] && thaw_unit "$u"; done
   frozen=(); since=0
 }
 trap 'thaw_all; log "stopped — everything thawed"; exit 0' TERM INT
@@ -40,9 +60,8 @@ while true; do
     if [ "$gave_up" -eq 0 ]; then
       for u in "${BG_UNITS[@]}"; do
         is_frozen "$u" && continue
-        st="$(systemctl is-active "$u" 2>/dev/null)"
-        if [ "$st" = "activating" ] || [ "$st" = "active" ]; then
-          if systemctl freeze "$u" >/dev/null 2>&1; then
+        if has_procs "$u"; then
+          if freeze_unit "$u"; then
             [ "${#frozen[@]}" -eq 0 ] && since=$now
             frozen+=("$u"); log "print active -> froze $u"
           fi

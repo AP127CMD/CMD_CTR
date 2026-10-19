@@ -6,7 +6,7 @@ After=cups.service
 Type=simple
 ExecStart=/home/dietpi/flight-schedule-feed/pi-native/printprio/ap127-printprio.sh
 # Whatever happens, never leave the fetch frozen.
-ExecStopPost=/bin/sh -c 'for u in ap127-fetch ap127-readiness ap127-gitmaint; do systemctl thaw $u.service 2>/dev/null; done; true'
+ExecStopPost=/bin/sh -c 'for u in ap127-fetch ap127-readiness ap127-gitmaint; do f=/sys/fs/cgroup/system.slice/$u.service/cgroup.freeze; [ -w $f ] && echo 0 > $f; done; true'
 Restart=always
 RestartSec=3
 # Tiny and always-on; keep it out of the way and make sure the OOM killer never picks it.
