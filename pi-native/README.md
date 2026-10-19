@@ -279,6 +279,13 @@ locking the board (twice in one evening; it retried every cycle). The clone now 
 long JSON delta chains; clone on the Mac and ship it as plain files (`COPYFILE_DISABLE=1 tar`, because
 macOS adds `._*` stubs that git reads as corrupt pack indexes). Full write-up: AP127_Docs §5.5.1.
 
+**Printing wins (2026-10-20).** `printprio/` = a tiny arbiter that freezes the background units (fetch, readiness
+planner, git repack) with the cgroup freezer while a CUPS render runs and thaws them afterwards, plus the shared
+`/run/lock/ap127-heavy.lock` so those three take turns. Install with `sudo bash pi-native/printprio/install.sh`.
+CUPS is capped with a hard `MemoryMax=450M` (`system/cups-limits.conf`) — measured: any page ~310 MB, a 94 MB PDF
+434 MB — so a job that cannot fit fails in seconds instead of hanging the board. Never add `MemoryHigh` to CUPS: it
+made a 48 MP page livelock. Details and the bugs the tests caught: AP127_Docs §5.5.2.
+
 `system/` records the board's hardware watchdog (arm it: the chip caps at **16 s**, a longer value is
 silently rejected), CUPS memory limits and sshd OOM protection; `run_fetch.sh` skips a cycle while a print
 render or repack is running and clears stale `.git/*.lock` after a reset.

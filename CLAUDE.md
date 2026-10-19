@@ -571,6 +571,13 @@ source and verifying the diff was scoped to exactly the expected changes before 
     scrape cycle — absorbed by the existing freshness thresholds and the ≥35 min cloud takeover.
   - Full detail (queue name, driver, device URI, admin URL) is in **AP127_Docs §5.4** — deliberately not
     repeated here, since this repo is public.
+- **Print priority + one-heavy-job-at-a-time (2026-10-20).** While a CUPS render runs, `ap127-printprio` freezes the
+  fetch/readiness/repack cgroups (`cgroup.freeze` written directly — **`systemctl freeze` silently fails on a starting
+  oneshot unit**, i.e. a running fetch) and thaws 6 s after; fetch, readiness and git repack take turns on
+  `/run/lock/ap127-heavy.lock`. CUPS has a hard `MemoryMax=450M` + `MemorySwapMax=250M` and **no `MemoryHigh`** (a
+  throttle livelocked a 48 MP job). Measured: 48 MP page 310 MB/26 s; 94 MB 8-page PDF 434 MB/3.5 min — PDF *file size*
+  drives memory, not megapixels or page count; ~17-27 s CPU per page. Install: `sudo bash pi-native/printprio/install.sh`.
+  Event log: `/var/log/ap127-printprio.log`. The Telegram watchdog is a Cloudflare Worker, not Pi load. AP127_Docs §5.5.2.
 - **The Pi's 2026-10-19 lockups were `git gc --auto`, not printing (2026-10-20).** 8,613 loose objects (1.57 GB,
   `.git` 1.7 GB) → auto-gc inside each fetch's `git pull` peaked 430-536 MB on top of Chromium, filled zram
   swap, and locked the board (retried every 5-min cycle). Fixed: `gc.auto=0` + bounded `pack.*` on the Pi's
