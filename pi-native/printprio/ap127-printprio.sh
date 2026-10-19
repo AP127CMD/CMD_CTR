@@ -30,7 +30,16 @@ read -r -a BG_UNITS <<< "${BG_UNITS:-ap127-fetch.service ap127-readiness.service
 PAT='/usr/lib/cups/filter/(pdftoraster|rastertogutenprint|pdftopdf|gstoraster|mupdftoraster)'
 
 frozen=(); since=0; idle=0; gave_up=0
-log() { echo "$(date +%T) $*"; }
+# Own small event log: the board's journald is a tiny RAM log that churns (it lost these very lines
+# minutes after they were written). /var/log is RAM too, but it is a separate budget and survives
+# journal rotation; it is trimmed in place so it can never grow.
+LOGFILE="${LOGFILE:-/var/log/ap127-printprio.log}"
+log() {
+  local l; l="$(date '+%F %T') $*"; echo "$l"; echo "$l" >> "$LOGFILE" 2>/dev/null
+  if [ "$(stat -c %s "$LOGFILE" 2>/dev/null || echo 0)" -gt 100000 ]; then
+    tail -n 200 "$LOGFILE" > "$LOGFILE.tmp" 2>/dev/null && mv "$LOGFILE.tmp" "$LOGFILE"
+  fi
+}
 print_active() { pgrep -f "$PAT" >/dev/null 2>&1; }
 cg_of() { echo "/sys/fs/cgroup/system.slice/$1"; }
 is_frozen() { local u; for u in "${frozen[@]:-}"; do [ "$u" = "$1" ] && return 0; done; return 1; }
