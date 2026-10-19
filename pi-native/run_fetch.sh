@@ -135,6 +135,23 @@ if [ -n "${PI_HEARTBEAT_KEY:-}" ]; then
     || echo "WARNING: heartbeat POST failed (non-fatal)" >&2
 fi
 
+# Yield to a print that is rendering (or the nightly git repack). This 1 GB board also hosts CUPS (the Canon E410
+# AirPrint queue): a print render (pdftoraster + rastertogutenprint) peaks ~270 MB and
+# HOLDS it for the whole ~90 s the printer takes to print, which on top of Chromium
+# (~600 MB) and a fetch cycle (~135 MB real + git cache) overcommits RAM. On 2026-10-19
+# that combination locked the board for ~10 min and needed a manual power-cycle. A
+# skipped cycle costs 5 min; the cloud fallback only takes over after 35 min.
+# Bounded so a stuck print job (printer in error, filters waiting forever) can never
+# starve the fetch: only yield while a render process is younger than 10 minutes.
+print_pids="$(pgrep -f '/usr/lib/cups/filter/(pdftoraster|rastertogutenprint|pdftopdf|gstoraster|mupdftoraster)|git-core/git (repack|gc)' 2>/dev/null || true)"
+if [ -n "$print_pids" ]; then
+  youngest="$(ps -o etimes= -p $(echo "$print_pids" | paste -sd, -) 2>/dev/null | sort -n | head -1 | tr -d ' ')"
+  if [ -n "$youngest" ] && [ "$youngest" -lt 600 ]; then
+    echo "Skipping this cycle — a print render or git repack is running (started ${youngest}s ago); RAM is shared on this 1 GB board."
+    exit 0
+  fi
+fi
+
 # A failed cycle leaves uncommitted bookkeeping behind (this script only
 # commits on the success path) — without this, EVERY cycle after a failure
 # would fail again immediately on git pull, forever. Both files are pure

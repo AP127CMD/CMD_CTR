@@ -1,0 +1,19 @@
+[Unit]
+Description=AP127 bounded git maintenance (incremental repack of the Pi clone)
+# Not Conflicts=: that would STOP a fetch mid-push. The script waits for an in-flight fetch
+# instead, and run_fetch.sh skips cycles while a repack is running (RAM is tight).
+After=ap127-fetch.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/dietpi/flight-schedule-feed/pi-native/maintenance/ap127-gitmaint.sh
+User=dietpi
+Environment=HOME=/home/dietpi
+# Hard guard rails: throttle at 250 MB, kill at 330 MB — a runaway repack can never starve
+# sshd/Chromium again. Lowest CPU and IO priority; the SD card is slow.
+MemoryHigh=250M
+MemoryMax=330M
+Nice=19
+CPUWeight=10
+IOSchedulingClass=idle
+OOMScoreAdjust=500
