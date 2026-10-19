@@ -571,6 +571,14 @@ source and verifying the diff was scoped to exactly the expected changes before 
     scrape cycle — absorbed by the existing freshness thresholds and the ≥35 min cloud takeover.
   - Full detail (queue name, driver, device URI, admin URL) is in **AP127_Docs §5.4** — deliberately not
     repeated here, since this repo is public.
+- **The Pi's 2026-10-19 lockups were `git gc --auto`, not printing (2026-10-20).** 8,613 loose objects (1.57 GB,
+  `.git` 1.7 GB) → auto-gc inside each fetch's `git pull` peaked 430-536 MB on top of Chromium, filled zram
+  swap, and locked the board (retried every 5-min cycle). Fixed: `gc.auto=0` + bounded `pack.*` on the Pi's
+  clone, nightly capped repack (`pi-native/maintenance/`), fresh 99 MB clone (build it on the Mac — `index-pack`
+  on the Pi is CPU-bound 10+ min), hardware watchdog armed (16 s max — longer is silently rejected;
+  `pi-native/system/`), `run_fetch.sh` skips a cycle during a print render/repack and clears stale `.git`
+  locks. **Do not let a data-bloated clone's loose objects pile up again; do not re-enable `gc.auto` on the
+  Pi.** Full detail: AP127_Docs §5.5.1.
 - **`run_fetch.sh` now sends a heartbeat, unconditionally, on every timer firing (2026-09-12).** Found
   live: the Pi went hard-down for ~1h49m with nothing noticing, because the cloud fallback above kept
   the feed fresh throughout — masking "Pi dead" as identical to "Pi correctly standing by." A `POST` to

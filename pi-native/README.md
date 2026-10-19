@@ -269,6 +269,20 @@ of a constant OOM risk:
    scrape (`FETCH_RPC_CONCURRENCY`, now 2 on this board) was kept; the 5-min
    timer was restored.
 
+**The biggest single memory risk is not Chromium — it's git (2026-10-19/20).** Every cycle commits
+several ~7.8 MB JSON blobs as loose objects; past ~6,700 loose objects git runs `gc --auto` inside the
+fetch's `git pull` and a default-settings repack peaks at 430-536 MB, filling the 484 MB zram swap and
+locking the board (twice in one evening; it retried every cycle). The clone now has `gc.auto=0`, bounded
+`pack.*` settings, and a nightly memory-capped repack (`maintenance/`, 03:30). If you ever see
+`git gc`/`git pack-objects` in `ps`, or the repo's `.git` grows past a few hundred MB, that's this again
+(`git count-objects -vH`). **Don't re-clone on the Pi** — `index-pack` is CPU-bound for 10+ min on the
+long JSON delta chains; clone on the Mac and ship it as plain files (`COPYFILE_DISABLE=1 tar`, because
+macOS adds `._*` stubs that git reads as corrupt pack indexes). Full write-up: AP127_Docs §5.5.1.
+
+`system/` records the board's hardware watchdog (arm it: the chip caps at **16 s**, a longer value is
+silently rejected), CUPS memory limits and sshd OOM protection; `run_fetch.sh` skips a cycle while a print
+render or repack is running and clears stale `.git/*.lock` after a reset.
+
 If you see `journalctl -u ap127-chromium` showing repeated restarts, that's
 likely an OOM-kill — check `dmesg | grep -i oom` to confirm, and consider
 increasing the zram size (`dietpi-config` again) or, if it persists,
