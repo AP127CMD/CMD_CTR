@@ -1,0 +1,18 @@
+[Unit]
+Description=AP127 print-priority arbiter (freeze background jobs while a print renders)
+After=cups.service
+
+[Service]
+Type=simple
+ExecStart=/home/dietpi/flight-schedule-feed/pi-native/printprio/ap127-printprio.sh
+# Whatever happens, never leave the fetch frozen.
+ExecStopPost=/bin/sh -c 'for u in ap127-fetch ap127-readiness ap127-gitmaint; do systemctl thaw $u.service 2>/dev/null; done; true'
+Restart=always
+RestartSec=3
+# Tiny and always-on; keep it out of the way and make sure the OOM killer never picks it.
+Nice=-5
+OOMScoreAdjust=-500
+MemoryMax=30M
+
+[Install]
+WantedBy=multi-user.target

@@ -163,6 +163,20 @@ if [ -n "$print_pids" ]; then
   fi
 fi
 
+# One heavy job at a time. The fetch, the readiness planner and the git repack all run on this
+# 1 GB board next to Chromium; they used to overlap (readiness every 15 min, repack nightly) and
+# nothing coordinated them. They now take turns on one shared lock, so they follow each other
+# instead of competing for RAM. The wait is bounded: if another job still holds it after 10 min
+# this cycle is skipped, never stacked. (A print is handled separately and wins outright: the
+# print-priority arbiter freezes whoever holds this lock — see printprio/.)
+if [ -e /run/lock/ap127-heavy.lock ]; then
+  exec 9</run/lock/ap127-heavy.lock
+  if ! flock -w 600 9; then
+    echo "Skipping this cycle — another heavy job held the lock for 10 min."
+    exit 0
+  fi
+fi
+
 # A failed cycle leaves uncommitted bookkeeping behind (this script only
 # commits on the success path) — without this, EVERY cycle after a failure
 # would fail again immediately on git pull, forever. Both files are pure
