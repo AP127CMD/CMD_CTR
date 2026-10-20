@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-20T10:27:46Z",
+  "fetched_at": "2026-10-20T10:43:52Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -269259,12 +269259,12 @@
         "date": "2026-10-20",
         "rowIdx": "BK-AP-127-AWIR-FRRI6",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": true,
         "isStandby": false,
         "start": "12:00",
@@ -269280,19 +269280,19 @@
         "condition": "Sim DA40",
         "type": "DA40 (SIM)",
         "tail": "HS-TPN (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40 (SIM)",
+        "tkoff": "12:00",
+        "ldgTime": "14:00",
+        "airborne": "02:00",
+        "ldg": 1,
+        "to": 1,
+        "inst": 1,
+        "blockOff": "12:00",
+        "blockOn": "14:00",
+        "routeFrom": "VTPH",
+        "routeTo": "VTBU",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -270416,49 +270416,6 @@
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
-      },
-      {
-        "id": "BK-AP-127-NAPO-JAV44",
-        "date": "2026-10-21",
-        "rowIdx": "BK-AP-127-NAPO-JAV44",
-        "realRowIdx": null,
-        "status": "Canceled",
-        "statusOverride": null,
-        "bookingKind": null,
-        "bookingType": "flight",
-        "leg": "",
-        "isActual": false,
-        "isSimulator": true,
-        "isStandby": false,
-        "start": "09:00",
-        "end": "11:00",
-        "duration": "02:00",
-        "durationMin": 120,
-        "planDur": null,
-        "planDurMin": null,
-        "student": "NAPON S.",
-        "instructor": "CHATRA PINPAK",
-        "batch": "AP-127",
-        "lesson": "CDIF(SIM) 56",
-        "condition": "Sim DA40",
-        "type": "DA40 (SIM)",
-        "tail": "HS-TPO (SIM)",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
-        "remark": null,
-        "cancelReason": "Student Sick",
-        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-127-PUWA-D771R",
@@ -271733,6 +271690,49 @@
         "condition": "Sim DA40",
         "type": "DA40 (SIM)",
         "tail": "HS-TPO (SIM)",
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      },
+      {
+        "id": "BK-MVGJN6HF",
+        "date": "2026-10-21",
+        "rowIdx": "BK-MVGJN6HF",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": null,
+        "bookingType": "flight",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "13:30",
+        "end": "16:30",
+        "duration": "03:00",
+        "durationMin": 180,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "SIWAKORN P.",
+        "instructor": "PHAHOLYUTH P.",
+        "batch": "AP-127",
+        "lesson": "CDXI 73",
+        "condition": "XC / IR",
+        "type": "DA40TDI",
+        "tail": "HS-TPR",
         "actualType": null,
         "tkoff": null,
         "ldgTime": null,
@@ -283841,14 +283841,14 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -283865,8 +283865,8 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -283883,14 +283883,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -283913,8 +283913,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -283925,8 +283925,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -283949,8 +283949,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -283961,20 +283961,20 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -283985,14 +283985,14 @@
     {
       "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -284015,14 +284015,14 @@
     {
       "isPartTime": true,
       "name": "KRIANGKRAI NA NAN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -284033,8 +284033,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
