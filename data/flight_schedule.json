@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-21T10:42:37Z",
+  "fetched_at": "2026-10-21T11:05:20Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -270981,12 +270981,12 @@
         "date": "2026-10-21",
         "rowIdx": "BK-AP-127-BULA-NKS3B",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "16:00",
@@ -271002,19 +271002,19 @@
         "condition": "SPIC / XC",
         "type": "DA40CS",
         "tail": "HS-TVD",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40CS",
+        "tkoff": "16:10",
+        "ldgTime": "17:25",
+        "airborne": "01:15",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "16:00",
+        "blockOn": "17:30",
+        "routeFrom": "VTPH",
+        "routeTo": "VTBP-VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "SPIC",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -271583,12 +271583,12 @@
         "date": "2026-10-21",
         "rowIdx": "BK-AP-127-JIRA-FTE25",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "13:40",
@@ -271604,22 +271604,52 @@
         "condition": "XC / IR",
         "type": "DA40TDI",
         "tail": "HS-TPU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
-        "actualLeg": null,
-        "flightType": null,
+        "actualType": "DA40TDI",
+        "tkoff": "16:00",
+        "ldgTime": "16:45",
+        "airborne": "00:45",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "15:50",
+        "blockOn": "16:50",
+        "routeFrom": "VTPH - VTSE",
+        "routeTo": "VTBP",
+        "actualLeg": "2",
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
-        "cancelRemarks": null
+        "cancelRemarks": null,
+        "legs": [
+          {
+            "leg": "1",
+            "routeFrom": "VTPH - VTSE",
+            "routeTo": "VTBP",
+            "blockOff": "12:50",
+            "tkoff": "13:00",
+            "ldgTime": "15:30",
+            "blockOn": "15:35",
+            "to": 3,
+            "ldg": 3,
+            "inst": 1,
+            "tail": "HS-TPU",
+            "remark": null
+          },
+          {
+            "leg": "2",
+            "routeFrom": "VTPH - VTSE",
+            "routeTo": "VTBP",
+            "blockOff": "15:50",
+            "tkoff": "16:00",
+            "ldgTime": "16:45",
+            "blockOn": "16:50",
+            "to": 2,
+            "ldg": 2,
+            "inst": null,
+            "tail": "HS-TPU",
+            "remark": null
+          }
+        ]
       },
       {
         "id": "BK-AP-127-SORN-XRNOM",
@@ -285702,50 +285732,50 @@
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ITTIPOL P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -285762,14 +285792,14 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -285786,8 +285816,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -285804,8 +285834,8 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -285816,8 +285846,8 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -285828,20 +285858,20 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -285852,8 +285882,8 @@
     {
       "isPartTime": false,
       "name": "PHUMIN T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -285864,8 +285894,8 @@
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -285900,8 +285930,8 @@
     {
       "isPartTime": true,
       "name": "ROTTAPORN KWANGPAN",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -294213,6 +294243,44 @@
       "ldg": 2,
       "inst": null,
       "tail": "HS-TCP",
+      "flightType": "Dual",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-JIRA-FTE25|21/10/2026 17:53:10",
+      "bookingId": "BK-AP-127-JIRA-FTE25",
+      "stamp": "2026-10-21 17:53:10",
+      "date": "2026-10-21",
+      "leg": "1",
+      "routeFrom": "VTPH - VTSE",
+      "routeTo": "VTBP",
+      "blockOff": "12:50",
+      "tkoff": "13:00",
+      "ldgTime": "15:30",
+      "blockOn": "15:35",
+      "to": 3,
+      "ldg": 3,
+      "inst": 1,
+      "tail": "HS-TPU",
+      "flightType": "Dual",
+      "remark": null
+    },
+    {
+      "id": "Student Records|key|BK-AP-127-JIRA-FTE25|21/10/2026 17:54:59",
+      "bookingId": "BK-AP-127-JIRA-FTE25",
+      "stamp": "2026-10-21 17:54:59",
+      "date": "2026-10-21",
+      "leg": "2",
+      "routeFrom": "VTPH - VTSE",
+      "routeTo": "VTBP",
+      "blockOff": "15:50",
+      "tkoff": "16:00",
+      "ldgTime": "16:45",
+      "blockOn": "16:50",
+      "to": 2,
+      "ldg": 2,
+      "inst": null,
+      "tail": "HS-TPU",
       "flightType": "Dual",
       "remark": null
     }
