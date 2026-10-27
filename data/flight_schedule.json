@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-27T02:20:15Z",
+  "fetched_at": "2026-10-27T02:59:07Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -276142,7 +276142,7 @@
         "date": "2026-10-27",
         "rowIdx": "BK-AP-128-KITT-01TRB",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -276177,8 +276177,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-128-DOLS-XCTMS",
@@ -277088,12 +277088,12 @@
         "date": "2026-10-27",
         "rowIdx": "BK-AP-131-NAPA-4JUEB",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -277109,19 +277109,19 @@
         "condition": null,
         "type": "DA40CS",
         "tail": "HS-TVB",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40CS",
+        "tkoff": "07:00",
+        "ldgTime": "07:53",
+        "airborne": "00:53",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "06:42",
+        "blockOn": "07:57",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -278077,7 +278077,7 @@
         "date": "2026-10-27",
         "rowIdx": "BK-MVP1PYPT",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -278112,8 +278112,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-MVP25IC7",
@@ -290675,8 +290675,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -290699,8 +290699,8 @@
     {
       "isPartTime": false,
       "name": "CHAWIN K.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -290717,8 +290717,8 @@
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -290759,8 +290759,8 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -290771,8 +290771,8 @@
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -290789,20 +290789,20 @@
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "WACHIRAWIT WORAWETMONGKON",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "WATTANAPHON INTARASIRITORN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -290819,14 +290819,14 @@
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "ROTTAPORN KWANGPAN",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -290837,8 +290837,8 @@
     {
       "isPartTime": true,
       "name": "AMONTHEP KRUSATA",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     }
   ],
   "resources": [
@@ -299091,6 +299091,19 @@
       "acReg": "HS-TPU"
     },
     {
+      "id": "Flight Cancels Record|key|BK-AP-128-KITT-01TRB|27/10/2026 09:55:33",
+      "bookingId": "BK-AP-128-KITT-01TRB",
+      "date": "2026-10-27",
+      "reason": "Aircraft Trouble",
+      "remarks": "",
+      "instructor": "SANTI PO.",
+      "student": "KITTIPAT M.",
+      "batch": "AP-128",
+      "lesson": "CDXI 69",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPR"
+    },
+    {
       "id": "Flight Cancels Record|key|BK-AP-129-MATH-93IMT|27/10/2026 08:12:47",
       "bookingId": "BK-AP-129-MATH-93IMT",
       "date": "2026-10-27",
@@ -299115,6 +299128,19 @@
       "lesson": "CDXV 31",
       "acType": "DA40CS",
       "acReg": "HS-TVB"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-MVP1PYPT|27/10/2026 09:54:08",
+      "bookingId": "BK-MVP1PYPT",
+      "date": "2026-10-27",
+      "reason": "Aircraft Trouble",
+      "remarks": "",
+      "instructor": "SANTI PO.",
+      "student": "KITTIPAT M.",
+      "batch": "AP-128",
+      "lesson": "CDXI 68",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPR"
     }
   ],
   "flightLegRecords": [
