@@ -3,6 +3,17 @@
 > Moved verbatim out of `CLAUDE.md` on 2026-10-24 (CLAUDE.md now holds only what is true today).
 > **Dated records — may be outdated.** Newest per-version entries come first.
 
+## Pi half-dead hang, 27-28 Oct 2026 — and why there was no evidence
+The Pi's last data commit was 2026-10-27 22:57 (+07); by 28 Oct 21:30 it answered ping (4-276 ms, jittery) and
+CUPS (:631) but sshd accepted TCP then reset (`kex_exchange_identification`), the NGT Printer Server (:8080) was
+down, mDNS and its IPv4 lease were gone. A power cycle cleared it; the queued print then completed. ~22 h of
+fetches ran on the GitHub Actions fallback. **Cause not established:** `Storage=persistent` was set, but
+DietPi's RAMlog mounts `/var/log` as a tmpfs, so the journal lived in RAM and the previous boot's log was gone
+(`journalctl --list-boots` showed one boot). Fix: persistent, capped journal on the SD card
+(`pi-native/system/var-log-journal.mount`, `journald-persist.conf`, `ramlog-journal-stubs.conf`).
+Verified: marker line written, clean reboot, `journalctl -b -1` returned it. **Not yet verified:** survival of a
+hard power cut (journald fsyncs every `SyncIntervalSec=30s`, so up to ~30 s before a cut can be lost).
+
 ## Pi scraper fix (2026-10-04)
 Pi scraper had failed every cycle since 2026-09-18: a failed cycle left `data/portal_fingerprint.json` dirty and `run_fetch.sh` only reset `backoff_state.json` before `git pull --rebase`. Fixed (8e969f35f): same reset added for `portal_fingerprint.json`; a cycle succeeded afterwards. Pi-failure issues #21-#30 still open - close by hand (GH_PAT lacks Issues:Write).
 

@@ -1,0 +1,31 @@
+# /etc/systemd/system/var-log-journal.mount
+#
+# Keep the systemd journal on the SD card instead of in RAM.
+#
+# Why this is needed: DietPi's RAMlog mounts /var/log as a 50 MB tmpfs, so journald's "Storage=persistent"
+# (already set) still lands in RAM and is lost on every reboot/hang. That is why the 2026-10-27 hang
+# (Pi half-dead ~22 h) left no evidence. This bind-mounts a directory on the real root filesystem over
+# /var/log/journal so journald's persistent storage is actually persistent. The rest of /var/log stays in RAM.
+#
+# DefaultDependencies=no + no After=dietpi-ramlog: systemd-journal-flush.service (sysinit) RequiresMountsFor
+# /var/log/journal, and dietpi-ramlog.service orders After=sysinit.target — ordering this mount after it
+# would be a dependency cycle. Cost: after a CLEAN shutdown RAMlog's --attributes-only restore may create a
+# few 0-byte *.journal stubs here; journald ignores them ("truncated, ignoring file").
+#
+# Needs the source dir to exist first (it is NOT auto-created):
+#   install -d -m 2755 -o root -g systemd-journal /var/lib/ap127-journal
+[Unit]
+Description=Persistent journal on the SD card (bind over RAM /var/log/journal)
+DefaultDependencies=no
+After=var-log.mount
+Before=local-fs.target systemd-journal-flush.service
+ConditionPathIsDirectory=/var/lib/ap127-journal
+
+[Mount]
+What=/var/lib/ap127-journal
+Where=/var/log/journal
+Type=none
+Options=bind
+
+[Install]
+WantedBy=local-fs.target

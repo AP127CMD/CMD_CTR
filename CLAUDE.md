@@ -158,6 +158,11 @@ This is the reverse of the 2026-08-30→09-02 arrangement, so older notes below 
   `pi-native/system/`), `run_fetch.sh` skips a cycle during a print render/repack and clears stale `.git`
   locks. **Do not let a data-bloated clone's loose objects pile up again; do not re-enable `gc.auto` on the
   Pi.** Full detail: AP127_Docs §5.5.1.
+- **The Pi's journal is on the SD card, size-capped** (`pi-native/system/`: `var-log-journal.mount` bind-mounts
+  `/var/lib/ap127-journal` over `/var/log/journal`; `journald-persist.conf`: 48 MB cap, 30 s sync). DietPi's RAMlog
+  makes `/var/log` a 50 MB tmpfs, so `Storage=persistent` alone is still RAM and a hang/reset leaves no evidence.
+  After a hang: `ssh root@DietPi.local journalctl -b -1` (clock reads stale for the first minutes of a boot — no RTC —
+  so trust order, not timestamps). Don't order this mount after `dietpi-ramlog.service` (dependency cycle).
 - **`run_fetch.sh` now sends a heartbeat, unconditionally, on every timer firing (2026-09-12).** Found
   live: the Pi went hard-down for ~1h49m with nothing noticing, because the cloud fallback above kept
   the feed fresh throughout — masking "Pi dead" as identical to "Pi correctly standing by." A `POST` to
