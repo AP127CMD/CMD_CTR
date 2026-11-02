@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-02T02:52:36Z",
+  "fetched_at": "2026-11-02T03:08:12Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -288151,12 +288151,12 @@
         "date": "2026-11-02",
         "rowIdx": "BK-AP-127-SUPA-CACIJ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:30",
@@ -288172,19 +288172,19 @@
         "condition": "XC / IR",
         "type": "DA40CS",
         "tail": "HS-TVA",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40CS",
+        "tkoff": "06:49",
+        "ldgTime": "09:29",
+        "airborne": "02:40",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "06:32",
+        "blockOn": "09:32",
+        "routeFrom": "VTPH",
+        "routeTo": "VTSE-VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -288194,12 +288194,12 @@
         "date": "2026-11-02",
         "rowIdx": "BK-AP-128-KITT-DM56G",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "06:40",
@@ -288215,19 +288215,19 @@
         "condition": "XC / IR",
         "type": "DA40TDI",
         "tail": "HS-TPO",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40TDI",
+        "tkoff": "06:50",
+        "ldgTime": "09:35",
+        "airborne": "02:45",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "06:40",
+        "blockOn": "09:40",
+        "routeFrom": "VTPH-VTSE-VTPH",
+        "routeTo": "VTPH-VTSE-VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -289996,7 +289996,51 @@
         "cancelRemarks": null
       }
     ],
-    "2026-11-03": [],
+    "2026-11-03": [
+      {
+        "id": "BK-MVYO14DL",
+        "date": "2026-11-03",
+        "rowIdx": "BK-MVYO14DL",
+        "realRowIdx": null,
+        "status": "Pending",
+        "statusOverride": null,
+        "bookingKind": "GROUND",
+        "bookingType": "ground",
+        "leg": "",
+        "isActual": false,
+        "isSimulator": false,
+        "isStandby": false,
+        "start": "09:00",
+        "end": "16:00",
+        "duration": "00:17",
+        "durationMin": 17,
+        "planDur": null,
+        "planDurMin": null,
+        "student": "A, B, C, D, E, F, G, H, I, J, K, L, M",
+        "instructor": "WISANU T.",
+        "batch": "AP-130",
+        "lesson": "Aircraft Type",
+        "condition": null,
+        "type": null,
+        "tail": null,
+        "actualType": null,
+        "tkoff": null,
+        "ldgTime": null,
+        "airborne": null,
+        "ldg": null,
+        "to": null,
+        "inst": null,
+        "blockOff": null,
+        "blockOn": null,
+        "routeFrom": null,
+        "routeTo": null,
+        "actualLeg": null,
+        "flightType": null,
+        "remark": null,
+        "cancelReason": null,
+        "cancelRemarks": null
+      }
+    ],
     "2026-11-04": [],
     "2026-11-05": [],
     "2026-11-06": [],
@@ -302373,8 +302417,8 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -302391,8 +302435,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -302409,8 +302453,8 @@
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -302421,8 +302465,8 @@
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -302445,8 +302489,8 @@
     {
       "isPartTime": false,
       "name": "KAMONVICH O.",
-      "category": "Helicopter",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": false,
@@ -302469,8 +302513,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "type": "Simulator Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": true,
@@ -302487,14 +302531,14 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -302553,8 +302597,8 @@
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -302565,8 +302609,8 @@
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
