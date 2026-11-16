@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-16T03:34:38Z",
+  "fetched_at": "2026-11-16T04:14:32Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -302041,12 +302041,12 @@
         "date": "2026-11-09",
         "rowIdx": "BK-MW7AROSG",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "13:30",
@@ -302062,19 +302062,19 @@
         "condition": null,
         "type": "R44",
         "tail": "HS-TZU",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "R44",
+        "tkoff": "13:40",
+        "ldgTime": "14:30",
+        "airborne": "00:50",
+        "ldg": 4,
+        "to": 4,
+        "inst": 0,
+        "blockOff": "13:30",
+        "blockOn": "14:30",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -313011,7 +313011,7 @@
         "date": "2026-11-16",
         "rowIdx": "BK-AP-127-NUTT-6J67W",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -313046,8 +313046,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Aircraft Trouble from SUN 15 Nov 2026"
       },
       {
         "id": "BK-AP-127-SETA-XIA5U",
@@ -313183,12 +313183,12 @@
         "date": "2026-11-16",
         "rowIdx": "BK-AP-127-TAKO-70EQJ",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "09:30",
@@ -313204,19 +313204,19 @@
         "condition": "A.UPRT",
         "type": "C172",
         "tail": "HS-TPF",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "C172",
+        "tkoff": "09:38",
+        "ldgTime": "10:28",
+        "airborne": "00:50",
+        "ldg": 2,
+        "to": 2,
+        "inst": 0,
+        "blockOff": "09:33",
+        "blockOn": "10:33",
+        "routeFrom": "VTPH",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -313398,7 +313398,7 @@
         "date": "2026-11-16",
         "rowIdx": "BK-AP-129-WANU-D2GO0",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -313433,8 +313433,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Aircraft Trouble",
+        "cancelRemarks": "Aircraft Trouble from SUN 15 Nov 2026"
       },
       {
         "id": "BK-AP-127-KRAI-CI6G1",
@@ -314014,7 +314014,7 @@
         "durationMin": 60,
         "planDur": null,
         "planDurMin": null,
-        "student": "Test Flight",
+        "student": "KITTI K.",
         "instructor": "SANTI PO.",
         "batch": "Test Flight",
         "lesson": "Test Flight",
@@ -326862,8 +326862,8 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -326874,8 +326874,8 @@
     {
       "isPartTime": false,
       "name": "PHAHOLYUTH P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -326886,20 +326886,20 @@
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "THAWATANAN P.",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "WISANU T.",
+      "name": "THAWATANAN P.",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": false,
+      "name": "WISANU T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -326910,8 +326910,8 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -326922,8 +326922,8 @@
     {
       "isPartTime": false,
       "name": "JIRAT R.",
-      "type": "Simulator Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
@@ -326946,14 +326946,14 @@
     {
       "isPartTime": false,
       "name": "PORNTEP B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
@@ -326964,8 +326964,8 @@
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -326976,14 +326976,14 @@
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -327006,8 +327006,8 @@
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -336273,6 +336273,32 @@
       "student": "KORN S.",
       "batch": "AP-127",
       "lesson": "CDXI 76",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-NUTT-6J67W|16/11/2026 11:08:48",
+      "bookingId": "BK-AP-127-NUTT-6J67W",
+      "date": "2026-11-16",
+      "reason": "Aircraft Trouble",
+      "remarks": "Aircraft Trouble from SUN 15 Nov 2026",
+      "instructor": "SANTI PO.",
+      "student": "NUTTAPHAT K.",
+      "batch": "AP-127",
+      "lesson": "CDXI 76",
+      "acType": "DA40CS",
+      "acReg": "HS-TVG"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-129-WANU-D2GO0|16/11/2026 11:09:10",
+      "bookingId": "BK-AP-129-WANU-D2GO0",
+      "date": "2026-11-16",
+      "reason": "Aircraft Trouble",
+      "remarks": "Aircraft Trouble from SUN 15 Nov 2026",
+      "instructor": "WISANU T.",
+      "student": "WANUT S.",
+      "batch": "AP-129",
+      "lesson": "CSPGL 36",
       "acType": "DA40CS",
       "acReg": "HS-TVG"
     }
