@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-16T06:29:03Z",
+  "fetched_at": "2026-11-16T06:45:29Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -313054,12 +313054,12 @@
         "date": "2026-11-16",
         "rowIdx": "BK-AP-127-SETA-XIA5U",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Completed",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
         "leg": "",
-        "isActual": false,
+        "isActual": true,
         "isSimulator": false,
         "isStandby": false,
         "start": "10:00",
@@ -313075,19 +313075,19 @@
         "condition": "XC / IR",
         "type": "DA40TDI",
         "tail": "HS-TPW",
-        "actualType": null,
-        "tkoff": null,
-        "ldgTime": null,
-        "airborne": null,
-        "ldg": null,
-        "to": null,
-        "inst": null,
-        "blockOff": null,
-        "blockOn": null,
-        "routeFrom": null,
-        "routeTo": null,
+        "actualType": "DA40TDI",
+        "tkoff": "10:15",
+        "ldgTime": "12:57",
+        "airborne": "02:42",
+        "ldg": 2,
+        "to": 2,
+        "inst": 2,
+        "blockOff": "10:01",
+        "blockOn": "13:01",
+        "routeFrom": "VTPH-VTSE",
+        "routeTo": "VTPH",
         "actualLeg": null,
-        "flightType": null,
+        "flightType": "Dual",
         "remark": null,
         "cancelReason": null,
         "cancelRemarks": null
@@ -326862,14 +326862,14 @@
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "PARINYA B.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -326880,26 +326880,26 @@
     {
       "isPartTime": false,
       "name": "SANTI PO.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SOWAN C.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "THAWATANAN P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -326910,38 +326910,38 @@
     {
       "isPartTime": false,
       "name": "ATHINAT H.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
-    },
-    {
-      "isPartTime": false,
-      "name": "CHAWIN K.",
       "type": "Simulator Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": false,
-      "name": "JIRAT R.",
+      "name": "CHAWIN K.",
       "category": "Airplane",
       "type": "Simulator Instructor"
     },
     {
       "isPartTime": false,
+      "name": "JIRAT R.",
+      "type": "Simulator Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
       "name": "KAMONVICH O.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "PORNSAK P.",
-      "type": "Flight Instructor",
-      "category": "Helicopter"
+      "category": "Helicopter",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -326952,8 +326952,8 @@
     {
       "isPartTime": false,
       "name": "ATIDTAN P.",
-      "category": "Helicopter",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Helicopter"
     },
     {
       "isPartTime": true,
@@ -326970,26 +326970,26 @@
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -327006,20 +327006,20 @@
     {
       "isPartTime": true,
       "name": "THANAPAT PIMVERN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
-      "name": "WACHIRAWIT WORAWETMONGKON",
       "type": "Flight Instructor",
       "category": "Airplane"
     },
     {
       "isPartTime": true,
-      "name": "WATTANAPHON INTARASIRITORN",
+      "name": "WACHIRAWIT WORAWETMONGKON",
       "category": "Airplane",
       "type": "Flight Instructor"
+    },
+    {
+      "isPartTime": true,
+      "name": "WATTANAPHON INTARASIRITORN",
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -327030,26 +327030,20 @@
     {
       "isPartTime": true,
       "name": "KRIANGKRAI NA NAN",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "THANIT PATIYASEVI",
-      "category": "Airplane",
-      "type": "Flight Instructor"
-    },
-    {
-      "isPartTime": true,
-      "name": "THANIT PATIYASEVI",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "AMORNPONG PERNGPARN",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
