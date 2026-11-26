@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-26T03:53:45Z",
+  "fetched_at": "2026-11-26T04:08:19Z",
   "timezone": "Asia/Bangkok",
   "schedules": {
     "2026-04-20": [
@@ -331667,7 +331667,7 @@
         "date": "2026-11-26",
         "rowIdx": "BK-AP-127-KRIT-04OZC",
         "realRowIdx": null,
-        "status": "Pending",
+        "status": "Canceled",
         "statusOverride": null,
         "bookingKind": null,
         "bookingType": "flight",
@@ -331702,8 +331702,8 @@
         "actualLeg": null,
         "flightType": null,
         "remark": null,
-        "cancelReason": null,
-        "cancelRemarks": null
+        "cancelReason": "Student Sick",
+        "cancelRemarks": ""
       },
       {
         "id": "BK-AP-129-VIPH-VOAWA",
@@ -346192,14 +346192,14 @@
     {
       "isPartTime": false,
       "name": "CHAROENCHAI U.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "EKKAPHOP R.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -346210,14 +346210,14 @@
     {
       "isPartTime": false,
       "name": "KITTICHAI C.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NAPATTORN S.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -346252,14 +346252,14 @@
     {
       "isPartTime": false,
       "name": "WISANU T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
       "name": "WUTTHICHAI L.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
@@ -346294,8 +346294,8 @@
     {
       "isPartTime": false,
       "name": "SORRAWUT P.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
@@ -346312,50 +346312,50 @@
     {
       "isPartTime": true,
       "name": "PREECHA K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "APIRATKUNPAK K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
       "name": "CHAMNONG S.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "TANAKRIT V.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
       "name": "VASSAPON K.",
-      "category": "Airplane",
-      "type": "Flight Instructor"
+      "type": "Flight Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": false,
       "name": "NUNTAPOB T.",
+      "type": "Flight Instructor",
+      "category": "Airplane"
+    },
+    {
+      "isPartTime": false,
+      "name": "PHUMIN T.",
       "category": "Airplane",
       "type": "Flight Instructor"
     },
     {
       "isPartTime": false,
-      "name": "PHUMIN T.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
-    },
-    {
-      "isPartTime": false,
       "name": "NANTAWAT D.",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     },
     {
       "isPartTime": true,
@@ -346378,8 +346378,8 @@
     {
       "isPartTime": true,
       "name": "CHATRA P.",
-      "category": "Airplane",
-      "type": "Simulator Instructor"
+      "type": "Simulator Instructor",
+      "category": "Airplane"
     },
     {
       "isPartTime": true,
@@ -346396,8 +346396,8 @@
     {
       "isPartTime": true,
       "name": "AMONTHEP KRUSATA",
-      "type": "Flight Instructor",
-      "category": "Airplane"
+      "category": "Airplane",
+      "type": "Flight Instructor"
     }
   ],
   "resources": [
@@ -355805,6 +355805,19 @@
       "lesson": "CSPGL 37",
       "acType": "DA40CS",
       "acReg": "HS-TVH"
+    },
+    {
+      "id": "Flight Cancels Record|key|BK-AP-127-KRIT-04OZC|26/11/2026 10:59:08",
+      "bookingId": "BK-AP-127-KRIT-04OZC",
+      "date": "2026-11-26",
+      "reason": "Student Sick",
+      "remarks": "",
+      "instructor": "WISANU T.",
+      "student": "KRIT L.",
+      "batch": "AP-127",
+      "lesson": "CDGL 83",
+      "acType": "DA40TDI",
+      "acReg": "HS-TPW"
     },
     {
       "id": "Flight Cancels Record|key|BK-AP-127-KRIT-U8LHJ|25/11/2026 19:38:49",
